@@ -1,0 +1,90 @@
+{
+  "common": {
+    "newChat": "New Chat",
+    "send": "Send",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "chat": {
+    "title": "AI Chatbot",
+    "subtitle": "Smart Learning with AI",
+    "welcome": {
+      "title": "🎉 Welcome to the smart classroom!",
+      "description": "Your teacher will help you learn in the most interesting way",
+      "instruction": "Ask any question and you'll receive helpful hints! ✨"
+    },
+    "input": {
+      "placeholder": "Type your question here...",
+      "continueButton": "💡 I need more hints!",
+      "fullAnswerButton": "📖 Teacher will give me the full answer!",
+      "checkAnswerButton": "Check My Answer ✨",
+      "answerPlaceholder": "Type your answer here..."
+    },
+    "messages": {
+      "error": "Oops! Something went wrong. Please try again! 😊",
+      "typing": "AI is typing...",
+      "success": "Excellent! You did a great job! 🎉",
+      "loading": "Thinking... 🤔"
+    },
+    "hintCounter": {
+      "one": "🎯 You've received 1 hint!",
+      "two": "🎯 You've received 2 hints!",
+      "three": "🎯 You've received 3 hints!",
+      "four": "🎯 You've received 4 hints!"
+    },
+    "actions": {
+      "thinking": "Thinking... 🤔",
+      "preparing": "Preparing... 📚",
+      "checking": "Checking...",
+      "needMoreHints": "💡 I need more hints!",
+      "fullAnswer": "📖 Teacher will give me the full answer!"
+    }
+  },
+  "sidebar": {
+    "title": "Conversations",
+    "empty": {
+      "title": "No conversations yet",
+      "subtitle": "Start a new conversation!"
+    },
+    "conversation": {
+      "noMessages": "No messages",
+      "newChat": "New Chat",
+      "deleteConfirm": "Are you sure you want to delete this conversation?",
+      "deleteSuccess": "Conversation deleted successfully"
+    }
+  },
+  "conversation": {
+    "new": "New Chat",
+    "default": "Conversation",
+    "time": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "{{days}} days ago"
+    }
+  },
+  "userAnswer": {
+    "title": "💭 Would you like to check your answer?",
+    "description": "Type your answer so your teacher can evaluate and give improvement suggestions! 😊",
+    "placeholder": "Type your answer here...",
+    "checkButton": "Check My Answer ✨",
+    "checking": "Checking..."
+  },
+  "settings": {
+    "language": "Language",
+    "theme": "Theme",
+    "dark": "Dark",
+    "light": "Light"
+  },
+  "errors": {
+    "sessionIdRequired": "sessionId is required",
+    "conversationNotFound": "No conversation found for this session or conversation is empty.",
+    "conversationNotFoundGeneral": "Conversation not found",
+    "somethingWentWrong": "Something went wrong",
+    "failedToSend": "Failed to send message",
+    "failedToContinue": "Failed to get continuation"
+  }
+} 

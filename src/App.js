@@ -1,23 +1,159 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import t, { getLanguage } from './locales/i18n';
+import { useChat } from './hooks/useChat';
+import { formatAIMessage } from './utils/chatUtils';
+
+// Components
+import Sidebar from './components/sidebar/Sidebar';
+import ChatHeader from './components/chat/ChatHeader';
+import ChatWelcome from './components/chat/ChatWelcome';
+import ChatMessage from './components/chat/ChatMessage';
+import ChatInput from './components/chat/ChatInput';
+import UserAnswerInput from './components/chat/UserAnswerInput';
+import ChatActions from './components/chat/ChatActions';
 
 function App() {
+  const {
+    messages,
+    setMessages,
+    inputMessage,
+    setInputMessage,
+    userAnswer,
+    setUserAnswer,
+    sessionId,
+    isLoading,
+    setIsLoading,
+    conversations,
+    currentConversationTitle,
+    hintCount,
+    showAnswerInput,
+    setShowAnswerInput,
+    messagesEndRef,
+    createNewChat,
+    loadConversations,
+    loadConversation,
+    deleteConversation,
+    sendMessage,
+    continueChat,
+    getFullAnswer,
+    checkUserAnswer
+  } = useChat();
+
+  const [showSidebar, setShowSidebar] = useState(true);
+  const [currentLanguage, setCurrentLanguage] = useState(getLanguage());
+
+  // Load conversations on mount (only once)
+  useEffect(() => {
+    loadConversations();
+  }, []);
+
+  // Update current language when it changes
+  useEffect(() => {
+    setCurrentLanguage(getLanguage());
+  }, []);
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+  const handleAnswerKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      checkUserAnswer();
+    }
+  };
+
+  const handleLanguageChange = (newLanguage) => {
+    setCurrentLanguage(newLanguage);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex">
+      {/* Sidebar */}
+      <Sidebar
+        showSidebar={showSidebar}
+        conversations={conversations}
+        sessionId={sessionId}
+        createNewChat={createNewChat}
+        loadConversation={loadConversation}
+        deleteConversation={deleteConversation}
+      />
+
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <ChatHeader
+          showSidebar={showSidebar}
+          setShowSidebar={setShowSidebar}
+          currentConversationTitle={currentConversationTitle}
+          onLanguageChange={handleLanguageChange}
+        />
+
+        {/* Chat Container */}
+        <div className="flex-1 bg-gray-50 flex flex-col">
+          {/* Messages */}
+          <div className="flex-1 p-6 overflow-y-auto">
+            {messages.length === 0 && <ChatWelcome />}
+            
+            {messages.map((message) => (
+              <ChatMessage
+                key={message.id}
+                message={message}
+                formatAIMessage={formatAIMessage}
+              />
+            ))}
+            
+            {isLoading && (
+              <div className="flex justify-start mb-5">
+                <div className="max-w-[70%] px-4 py-3 rounded-2xl bg-white border border-gray-200 rounded-bl-md shadow-md">
+                  <div className="flex items-center space-x-1">
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full animate-typing"></span>
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full animate-typing" style={{animationDelay: '-0.32s'}}></span>
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full animate-typing" style={{animationDelay: '-0.16s'}}></span>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            <div ref={messagesEndRef} />
+          </div>
+          
+          {/* Input */}
+          <div className="p-6 bg-white border-t border-gray-200">
+            {/* Main chat input */}
+            <ChatInput
+              inputMessage={inputMessage}
+              setInputMessage={setInputMessage}
+              sendMessage={sendMessage}
+              isLoading={isLoading}
+              handleKeyPress={handleKeyPress}
+            />
+            
+            {/* User answer input - show when there are hints */}
+            {showAnswerInput && (
+              <UserAnswerInput
+                userAnswer={userAnswer}
+                setUserAnswer={setUserAnswer}
+                checkUserAnswer={checkUserAnswer}
+                isLoading={isLoading}
+                handleAnswerKeyPress={handleAnswerKeyPress}
+              />
+            )}
+            
+            {/* Chat actions */}
+            <ChatActions
+              messages={messages}
+              hintCount={hintCount}
+              continueChat={continueChat}
+              getFullAnswer={getFullAnswer}
+              isLoading={isLoading}
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
