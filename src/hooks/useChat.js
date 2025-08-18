@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { isSystemMessage, removeDuplicateMessages } from '../utils/chatUtils';
 import { getLanguage } from '../locales/i18n';
+import { useAuth } from '../context/AuthContext';
 
 export const useChat = () => {
+  const { token } = useAuth();
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [userAnswer, setUserAnswer] = useState('');
@@ -34,10 +36,11 @@ export const useChat = () => {
       setHintCount(0);
       setShowAnswerInput(false);
     } else {
-      // Show answer input when there are messages (even first message)
       setShowAnswerInput(true);
     }
   }, [messages.length]);
+
+  const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
   const createNewChat = () => {
     const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -47,12 +50,14 @@ export const useChat = () => {
     setUserAnswer('');
     setCurrentConversationTitle('New Chat');
     setHintCount(0);
-    setShowAnswerInput(false); // Reset to false for new chat
+    setShowAnswerInput(false);
   };
 
   const loadConversations = async () => {
     try {
-      const response = await fetch('http://localhost:9000/api/chat/conversations');
+      const response = await fetch('http://localhost:9000/api/chat/conversations', {
+        headers: { ...authHeaders },
+      });
       if (response.ok) {
         const data = await response.json();
         setConversations(data.conversations);
@@ -64,15 +69,15 @@ export const useChat = () => {
 
   const loadConversation = async (sessionId) => {
     try {
-      const response = await fetch(`http://localhost:9000/api/chat/conversations/${sessionId}`);
+      const response = await fetch(`http://localhost:9000/api/chat/conversations/${sessionId}`, {
+        headers: { ...authHeaders },
+      });
       if (response.ok) {
         const data = await response.json();
         setSessionId(sessionId);
         
-        // Convert history to messages format and filter out internal prompts and duplicates
         const conversationMessages = data.history
           .filter(msg => {
-            // Filter out internal prompts that were incorrectly saved as user messages
             if (msg.role === 'user') {
               const text = msg.parts[0].text;
               const isInternalPrompt = 
@@ -88,7 +93,6 @@ export const useChat = () => {
               }
             }
             
-            // Filter out system messages
             return !isSystemMessage(msg.parts[0].text);
           })
           .map(msg => ({
@@ -98,12 +102,10 @@ export const useChat = () => {
             timestamp: new Date().toLocaleTimeString()
           }));
         
-        // Remove any duplicate messages before setting state
         const cleanMessages = removeDuplicateMessages(conversationMessages);
         console.log('Loaded conversation with', cleanMessages.length, 'clean messages');
         setMessages(cleanMessages);
         
-        // Calculate hint count from conversation history (only actual hint requests)
         const hintMessages = data.history.filter(msg => 
           msg.role === 'user' && (
             msg.parts[0].text.includes("Tôi cần thêm gợi ý") ||
@@ -112,10 +114,8 @@ export const useChat = () => {
         );
         setHintCount(hintMessages.length);
         
-        // Show answer input if there are messages (not just hints)
         setShowAnswerInput(data.history.length > 0);
         
-        // Set conversation title based on first user message
         const firstUserMessage = data.history.find(msg => 
           msg.role === 'user' && !isSystemMessage(msg.parts[0].text)
         );
@@ -136,7 +136,8 @@ export const useChat = () => {
   const deleteConversation = async (sessionIdToDelete) => {
     try {
       const response = await fetch(`http://localhost:9000/api/chat/conversations/${sessionIdToDelete}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: { ...authHeaders },
       });
       if (response.ok) {
         await loadConversations();
@@ -171,7 +172,7 @@ export const useChat = () => {
     try {
       const response = await fetch('http://localhost:9000/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
           message: userMessage,
           sessionId,
@@ -182,7 +183,6 @@ export const useChat = () => {
       console.log('Chat API response status:', response.status);
       
       if (response.status === 429) {
-        // Quota exceeded
         const errorData = await response.json();
         console.log('Quota exceeded error:', errorData);
         
@@ -201,7 +201,6 @@ export const useChat = () => {
         console.log('data.message value:', data.message);
         
         if (data.message && typeof data.message === 'string') {
-          // Check if this message is already the last message to avoid duplicates
           const lastMessage = messages[messages.length - 1];
           const isDuplicate = lastMessage && 
             lastMessage.sender === 'bot' && 
@@ -256,7 +255,7 @@ export const useChat = () => {
     try {
       const response = await fetch('http://localhost:9000/api/chat/continue', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
           sessionId,
           language: getLanguage()
@@ -264,7 +263,6 @@ export const useChat = () => {
       });
       
       if (response.status === 429) {
-        // Quota exceeded
         const errorData = await response.json();
         const quotaMessage = {
           id: Date.now() + Math.random(),
@@ -283,7 +281,6 @@ export const useChat = () => {
           timestamp: new Date().toLocaleTimeString()
         };
         
-        // Check if this message is already the last message to avoid duplicates
         const lastMessage = messages[messages.length - 1];
         const isDuplicate = lastMessage && 
           lastMessage.sender === 'bot' && 
@@ -321,7 +318,7 @@ export const useChat = () => {
     try {
       const response = await fetch('http://localhost:9000/api/chat/full-answer', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
           sessionId,
           language: getLanguage()
@@ -329,7 +326,6 @@ export const useChat = () => {
       });
       
       if (response.status === 429) {
-        // Quota exceeded
         const errorData = await response.json();
         const quotaMessage = {
           id: Date.now() + Math.random(),
@@ -348,7 +344,6 @@ export const useChat = () => {
           timestamp: new Date().toLocaleTimeString()
         };
         
-        // Check if this message is already the last message to avoid duplicates
         const lastMessage = messages[messages.length - 1];
         const isDuplicate = lastMessage && 
           lastMessage.sender === 'bot' && 
@@ -382,10 +377,9 @@ export const useChat = () => {
     
     setIsLoading(true);
     const userSubmittedAnswer = userAnswer.trim();
-    setUserAnswer(''); // Clear the input field
+    setUserAnswer('');
 
     try {
-      // Add user's submitted answer to chat history as a user message
       const userAnswerMessage = {
         id: Date.now() + Math.random(),
         text: userSubmittedAnswer,
@@ -396,7 +390,7 @@ export const useChat = () => {
 
       const response = await fetch('http://localhost:9000/api/chat/check-answer', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
           sessionId,
           userAnswer: userSubmittedAnswer,
@@ -405,7 +399,6 @@ export const useChat = () => {
       });
 
       if (response.status === 429) {
-        // Quota exceeded
         const errorData = await response.json();
         const quotaMessage = {
           id: Date.now() + Math.random(),
@@ -424,7 +417,6 @@ export const useChat = () => {
           timestamp: new Date().toLocaleTimeString()
         };
         
-        // Check if this message is already the last message to avoid duplicates
         const lastMessage = messages[messages.length - 1];
         const isDuplicate = lastMessage && 
           lastMessage.sender === 'bot' && 

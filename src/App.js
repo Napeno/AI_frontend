@@ -1,161 +1,49 @@
-import React, { useState, useEffect } from 'react';
-import t, { getLanguage } from './locales/i18n';
-import { useChat } from './hooks/useChat';
-import { formatAIMessage } from './utils/chatUtils';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 
-// Components
-import Sidebar from './components/sidebar/Sidebar';
-import ChatHeader from './components/chat/ChatHeader';
-import ChatWelcome from './components/chat/ChatWelcome';
-import ChatMessage from './components/chat/ChatMessage';
-import ChatInput from './components/chat/ChatInput';
-import UserAnswerInput from './components/chat/UserAnswerInput';
-import ChatActions from './components/chat/ChatActions';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import ChatPage from './pages/ChatPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
-function App() {
-  const {
-    messages,
-    setMessages,
-    inputMessage,
-    setInputMessage,
-    userAnswer,
-    setUserAnswer,
-    sessionId,
-    isLoading,
-    setIsLoading,
-    conversations,
-    currentConversationTitle,
-    hintCount,
-    showAnswerInput,
-    setShowAnswerInput,
-    messagesEndRef,
-    createNewChat,
-    loadConversations,
-    loadConversation,
-    deleteConversation,
-    sendMessage,
-    continueChat,
-    getFullAnswer,
-    checkUserAnswer
-  } = useChat();
-
-  const [showSidebar, setShowSidebar] = useState(true);
-  const [currentLanguage, setCurrentLanguage] = useState(getLanguage());
-
-  // Load conversations on mount (only once)
-  useEffect(() => {
-    loadConversations();
-  }, []);
-
-  // Update current language when it changes
-  useEffect(() => {
-    setCurrentLanguage(getLanguage());
-  }, []);
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  };
-
-  const handleAnswerKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      checkUserAnswer();
-    }
-  };
-
-  const handleLanguageChange = (newLanguage) => {
-    setCurrentLanguage(newLanguage);
-  };
+const App = () => {
+  const { token, user, logout } = useAuth();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex">
-      {/* Sidebar */}
-      <Sidebar
-        showSidebar={showSidebar}
-        conversations={conversations}
-        sessionId={sessionId}
-        createNewChat={createNewChat}
-        loadConversation={loadConversation}
-        deleteConversation={deleteConversation}
-      />
-
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <ChatHeader
-          showSidebar={showSidebar}
-          setShowSidebar={setShowSidebar}
-          currentConversationTitle={currentConversationTitle}
-          onLanguageChange={handleLanguageChange}
-        />
-
-        {/* Chat Container */}
-        <div className="flex-1 bg-gray-50 flex flex-col">
-          {/* Messages */}
-          <div className="flex-1 p-6 overflow-y-auto">
-            {messages.length === 0 && <ChatWelcome />}
-            
-            {messages.map((message) => (
-              <ChatMessage
-                key={message.id}
-                message={message}
-                formatAIMessage={formatAIMessage}
-              />
-            ))}
-            
-            {isLoading && (
-              <div className="flex justify-start mb-5">
-                <div className="max-w-[70%] px-4 py-3 rounded-2xl bg-white border border-gray-200 rounded-bl-md shadow-md">
-                  <div className="flex items-center space-x-1">
-                    <span className="w-2 h-2 bg-indigo-500 rounded-full animate-typing"></span>
-                    <span className="w-2 h-2 bg-indigo-500 rounded-full animate-typing" style={{animationDelay: '-0.32s'}}></span>
-                    <span className="w-2 h-2 bg-indigo-500 rounded-full animate-typing" style={{animationDelay: '-0.16s'}}></span>
-                  </div>
-                </div>
-              </div>
+    <BrowserRouter>
+      <div className="w-full">
+        <div className="w-full p-3 bg-white border-b border-gray-200 flex items-center justify-between">
+          <Link to="/" className="text-sm font-semibold text-indigo-600">AI Chatbot</Link>
+          <div className="text-sm">
+            {token ? (
+              <>
+                <span className="mr-2 text-gray-700">{user?.email}</span>
+                <button onClick={logout} className="text-indigo-600">Logout</button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="text-indigo-600 mr-3">Login</Link>
+                <Link to="/register" className="text-indigo-600">Register</Link>
+              </>
             )}
-            
-            <div ref={messagesEndRef} />
-          </div>
-          
-          {/* Input */}
-          <div className="p-6 bg-white border-t border-gray-200">
-            {/* Main chat input */}
-            <ChatInput
-              inputMessage={inputMessage}
-              setInputMessage={setInputMessage}
-              sendMessage={sendMessage}
-              isLoading={isLoading}
-              handleKeyPress={handleKeyPress}
-            />
-            
-            {/* User answer input - show when there are hints */}
-            {showAnswerInput && (
-              <UserAnswerInput
-                userAnswer={userAnswer}
-                setUserAnswer={setUserAnswer}
-                checkUserAnswer={checkUserAnswer}
-                isLoading={isLoading}
-                handleAnswerKeyPress={handleAnswerKeyPress}
-              />
-            )}
-            
-            {/* Chat actions */}
-            <ChatActions
-              messages={messages}
-              hintCount={hintCount}
-              continueChat={continueChat}
-              getFullAnswer={getFullAnswer}
-              isLoading={isLoading}
-            />
           </div>
         </div>
+
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={token ? <Navigate to="/chat" replace /> : <LoginPage />} />
+          <Route path="/register" element={token ? <Navigate to="/chat" replace /> : <RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/chat" element={token ? <ChatPage /> : <Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </div>
-    </div>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
