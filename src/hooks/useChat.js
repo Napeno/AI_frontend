@@ -109,6 +109,8 @@ export const useChat = () => {
               sender = 'continue';
             } else if (msg.role === 'full-answer') {
               sender = 'full-answer';
+            } else if (msg.role === 'check-answer') {
+              sender = 'check-answer';
             }
             
             return {
@@ -116,7 +118,8 @@ export const useChat = () => {
               text: msg.parts[0].text,
               sender: sender,
               timestamp: msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : new Date().toLocaleTimeString(),
-              type: msg.role === 'continue' ? 'continue' : msg.role === 'full-answer' ? 'full-answer' : undefined
+              type: msg.role === 'continue' ? 'continue' : msg.role === 'full-answer' ? 'full-answer' : msg.role === 'check-answer' ? 'check-answer' : undefined,
+              userAnswer: msg.userAnswer || undefined  // Include user answer if it exists
             };
           });
         
@@ -422,6 +425,7 @@ export const useChat = () => {
     setUserAnswer('');
 
     try {
+      // First add the user's answer as a regular user message
       const userAnswerMessage = {
         id: Date.now() + Math.random(),
         text: userSubmittedAnswer,
@@ -429,6 +433,17 @@ export const useChat = () => {
         timestamp: new Date().toLocaleTimeString()
       };
       setMessages(prev => [...prev, userAnswerMessage]);
+
+      // Then add visual feedback for check action
+      const checkMessage = {
+        id: Date.now() + Math.random() + 1,
+        text: `Đang kiểm tra câu trả lời: "${userSubmittedAnswer}"`,
+        sender: 'check-answer',
+        timestamp: new Date().toLocaleTimeString(),
+        type: 'check-answer',
+        userAnswer: userSubmittedAnswer
+      };
+      setMessages(prev => [...prev, checkMessage]);
 
       const response = await fetch('http://localhost:9000/api/chat/check-answer', {
         method: 'POST',
