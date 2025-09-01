@@ -60,10 +60,15 @@ export const useChat = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        setConversations(data.conversations);
+        // Backend returns array directly, not wrapped in conversations property
+        setConversations(Array.isArray(data) ? data : []);
+      } else {
+        console.error('Failed to load conversations:', response.status);
+        setConversations([]);
       }
     } catch (error) {
       console.error('Error loading conversations:', error);
+      setConversations([]);
     }
   };
 
@@ -95,12 +100,25 @@ export const useChat = () => {
             
             return !isSystemMessage(msg.parts[0].text);
           })
-          .map(msg => ({
-            id: Date.now() + Math.random(),
-            text: msg.parts[0].text,
-            sender: msg.role === 'user' ? 'user' : 'bot',
-            timestamp: new Date().toLocaleTimeString()
-          }));
+          .map(msg => {
+            // Handle different message types
+            let sender = 'bot';
+            if (msg.role === 'user') {
+              sender = 'user';
+            } else if (msg.role === 'continue') {
+              sender = 'continue';
+            } else if (msg.role === 'full-answer') {
+              sender = 'full-answer';
+            }
+            
+            return {
+              id: Date.now() + Math.random(),
+              text: msg.parts[0].text,
+              sender: sender,
+              timestamp: msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : new Date().toLocaleTimeString(),
+              type: msg.role === 'continue' ? 'continue' : msg.role === 'full-answer' ? 'full-answer' : undefined
+            };
+          });
         
         const cleanMessages = removeDuplicateMessages(conversationMessages);
         console.log('Loaded conversation with', cleanMessages.length, 'clean messages');
@@ -201,23 +219,27 @@ export const useChat = () => {
         console.log('data.message value:', data.message);
         
         if (data.message && typeof data.message === 'string') {
-          const lastMessage = messages[messages.length - 1];
-          const isDuplicate = lastMessage && 
-            lastMessage.sender === 'bot' && 
-            lastMessage.text === data.message;
+          const botMessage = {
+            id: Date.now() + Math.random(),
+            text: data.message,
+            sender: 'bot',
+            timestamp: new Date().toLocaleTimeString()
+          };
+          console.log('Created bot message:', botMessage);
           
-          if (!isDuplicate) {
-            const botMessage = {
-              id: Date.now() + Math.random(),
-              text: data.message,
-              sender: 'bot',
-              timestamp: new Date().toLocaleTimeString()
-            };
-            console.log('Created bot message:', botMessage);
-            setMessages(prev => [...prev, botMessage]);
-          } else {
-            console.log('Duplicate message detected, not adding to state');
-          }
+          // Use functional update to check for duplicates with current state
+          setMessages(prev => {
+            const lastMessage = prev[prev.length - 1];
+            const isDuplicate = lastMessage && 
+              lastMessage.sender === 'bot' && 
+              lastMessage.text === data.message;
+            
+            if (isDuplicate) {
+              console.log('Duplicate message detected, not adding to state');
+              return prev;
+            }
+            return [...prev, botMessage];
+          });
         } else {
           console.error('Invalid message format:', data);
           const errorMessage = {
@@ -250,6 +272,16 @@ export const useChat = () => {
   const continueChat = async () => {
     if (isLoading) return;
     
+    // First, add a visual "continue" message on the user side
+    const continueMessage = {
+      id: Date.now() + Math.random(),
+      text: 'Đang yêu cầu thêm gợi ý...',
+      sender: 'continue',
+      timestamp: new Date().toLocaleTimeString(),
+      type: 'continue'
+    };
+    
+    setMessages(prev => [...prev, continueMessage]);
     setIsLoading(true);
     
     try {
@@ -313,6 +345,16 @@ export const useChat = () => {
   const getFullAnswer = async () => {
     if (isLoading) return;
     
+    // First, add a visual "full answer" message on the user side
+    const fullAnswerMessage = {
+      id: Date.now() + Math.random(),
+      text: '📖 Đang yêu cầu đáp án đầy đủ...',
+      sender: 'full-answer',
+      timestamp: new Date().toLocaleTimeString(),
+      type: 'full-answer'
+    };
+    
+    setMessages(prev => [...prev, fullAnswerMessage]);
     setIsLoading(true);
     
     try {
