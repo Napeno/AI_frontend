@@ -4,12 +4,15 @@ import ConversationItem from './ConversationItem';
 
 const Sidebar = ({ 
   showSidebar, 
-  conversations, 
+  conversations = [], // Add default value
   sessionId, 
   createNewChat, 
   loadConversation, 
   deleteConversation 
 }) => {
+  // Ensure conversations is always an array
+  const safeConversations = Array.isArray(conversations) ? conversations : [];
+  
   return (
     <div className={`bg-white shadow-xl transition-all duration-300 ${showSidebar ? 'w-80' : 'w-0'} overflow-hidden`}>
       <div className="p-4 border-b border-gray-200">
@@ -25,14 +28,14 @@ const Sidebar = ({
       </div>
       
       <div className="flex-1 overflow-y-auto p-2">
-        {conversations.length === 0 && (
+        {safeConversations.length === 0 && (
           <div className="text-center text-gray-500 py-8">
             <p className="text-sm">{t('sidebar.empty.title')}</p>
             <p className="text-xs mt-1">{t('sidebar.empty.subtitle')}</p>
           </div>
         )}
         
-        {conversations.map((conv) => (
+        {safeConversations.map((conv) => (
           <ConversationItem
             key={conv.sessionId}
             conversation={conv}
