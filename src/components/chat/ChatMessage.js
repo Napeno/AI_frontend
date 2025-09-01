@@ -2,7 +2,6 @@ import React from 'react';
 import { formatAIMessage } from '../../utils/chatUtils';
 
 function ChatMessage({ message, formatAIMessage }) {
-  console.log('Message received by ChatMessage:', message);
 
   const isUser = message.sender === 'user';
   const isError = message.isError;
@@ -13,13 +12,11 @@ function ChatMessage({ message, formatAIMessage }) {
 
   const messageContent = message.text || '';
 
-  console.log('messageContent in ChatMessage:', messageContent, typeof messageContent);
 
   const formattedContent = isUser || isError || isSystemAction
     ? messageContent
     : formatAIMessage(messageContent);
 
-  console.log('formattedContent in ChatMessage:', formattedContent, typeof formattedContent);
 
   // Different styling for system actions (continue, full-answer, check-answer)
   if (isSystemAction) {

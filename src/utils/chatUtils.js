@@ -43,7 +43,6 @@ export const isSystemMessage = (text) => {
 
 // Helper function to format AI messages with proper formatting
 export const formatAIMessage = (text) => {
-    console.log('formatAIMessage input:', text, typeof text);
     if (typeof text !== 'string') {
         console.error('formatAIMessage received non-string input:', text);
         return String(text);
@@ -77,7 +76,6 @@ export const formatAIMessage = (text) => {
     formatted = formatted.replace(/\(/g, '<span class="math-paren">(</span>');
     formatted = formatted.replace(/\)/g, '<span class="math-paren">)</span>');
     
-    console.log('formatAIMessage output:', formatted, typeof formatted);
     return formatted;
 };
 
@@ -98,10 +96,8 @@ export const removeDuplicateMessages = (messages) => {
       seen.add(key);
       uniqueMessages.push(message);
     } else {
-      console.log('Duplicate message removed:', message.text.substring(0, 50));
     }
   }
 
-  console.log(`Removed ${messages.length - uniqueMessages.length} duplicate messages`);
   return uniqueMessages;
 }; 

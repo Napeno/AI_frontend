@@ -14,8 +14,8 @@ const Sidebar = ({
   const safeConversations = Array.isArray(conversations) ? conversations : [];
   
   return (
-    <div className={`bg-white shadow-xl transition-all duration-300 ${showSidebar ? 'w-80' : 'w-0'} overflow-hidden`}>
-      <div className="p-4 border-b border-gray-200">
+    <div className={`bg-white shadow-xl transition-all duration-300 ${showSidebar ? 'w-80' : 'w-0'} overflow-hidden flex flex-col h-full`}>
+      <div className="flex-shrink-0 p-4 border-b border-gray-200">
         <button
           onClick={createNewChat}
           className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold py-3 px-4 rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2"
@@ -27,7 +27,7 @@ const Sidebar = ({
         </button>
       </div>
       
-      <div className="flex-1 overflow-y-auto p-2">
+      <div className="flex-1 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         {safeConversations.length === 0 && (
           <div className="text-center text-gray-500 py-8">
             <p className="text-sm">{t('sidebar.empty.title')}</p>

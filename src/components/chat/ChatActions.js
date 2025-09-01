@@ -2,13 +2,14 @@ import React from 'react';
 import t from '../../locales/i18n';
 
 const ChatActions = ({ 
-  messages, 
   hintCount, 
   continueChat, 
   getFullAnswer, 
-  isLoading 
+  isLoading,
+  showActions = true  // New prop to control visibility
 }) => {
-  if (messages.length === 0) return null;
+  // Don't show actions if explicitly disabled
+  if (!showActions) return null;
 
   return (
     <div className="space-y-3">

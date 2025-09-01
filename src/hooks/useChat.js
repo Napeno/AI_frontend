@@ -93,7 +93,6 @@ export const useChat = () => {
                 text.includes('Student is having difficulty');
               
               if (isInternalPrompt) {
-                console.log('Filtering out internal prompt:', text.substring(0, 100));
                 return false;
               }
             }
@@ -124,7 +123,6 @@ export const useChat = () => {
           });
         
         const cleanMessages = removeDuplicateMessages(conversationMessages);
-        console.log('Loaded conversation with', cleanMessages.length, 'clean messages');
         setMessages(cleanMessages);
         
         const hintMessages = data.history.filter(msg => 
@@ -201,11 +199,9 @@ export const useChat = () => {
         })
       });
       
-      console.log('Chat API response status:', response.status);
       
       if (response.status === 429) {
         const errorData = await response.json();
-        console.log('Quota exceeded error:', errorData);
         
         const quotaMessage = {
           id: Date.now() + Math.random(),
@@ -217,9 +213,6 @@ export const useChat = () => {
         setMessages(prev => [...prev, quotaMessage]);
       } else if (response.ok) {
         const data = await response.json();
-        console.log('Chat API response data:', data);
-        console.log('data.message type:', typeof data.message);
-        console.log('data.message value:', data.message);
         
         if (data.message && typeof data.message === 'string') {
           const botMessage = {
@@ -228,7 +221,6 @@ export const useChat = () => {
             sender: 'bot',
             timestamp: new Date().toLocaleTimeString()
           };
-          console.log('Created bot message:', botMessage);
           
           // Use functional update to check for duplicates with current state
           setMessages(prev => {
@@ -238,7 +230,6 @@ export const useChat = () => {
               lastMessage.text === data.message;
             
             if (isDuplicate) {
-              console.log('Duplicate message detected, not adding to state');
               return prev;
             }
             return [...prev, botMessage];
@@ -325,7 +316,6 @@ export const useChat = () => {
           setMessages(prev => [...prev, botMessage]);
           setHintCount(prev => prev + 1);
         } else {
-          console.log('Duplicate continuation message detected, not adding to state');
         }
       } else {
         throw new Error('Failed to get continuation');
@@ -397,7 +387,6 @@ export const useChat = () => {
         if (!isDuplicate) {
           setMessages(prev => [...prev, botMessage]);
         } else {
-          console.log('Duplicate full answer message detected, not adding to state');
         }
       } else {
         throw new Error('Failed to get full answer');
@@ -482,7 +471,6 @@ export const useChat = () => {
         if (!isDuplicate) {
           setMessages(prev => [...prev, botMessage]);
         } else {
-          console.log('Duplicate check answer message detected, not adding to state');
         }
       } else {
         throw new Error('Failed to check answer');

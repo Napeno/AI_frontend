@@ -62,7 +62,7 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex">
+    <div className="h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex overflow-hidden">
       {/* Sidebar */}
       <Sidebar
         showSidebar={showSidebar}
@@ -74,7 +74,7 @@ const ChatPage = () => {
       />
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
         <ChatHeader
           showSidebar={showSidebar}
@@ -83,10 +83,10 @@ const ChatPage = () => {
           onLanguageChange={handleLanguageChange}
         />
 
-        {/* Chat Container */}
-        <div className="flex-1 bg-gray-50 flex flex-col">
-          {/* Messages */}
-          <div className="flex-1 p-6 overflow-y-auto">
+        {/* Chat Container - Fixed height with internal scroll */}
+        <div className="flex-1 bg-gray-50 flex flex-col min-h-0">
+          {/* Messages - Scrollable area */}
+          <div className="flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             {messages.length === 0 && <ChatWelcome />}
             
             {messages.map((message) => (
@@ -112,35 +112,34 @@ const ChatPage = () => {
             <div ref={messagesEndRef} />
           </div>
           
-          {/* Input */}
-          <div className="p-6 bg-white border-t border-gray-200">
+          {/* Input - Fixed at bottom */}
+          <div className="flex-shrink-0 p-6 bg-white border-t border-gray-200">
             {/* Main chat input */}
             <ChatInput
               inputMessage={inputMessage}
               setInputMessage={setInputMessage}
               sendMessage={sendMessage}
-              isLoading={isLoading}
               handleKeyPress={handleKeyPress}
+              isLoading={isLoading}
             />
             
-            {/* User answer input - show when there are hints */}
+            {/* User answer input when enabled */}
             {showAnswerInput && (
               <UserAnswerInput
                 userAnswer={userAnswer}
                 setUserAnswer={setUserAnswer}
                 checkUserAnswer={checkUserAnswer}
                 isLoading={isLoading}
-                handleAnswerKeyPress={handleAnswerKeyPress}
               />
             )}
             
-            {/* Chat actions */}
+            {/* Action buttons */}
             <ChatActions
-              messages={messages}
               hintCount={hintCount}
               continueChat={continueChat}
               getFullAnswer={getFullAnswer}
               isLoading={isLoading}
+              showActions={messages.length > 0}
             />
           </div>
         </div>
