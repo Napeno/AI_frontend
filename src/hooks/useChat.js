@@ -15,6 +15,7 @@ export const useChat = () => {
   const [hintCount, setHintCount] = useState(0);
   const [showAnswerInput, setShowAnswerInput] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [selectedImages, setSelectedImages] = useState([]);
   const messagesEndRef = useRef(null);
 
   // Generate a unique session ID when component mounts
@@ -48,6 +49,7 @@ export const useChat = () => {
     setMessages([]);
     setInputMessage('');
     setUserAnswer('');
+    setSelectedImages([]);
     setCurrentConversationTitle('New Chat');
     setHintCount(0);
     setShowAnswerInput(false);
@@ -83,21 +85,22 @@ export const useChat = () => {
         
         const conversationMessages = data.history
           .filter(msg => {
+            const firstPart = Array.isArray(msg.parts) && msg.parts.length > 0 ? msg.parts[0] : {};
+            const text = typeof firstPart.text === 'string' ? firstPart.text : '';
             if (msg.role === 'user') {
-              const text = msg.parts[0].text;
-              const isInternalPrompt = 
+              const isInternalPrompt = text && (
                 text.includes('Bạn là một người thầy thân thiện') ||
                 text.includes('Học sinh đang gặp khó khăn') ||
                 text.includes('QUAN TRỌNG: Bạn KHÔNG BAO GIỜ') ||
                 text.includes('QUY TẮC: Chỉ gợi ý') ||
-                text.includes('Student is having difficulty');
-              
+                text.includes('Student is having difficulty')
+              );
               if (isInternalPrompt) {
                 return false;
               }
             }
-            
-            return !isSystemMessage(msg.parts[0].text);
+            // Treat messages without text (image-only) as non-system
+            return text ? !isSystemMessage(text) : true;
           })
           .map(msg => {
             // Handle different message types
@@ -111,14 +114,18 @@ export const useChat = () => {
             } else if (msg.role === 'check-answer') {
               sender = 'check-answer';
             }
-            
+            const firstPart = Array.isArray(msg.parts) && msg.parts.length > 0 ? msg.parts[0] : {};
+            const text = typeof firstPart.text === 'string' ? firstPart.text : '';
+            const images = Array.isArray(msg.attachments) ? msg.attachments.map(a => a.url).filter(Boolean) : [];
             return {
               id: Date.now() + Math.random(),
-              text: msg.parts[0].text,
+              text: text || (images.length > 0 ? 'Uploaded images' : ''),
               sender: sender,
               timestamp: msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : new Date().toLocaleTimeString(),
               type: msg.role === 'continue' ? 'continue' : msg.role === 'full-answer' ? 'full-answer' : msg.role === 'check-answer' ? 'check-answer' : undefined,
-              userAnswer: msg.userAnswer || undefined  // Include user answer if it exists
+              userAnswer: msg.userAnswer || undefined,
+              images: images,
+              hasImages: images.length > 0
             };
           });
         
@@ -170,20 +177,41 @@ export const useChat = () => {
   };
 
   const sendMessage = async () => {
-    if (!inputMessage.trim() || isLoading) return;
+    if ((!inputMessage.trim() && selectedImages.length === 0) || isLoading) return;
     
     const userMessage = inputMessage.trim();
     setInputMessage('');
     setIsLoading(true);
     
+    // Create FormData for multipart/form-data request
+    const formData = new FormData();
+    
+    // Add text message if exists
+    if (userMessage) {
+      formData.append('message', userMessage);
+    }
+    
+    // Add session info
+    formData.append('sessionId', sessionId);
+    formData.append('language', getLanguage());
+    
+    // Add selected images
+    selectedImages.forEach((image, index) => {
+      formData.append('images', image);
+    });
+    
     const newUserMessage = {
       id: Date.now() + Math.random(),
-      text: userMessage,
+      text: userMessage || 'Uploaded images',
       sender: 'user',
-      timestamp: new Date().toLocaleTimeString()
+      timestamp: new Date().toLocaleTimeString(),
+      images: selectedImages.map(img => URL.createObjectURL(img)), // For display
+      hasImages: selectedImages.length > 0
     };
     
     setMessages(prev => [...prev, newUserMessage]);
+    setSelectedImages([]); // Clear selected images after sending
+    
     if (messages.length === 0) {
       setShowAnswerInput(true);
     }
@@ -191,12 +219,8 @@ export const useChat = () => {
     try {
       const response = await fetch('http://localhost:9000/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...authHeaders },
-        body: JSON.stringify({
-          message: userMessage,
-          sessionId,
-          language: getLanguage()
-        })
+        headers: { ...authHeaders }, // Remove Content-Type for FormData
+        body: formData
       });
       
       
@@ -214,10 +238,13 @@ export const useChat = () => {
       } else if (response.ok) {
         const data = await response.json();
         
-        if (data.message && typeof data.message === 'string') {
+        // Handle both old 'message' and new 'response' format
+        const responseText = data.response || data.message;
+        
+        if (responseText && typeof responseText === 'string') {
           const botMessage = {
             id: Date.now() + Math.random(),
-            text: data.message,
+            text: responseText,
             sender: 'bot',
             timestamp: new Date().toLocaleTimeString()
           };
@@ -227,7 +254,7 @@ export const useChat = () => {
             const lastMessage = prev[prev.length - 1];
             const isDuplicate = lastMessage && 
               lastMessage.sender === 'bot' && 
-              lastMessage.text === data.message;
+              lastMessage.text === responseText;
             
             if (isDuplicate) {
               return prev;
@@ -510,6 +537,8 @@ export const useChat = () => {
     showAnswerInput,
     setShowAnswerInput,
     isInitialized,
+    selectedImages,
+    setSelectedImages,
     messagesEndRef,
     createNewChat,
     loadConversations,

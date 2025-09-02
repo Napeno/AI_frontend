@@ -12,11 +12,9 @@ function ChatMessage({ message, formatAIMessage }) {
 
   const messageContent = message.text || '';
 
-
   const formattedContent = isUser || isError || isSystemAction
     ? messageContent
     : formatAIMessage(messageContent);
-
 
   // Different styling for system actions (continue, full-answer, check-answer)
   if (isSystemAction) {
@@ -71,10 +69,39 @@ function ChatMessage({ message, formatAIMessage }) {
             : 'bg-white border border-gray-200 rounded-bl-md'
         }`}
       >
-        <div 
-          className={`${!isUser && !isError ? 'chat-message' : ''}`}
-          dangerouslySetInnerHTML={{ __html: formattedContent }}
-        ></div>
+        {/* Display images if message has them */}
+        {message.images && message.images.length > 0 && (
+          <div className="mb-3">
+            <div className="grid grid-cols-2 gap-2">
+              {message.images.map((imageUrl, index) => (
+                <img
+                  key={index}
+                  src={imageUrl}
+                  alt={`Uploaded image ${index + 1}`}
+                  className="w-full h-32 object-cover rounded-lg border border-gray-200"
+                  onError={(e) => {
+                    e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBzdHJva2U9IiM5Q0E0QUYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=';
+                    e.target.alt = 'Image failed to load';
+                  }}
+                />
+              ))}
+            </div>
+            {message.hasImages && message.text === 'Uploaded images' && (
+              <p className={`text-sm mt-2 ${isUser ? 'text-blue-200' : 'text-gray-600'}`}>
+                📷 {message.images.length} image{message.images.length > 1 ? 's' : ''} uploaded
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Display text content if not just an image upload */}
+        {messageContent && messageContent !== 'Uploaded images' && (
+          <div 
+            className={`${!isUser && !isError ? 'chat-message' : ''}`}
+            dangerouslySetInnerHTML={{ __html: formattedContent }}
+          ></div>
+        )}
+
         {message.timestamp && (
           <span className={`block text-xs mt-2 ${isUser ? 'text-blue-200' : 'text-gray-500'}`}>
             {message.timestamp}

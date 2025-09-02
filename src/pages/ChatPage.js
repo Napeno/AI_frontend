@@ -33,7 +33,9 @@ const ChatPage = () => {
     sendMessage,
     continueChat,
     getFullAnswer,
-    checkUserAnswer
+    checkUserAnswer,
+    selectedImages,
+    setSelectedImages
   } = useChat();
 
   const [showSidebar, setShowSidebar] = useState(true);
@@ -121,6 +123,8 @@ const ChatPage = () => {
               sendMessage={sendMessage}
               handleKeyPress={handleKeyPress}
               isLoading={isLoading}
+              selectedImages={selectedImages}
+              setSelectedImages={setSelectedImages}
             />
             
             {/* User answer input when enabled */}

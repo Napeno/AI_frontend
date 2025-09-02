@@ -19,10 +19,13 @@
     },
     "input": {
       "placeholder": "Type your question here...",
+      "placeholderWithImage": "Ask something about the images...",
       "continueButton": "💡 I need more hints!",
       "fullAnswerButton": "📖 Teacher will give me the full answer!",
       "checkAnswerButton": "Check My Answer ✨",
-      "answerPlaceholder": "Type your answer here..."
+      "answerPlaceholder": "Type your answer here...",
+      "uploadImages": "Upload Images",
+      "imageUploaded": "images uploaded"
     },
     "messages": {
       "error": "Oops! Something went wrong. Please try again! 😊",
@@ -85,6 +88,8 @@
     "conversationNotFoundGeneral": "Conversation not found",
     "somethingWentWrong": "Something went wrong",
     "failedToSend": "Failed to send message",
-    "failedToContinue": "Failed to get continuation"
+    "failedToContinue": "Failed to get continuation",
+    "invalidFileType": "Only image files are allowed (JPEG, PNG, GIF, WebP)",
+    "fileTooLarge": "File size must be under 5MB"
   }
 } 
