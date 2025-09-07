@@ -15,8 +15,8 @@ const Sidebar = ({
   const safeConversations = Array.isArray(conversations) ? conversations : [];
   
   return (
-    <div className={`bg-white shadow-xl transition-all duration-300 ${showSidebar ? 'w-80' : 'w-0'} overflow-hidden flex flex-col h-full`}>
-      <div className="flex-shrink-0 p-4 border-b border-gray-200">
+    <div className={`bg-white dark:bg-gray-800 shadow-xl transition-all duration-300 ${showSidebar ? 'w-80' : 'w-0'} overflow-hidden flex flex-col h-full`}>
+      <div className="flex-shrink-0 p-4 border-b border-gray-200 dark:border-gray-700">
         <button
           onClick={createNewChat}
           className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold py-3 px-4 rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2"
@@ -28,9 +28,9 @@ const Sidebar = ({
         </button>
       </div>
       
-      <div className="flex-1 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+      <div className="flex-1 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-700">
         {safeConversations.length === 0 && (
-          <div className="text-center text-gray-500 py-8">
+          <div className="text-center text-gray-500 dark:text-gray-400 py-8">
             <p className="text-sm">{t('sidebar.empty.title')}</p>
             <p className="text-xs mt-1">{t('sidebar.empty.subtitle')}</p>
           </div>
@@ -47,7 +47,7 @@ const Sidebar = ({
         ))}
       </div>
       
-      <div className="p-2 border-t border-gray-200">
+      <div className="p-2 border-t border-gray-200 dark:border-gray-700">
         <UserProfile />
       </div>
     </div>

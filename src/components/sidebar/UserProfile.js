@@ -34,16 +34,16 @@ const UserProfile = () => {
     <>
       <div className="relative" ref={profileRef}>
         {isMenuOpen && (
-          <div className="absolute bottom-full left-0 w-full mb-2 bg-gray-800 text-white rounded-lg shadow-lg">
+          <div className="absolute bottom-full left-0 w-full mb-2 bg-gray-800 dark:bg-gray-700 text-white rounded-lg shadow-lg">
             <div className="p-2">
               <button
-                className="w-full text-left px-3 py-2 text-sm hover:bg-gray-700 rounded"
+                className="w-full text-left px-3 py-2 text-sm hover:bg-gray-700 dark:hover:bg-gray-600 rounded"
                 onClick={handleSettingsClick}
               >
                 {t('userProfile.settings')}
               </button>
               <button
-                className="w-full text-left px-3 py-2 text-sm hover:bg-gray-700 rounded"
+                className="w-full text-left px-3 py-2 text-sm hover:bg-gray-700 dark:hover:bg-gray-600 rounded"
                 onClick={logout}
               >
                 {t('userProfile.logout')}
@@ -53,14 +53,14 @@ const UserProfile = () => {
         )}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="w-full flex items-center p-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+          className="w-full flex items-center p-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-colors"
         >
           <div className="w-10 h-10 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-xl">
             {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
           </div>
           <div className="ml-3 text-left">
-            <p className="font-semibold text-gray-800">{user.name || 'User'}</p>
-            <p className="text-xs text-gray-500">{user.email}</p>
+            <p className="font-semibold text-gray-800 dark:text-gray-200">{user.name || 'User'}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
           </div>
         </button>
       </div>
