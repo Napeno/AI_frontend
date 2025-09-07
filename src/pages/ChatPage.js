@@ -79,7 +79,7 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex overflow-hidden">
+    <div className="h-screen bg-gray-100 dark:bg-gray-900 flex overflow-hidden">
       {/* Sidebar */}
       <Sidebar
         showSidebar={showSidebar}
@@ -101,9 +101,9 @@ const ChatPage = () => {
         />
 
         {/* Chat Container - Fixed height with internal scroll */}
-        <div className="flex-1 bg-gray-50 flex flex-col min-h-0">
+        <div className="flex-1 bg-gray-50 dark:bg-gray-800 flex flex-col min-h-0">
           {/* Messages - Scrollable area */}
-          <div className="flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+          <div className="flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-700">
             {!settingsSelected && messages.length === 0 ? (
               <Welcome onStart={handleStartChat} />
             ) : (
@@ -118,7 +118,7 @@ const ChatPage = () => {
             
             {isLoading && (
               <div className="flex justify-start mb-5">
-                <div className="max-w-[70%] px-4 py-3 rounded-2xl bg-white border border-gray-200 rounded-bl-md shadow-md">
+                <div className="max-w-[70%] px-4 py-3 rounded-2xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-bl-md shadow-md">
                   <div className="flex items-center space-x-1">
                     <span className="w-2 h-2 bg-indigo-500 rounded-full animate-typing"></span>
                     <span className="w-2 h-2 bg-indigo-500 rounded-full animate-typing" style={{animationDelay: '-0.32s'}}></span>
@@ -133,7 +133,7 @@ const ChatPage = () => {
           
           {/* Input - Fixed at bottom */}
           {settingsSelected && (
-            <div className="flex-shrink-0 p-6 bg-white border-t border-gray-200">
+            <div className="flex-shrink-0 p-6 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
               {/* Main chat input */}
               <ChatInput
                 inputMessage={inputMessage}

@@ -15,7 +15,7 @@ const ChatActions = ({
     <div className="space-y-3">
       {/* Hint counter display - only show if there are actual hints */}
       {hintCount > 0 && (
-        <div className="text-center text-sm text-gray-600">
+        <div className="text-center text-sm text-gray-600 dark:text-gray-400">
           {hintCount === 1 && t('chat.hintCounter.one')}
           {hintCount === 2 && t('chat.hintCounter.two')}
           {hintCount === 3 && t('chat.hintCounter.three')}

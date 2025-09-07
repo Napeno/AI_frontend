@@ -10,7 +10,7 @@ const Welcome = ({ onStart }) => {
   };
 
   return (
-    <div className="text-center text-gray-600 my-10 flex flex-col items-center justify-center h-full">
+    <div className="text-center text-gray-600 dark:text-gray-400 my-10 flex flex-col items-center justify-center h-full">
       <div className="mb-6">
         <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow">
           <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -18,16 +18,16 @@ const Welcome = ({ onStart }) => {
           </svg>
         </div>
       </div>
-      <p className="text-lg mb-2 font-bold text-gray-900">{t('newChatModal.title')}</p>
-      <p className="text-base mb-4 text-gray-700">{t('newChatModal.description')}</p>
+      <p className="text-lg mb-2 font-bold text-gray-900 dark:text-gray-200">{t('newChatModal.title')}</p>
+      <p className="text-base mb-4 text-gray-700 dark:text-gray-300">{t('newChatModal.description')}</p>
       
       <div className="w-full max-w-md mx-auto space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">{t('sidebar.educationLevel')}</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('sidebar.educationLevel')}</label>
           <select 
             value={educationLevel} 
             onChange={(e) => setEducationLevel(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
           >
             <option value="elementary">{t('levels.elementary')}</option>
             <option value="middle">{t('levels.middle')}</option>
@@ -35,11 +35,11 @@ const Welcome = ({ onStart }) => {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">{t('sidebar.subjectArea')}</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('sidebar.subjectArea')}</label>
           <select 
             value={subjectArea} 
             onChange={(e) => setSubjectArea(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
           >
             <option value="natural_sciences">{t('subjects.naturalSciences')}</option>
             <option value="social_sciences">{t('subjects.socialSciences')}</option>

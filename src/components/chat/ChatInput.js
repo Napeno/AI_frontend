@@ -17,7 +17,7 @@ const ChatInput = ({
         placeholder={t('chat.input.placeholder')}
         disabled={isLoading}
         rows="1"
-        className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-full text-sm resize-none outline-none focus:border-indigo-500 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+        className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-full text-sm resize-none outline-none focus:border-indigo-500 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:border-indigo-500 dark:disabled:bg-gray-700"
       />
       <button 
         onClick={sendMessage} 

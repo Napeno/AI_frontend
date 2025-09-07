@@ -9,11 +9,11 @@ const UserAnswerInput = ({
   handleAnswerKeyPress 
 }) => {
   return (
-    <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-      <p className="text-sm text-blue-800 mb-2 font-medium">
+    <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200 dark:bg-blue-900/50 dark:border-blue-700/60">
+      <p className="text-sm text-blue-800 dark:text-blue-200 mb-2 font-medium">
         {t('userAnswer.title')}
       </p>
-      <p className="text-xs text-blue-600 mb-3">
+      <p className="text-xs text-blue-600 dark:text-blue-300 mb-3">
         {t('userAnswer.description')}
       </p>
       <div className="flex gap-3">
@@ -24,7 +24,7 @@ const UserAnswerInput = ({
           placeholder={t('userAnswer.placeholder')}
           disabled={isLoading}
           rows="2"
-          className="flex-1 px-4 py-3 border-2 border-blue-200 rounded-lg text-sm resize-none outline-none focus:border-blue-500 transition-colors disabled:bg-blue-100 disabled:cursor-not-allowed"
+          className="flex-1 px-4 py-3 border-2 border-blue-200 rounded-lg text-sm resize-none outline-none focus:border-blue-500 transition-colors disabled:bg-blue-100 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-blue-700 dark:text-gray-200 dark:focus:border-blue-500 dark:disabled:bg-gray-700"
         />
         <button 
           onClick={checkUserAnswer} 

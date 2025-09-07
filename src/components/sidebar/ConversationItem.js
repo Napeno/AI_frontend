@@ -34,19 +34,19 @@ const ConversationItem = ({ conversation, isActive, onSelect, onDelete }) => {
 
   return (
     <div
-      className={`p-3 rounded-lg mb-2 cursor-pointer transition-all duration-200 hover:bg-gray-100 border ${
+      className={`p-3 rounded-lg mb-2 cursor-pointer transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 border ${
         isActive 
-          ? 'bg-indigo-50 border-indigo-300 shadow-sm' 
-          : 'border-transparent hover:border-gray-200'
+          ? 'bg-indigo-50 dark:bg-indigo-900/50 border-indigo-300 dark:border-indigo-700 shadow-sm' 
+          : 'border-transparent hover:border-gray-200 dark:hover:border-gray-700'
       }`}
       onClick={onSelect}
     >
       <div className="flex justify-between items-start">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900 truncate mb-1">
+          <p className="text-sm font-medium text-gray-900 dark:text-gray-200 truncate mb-1">
             {getConversationTitle(conversation)}
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
             {formatDate(conversation.updatedAt)}
           </p>
         </div>
@@ -55,7 +55,7 @@ const ConversationItem = ({ conversation, isActive, onSelect, onDelete }) => {
             e.stopPropagation();
             onDelete();
           }}
-          className="text-red-500 hover:text-red-700 text-sm p-1 hover:bg-red-50 rounded transition-colors"
+          className="text-gray-400 hover:text-red-500 text-sm p-1 hover:bg-red-50 dark:hover:bg-gray-600 rounded transition-colors"
           title={t('common.delete')}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
