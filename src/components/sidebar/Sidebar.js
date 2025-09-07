@@ -1,6 +1,7 @@
 import React from 'react';
 import t from '../../locales/i18n';
 import ConversationItem from './ConversationItem';
+import UserProfile from './UserProfile';
 
 const Sidebar = ({ 
   showSidebar, 
@@ -44,6 +45,10 @@ const Sidebar = ({
             onDelete={() => deleteConversation(conv.sessionId)}
           />
         ))}
+      </div>
+      
+      <div className="p-2 border-t border-gray-200">
+        <UserProfile />
       </div>
     </div>
   );
