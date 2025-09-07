@@ -2,7 +2,13 @@
   "common": {
     "newChat": "Tạo chat mới",
     "send": "Gửi",
-    "delete": "Xóa"
+    "delete": "Xóa",
+    "cancel": "Hủy"
+  },
+  "newChatModal": {
+    "title": "Bắt đầu cuộc trò chuyện mới",
+    "description": "Vui lòng chọn cấp học và lĩnh vực khoa học cho cuộc trò chuyện này.",
+    "start": "Bắt đầu"
   },
   "chat": {
     "subtitle": "Học tập thông minh với AI",
@@ -38,6 +44,8 @@
     }
   },
   "sidebar": {
+    "educationLevel": "Cấp học",
+    "subjectArea": "Lĩnh vực",
     "empty": {
       "title": "Chưa có cuộc trò chuyện nào",
       "subtitle": "Hãy bắt đầu cuộc trò chuyện mới!"
@@ -62,5 +70,14 @@
     "placeholder": "Nhập câu trả lời của em ở đây...",
     "checkButton": "Kiểm tra câu trả lời ✨",
     "checking": "Đang kiểm tra..."
+  },
+  "levels": {
+    "elementary": "Cấp 1",
+    "middle": "Cấp 2",
+    "high": "Cấp 3"
+  },
+  "subjects": {
+    "naturalSciences": "Khoa học Tự nhiên",
+    "socialSciences": "Khoa học Xã hội"
   }
 } 

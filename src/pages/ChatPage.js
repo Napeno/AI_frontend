@@ -6,7 +6,7 @@ import { formatAIMessage } from '../utils/chatUtils';
 // Components
 import Sidebar from '../components/sidebar/Sidebar';
 import ChatHeader from '../components/chat/ChatHeader';
-import ChatWelcome from '../components/chat/ChatWelcome';
+import Welcome from '../components/chat/Welcome';
 import ChatMessage from '../components/chat/ChatMessage';
 import ChatInput from '../components/chat/ChatInput';
 import UserAnswerInput from '../components/chat/UserAnswerInput';
@@ -33,15 +33,22 @@ const ChatPage = () => {
     sendMessage,
     continueChat,
     getFullAnswer,
-    checkUserAnswer
+    checkUserAnswer,
   } = useChat();
 
   const [showSidebar, setShowSidebar] = useState(true);
   const [currentLanguage, setCurrentLanguage] = useState(getLanguage());
+  const [settingsSelected, setSettingsSelected] = useState(false);
 
   useEffect(() => {
     loadConversations();
-  }, []);
+  }, [loadConversations]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      setSettingsSelected(true);
+    }
+  }, [messages]);
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -61,6 +68,16 @@ const ChatPage = () => {
     setCurrentLanguage(newLanguage);
   };
 
+  const handleStartChat = (settings) => {
+    createNewChat(settings);
+    setSettingsSelected(true);
+  };
+
+  const handleNewChatClick = () => {
+    setSettingsSelected(false);
+    createNewChat({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
+  }
+
   return (
     <div className="h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex overflow-hidden">
       {/* Sidebar */}
@@ -68,7 +85,7 @@ const ChatPage = () => {
         showSidebar={showSidebar}
         conversations={conversations}
         sessionId={sessionId}
-        createNewChat={createNewChat}
+        createNewChat={handleNewChatClick}
         loadConversation={loadConversation}
         deleteConversation={deleteConversation}
       />
@@ -87,15 +104,17 @@ const ChatPage = () => {
         <div className="flex-1 bg-gray-50 flex flex-col min-h-0">
           {/* Messages - Scrollable area */}
           <div className="flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-            {messages.length === 0 && <ChatWelcome />}
-            
-            {messages.map((message) => (
-              <ChatMessage
-                key={message.id}
-                message={message}
-                formatAIMessage={formatAIMessage}
-              />
-            ))}
+            {!settingsSelected && messages.length === 0 ? (
+              <Welcome onStart={handleStartChat} />
+            ) : (
+              messages.map((message) => (
+                <ChatMessage
+                  key={message.id}
+                  message={message}
+                  formatAIMessage={formatAIMessage}
+                />
+              ))
+            )}
             
             {isLoading && (
               <div className="flex justify-start mb-5">
@@ -113,35 +132,37 @@ const ChatPage = () => {
           </div>
           
           {/* Input - Fixed at bottom */}
-          <div className="flex-shrink-0 p-6 bg-white border-t border-gray-200">
-            {/* Main chat input */}
-            <ChatInput
-              inputMessage={inputMessage}
-              setInputMessage={setInputMessage}
-              sendMessage={sendMessage}
-              handleKeyPress={handleKeyPress}
-              isLoading={isLoading}
-            />
-            
-            {/* User answer input when enabled */}
-            {showAnswerInput && (
-              <UserAnswerInput
-                userAnswer={userAnswer}
-                setUserAnswer={setUserAnswer}
-                checkUserAnswer={checkUserAnswer}
+          {settingsSelected && (
+            <div className="flex-shrink-0 p-6 bg-white border-t border-gray-200">
+              {/* Main chat input */}
+              <ChatInput
+                inputMessage={inputMessage}
+                setInputMessage={setInputMessage}
+                sendMessage={sendMessage}
+                handleKeyPress={handleKeyPress}
                 isLoading={isLoading}
               />
-            )}
-            
-            {/* Action buttons */}
-            <ChatActions
-              hintCount={hintCount}
-              continueChat={continueChat}
-              getFullAnswer={getFullAnswer}
-              isLoading={isLoading}
-              showActions={messages.length > 0}
-            />
-          </div>
+              
+              {/* User answer input when enabled */}
+              {showAnswerInput && (
+                <UserAnswerInput
+                  userAnswer={userAnswer}
+                  setUserAnswer={setUserAnswer}
+                  checkUserAnswer={checkUserAnswer}
+                  isLoading={isLoading}
+                />
+              )}
+              
+              {/* Action buttons */}
+              <ChatActions
+                hintCount={hintCount}
+                continueChat={continueChat}
+                getFullAnswer={getFullAnswer}
+                isLoading={isLoading}
+                showActions={messages.length > 0}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
