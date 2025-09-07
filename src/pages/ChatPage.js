@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { getLanguage } from '../locales/i18n';
 import { useChat } from '../hooks/useChat';
 import { formatAIMessage } from '../utils/chatUtils';
 
@@ -37,7 +36,6 @@ const ChatPage = () => {
   } = useChat();
 
   const [showSidebar, setShowSidebar] = useState(true);
-  const [currentLanguage, setCurrentLanguage] = useState(getLanguage());
   const [settingsSelected, setSettingsSelected] = useState(false);
 
   useEffect(() => {
@@ -62,10 +60,6 @@ const ChatPage = () => {
       e.preventDefault();
       checkUserAnswer();
     }
-  };
-
-  const handleLanguageChange = (newLanguage) => {
-    setCurrentLanguage(newLanguage);
   };
 
   const handleStartChat = (settings) => {
@@ -97,7 +91,6 @@ const ChatPage = () => {
           showSidebar={showSidebar}
           setShowSidebar={setShowSidebar}
           currentConversationTitle={currentConversationTitle}
-          onLanguageChange={handleLanguageChange}
         />
 
         {/* Chat Container - Fixed height with internal scroll */}

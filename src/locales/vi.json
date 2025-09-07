@@ -61,7 +61,8 @@
     "time": {
       "today": "Hôm nay",
       "yesterday": "Hôm qua",
-      "daysAgo": "{{days}} ngày trước"
+      "daysAgo": "{{days}} ngày trước",
+      "invalidDate": "Không có ngày"
     }
   },
   "userAnswer": {

@@ -3,7 +3,10 @@ import t from '../../locales/i18n';
 
 const ConversationItem = ({ conversation, isActive, onSelect, onDelete }) => {
   const formatDate = (dateString) => {
+    if (!dateString) return '';
     const date = new Date(dateString);
+    if (isNaN(date)) return t('conversation.time.invalidDate');
+    
     const now = new Date();
     const diffTime = Math.abs(now - date);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -12,24 +15,6 @@ const ConversationItem = ({ conversation, isActive, onSelect, onDelete }) => {
     if (diffDays === 2) return t('conversation.time.yesterday');
     if (diffDays <= 7) return t('conversation.time.daysAgo').replace('{{days}}', diffDays - 1);
     return date.toLocaleDateString();
-  };
-
-  const getConversationTitle = (conversation) => {
-    // Try to get the first user message as title
-    const firstUserMessage = conversation.history?.find(msg => msg.role === 'user');
-    if (firstUserMessage) {
-      const text = firstUserMessage.parts[0].text;
-      // Filter out internal prompts
-      if (text.includes('Bạn là một người thầy') || 
-          text.includes('Học sinh đang gặp khó khăn') ||
-          text.includes('QUAN TRỌNG: Bạn KHÔNG BAO GIỜ') ||
-          text.includes('QUY TẮC: Chỉ gợi ý') ||
-          text.includes('Student is having difficulty')) {
-        return t('sidebar.conversation.newChat');
-      }
-      return text.length > 30 ? text.substring(0, 30) + '...' : text;
-    }
-    return t('sidebar.conversation.newChat');
   };
 
   return (
@@ -44,10 +29,10 @@ const ConversationItem = ({ conversation, isActive, onSelect, onDelete }) => {
       <div className="flex justify-between items-start">
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-gray-900 dark:text-gray-200 truncate mb-1">
-            {getConversationTitle(conversation)}
+            {conversation.title || t('sidebar.conversation.newChat')}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            {formatDate(conversation.updatedAt)}
+            {formatDate(conversation.lastUpdate)}
           </p>
         </div>
         <button

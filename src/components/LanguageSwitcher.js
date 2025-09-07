@@ -1,25 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { getLanguage, setLanguage, getAvailableLanguages } from '../locales/i18n';
+import React, { useState } from 'react';
+import { useLanguage } from '../locales/LanguageContext';
 
-const LanguageSwitcher = ({ onLanguageChange }) => {
-  const [currentLang, setCurrentLang] = useState(getLanguage());
+const LanguageSwitcher = () => {
+  const { currentLang, languages, changeLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const languages = getAvailableLanguages();
-
-  useEffect(() => {
-    setCurrentLang(getLanguage());
-  }, []);
 
   const handleLanguageChange = (langCode) => {
-    if (setLanguage(langCode)) {
-      setCurrentLang(langCode);
-      setIsOpen(false);
-      if (onLanguageChange) {
-        onLanguageChange(langCode);
-      }
-      // Reload page to apply new language
-      window.location.reload();
-    }
+    changeLanguage(langCode);
+    setIsOpen(false);
   };
 
   const currentLanguage = languages.find(lang => lang.code === currentLang);

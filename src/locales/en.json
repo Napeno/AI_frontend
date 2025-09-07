@@ -55,7 +55,7 @@
     "subjectArea": "Subject Area",
     "empty": {
       "title": "No conversations yet",
-      "subtitle": "Start a new conversation!"
+      "subtitle": "Your chat history will appear here."
     },
     "conversation": {
       "noMessages": "No messages",
@@ -70,7 +70,8 @@
     "time": {
       "today": "Today",
       "yesterday": "Yesterday",
-      "daysAgo": "{{days}} days ago"
+      "daysAgo": "{{days}} days ago",
+      "invalidDate": "No date"
     }
   },
   "userAnswer": {
