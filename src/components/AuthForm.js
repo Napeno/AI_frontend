@@ -19,7 +19,7 @@ const AuthForm = ({ initialMode = 'login' }) => {
       const res = await fetch(`/api/auth/${mode === 'login' ? 'login' : 'register'}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify(mode === 'login' ? { email, password } : { name, email, password }),
       });
       const data = await res.json();
       if (!res.ok) {

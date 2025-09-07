@@ -4,11 +4,11 @@ import ConversationItem from './ConversationItem';
 
 const Sidebar = ({ 
   showSidebar, 
-  conversations = [], // Add default value
+  conversations = [],
   sessionId, 
   createNewChat, 
   loadConversation, 
-  deleteConversation 
+  deleteConversation,
 }) => {
   // Ensure conversations is always an array
   const safeConversations = Array.isArray(conversations) ? conversations : [];

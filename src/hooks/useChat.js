@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { isSystemMessage, removeDuplicateMessages } from '../utils/chatUtils';
 import { getLanguage } from '../locales/i18n';
 import { useAuth } from '../context/AuthContext';
@@ -16,14 +16,28 @@ export const useChat = () => {
   const [showAnswerInput, setShowAnswerInput] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const messagesEndRef = useRef(null);
+  const chatSettings = useRef({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
+
+  const createNewChat = useCallback((settings) => {
+    const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    setSessionId(newSessionId);
+    setMessages([]);
+    setInputMessage('');
+    setUserAnswer('');
+    setCurrentConversationTitle('New Chat');
+    chatSettings.current = settings;
+    setHintCount(0);
+    setShowAnswerInput(false);
+  }, []);
 
   // Generate a unique session ID when component mounts
   useEffect(() => {
     if (!sessionId && !isInitialized) {
       setIsInitialized(true);
-      createNewChat();
+      // Create a default chat so the screen isn't empty
+      createNewChat({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
     }
-  }, [sessionId, isInitialized]);
+  }, [sessionId, isInitialized, createNewChat]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -42,25 +56,13 @@ export const useChat = () => {
 
   const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
-  const createNewChat = () => {
-    const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    setSessionId(newSessionId);
-    setMessages([]);
-    setInputMessage('');
-    setUserAnswer('');
-    setCurrentConversationTitle('New Chat');
-    setHintCount(0);
-    setShowAnswerInput(false);
-  };
-
-  const loadConversations = async () => {
+  const loadConversations = useCallback(async () => {
     try {
       const response = await fetch('http://localhost:9000/api/chat/conversations', {
         headers: { ...authHeaders },
       });
       if (response.ok) {
         const data = await response.json();
-        // Backend returns array directly, not wrapped in conversations property
         setConversations(Array.isArray(data) ? data : []);
       } else {
         console.error('Failed to load conversations:', response.status);
@@ -70,7 +72,7 @@ export const useChat = () => {
       console.error('Error loading conversations:', error);
       setConversations([]);
     }
-  };
+  }, [token]);
 
   const loadConversation = async (sessionId) => {
     try {
@@ -80,6 +82,10 @@ export const useChat = () => {
       if (response.ok) {
         const data = await response.json();
         setSessionId(sessionId);
+        chatSettings.current = {
+          educationLevel: data.educationLevel || 'middle',
+          subjectArea: data.subjectArea || 'natural_sciences',
+        };
         
         const conversationMessages = data.history
           .filter(msg => {
@@ -162,7 +168,7 @@ export const useChat = () => {
       if (response.ok) {
         await loadConversations();
         if (sessionId === sessionIdToDelete) {
-          createNewChat();
+          createNewChat({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
         }
       }
     } catch (error) {
@@ -196,7 +202,9 @@ export const useChat = () => {
         body: JSON.stringify({
           message: userMessage,
           sessionId,
-          language: getLanguage()
+          language: getLanguage(),
+          educationLevel: chatSettings.current.educationLevel,
+          subjectArea: chatSettings.current.subjectArea,
         })
       });
       
@@ -285,7 +293,7 @@ export const useChat = () => {
         headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
           sessionId,
-          language: getLanguage()
+          language: getLanguage(),
         })
       });
       
@@ -342,7 +350,7 @@ export const useChat = () => {
     // First, add a visual "full answer" message on the user side
     const fullAnswerMessage = {
       id: Date.now() + Math.random(),
-      text: '📖 Đang yêu cầu đáp án đầy đủ...',
+      text: 'Đang yêu cầu đáp án đầy đủ...',
       sender: 'full-answer',
       timestamp: new Date().toLocaleTimeString(),
       type: 'full-answer'
@@ -357,7 +365,7 @@ export const useChat = () => {
         headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
           sessionId,
-          language: getLanguage()
+          language: getLanguage(),
         })
       });
       
@@ -441,7 +449,7 @@ export const useChat = () => {
         body: JSON.stringify({
           sessionId,
           userAnswer: userSubmittedAnswer,
-          language: getLanguage()
+          language: getLanguage(),
         })
       });
 
@@ -520,6 +528,6 @@ export const useChat = () => {
     sendMessage,
     continueChat,
     getFullAnswer,
-    checkUserAnswer
+    checkUserAnswer,
   };
 }; 

@@ -9,6 +9,11 @@
     "error": "Error",
     "success": "Success"
   },
+  "newChatModal": {
+    "title": "Start a New Chat",
+    "description": "Please select the education level and subject area for this conversation.",
+    "start": "Start Chat"
+  },
   "chat": {
     "title": "AI Chatbot",
     "subtitle": "Smart Learning with AI",
@@ -46,6 +51,8 @@
   },
   "sidebar": {
     "title": "Conversations",
+    "educationLevel": "Education Level",
+    "subjectArea": "Subject Area",
     "empty": {
       "title": "No conversations yet",
       "subtitle": "Start a new conversation!"
@@ -86,5 +93,14 @@
     "somethingWentWrong": "Something went wrong",
     "failedToSend": "Failed to send message",
     "failedToContinue": "Failed to get continuation"
+  },
+  "levels": {
+    "elementary": "Elementary School",
+    "middle": "Middle School",
+    "high": "High School"
+  },
+  "subjects": {
+    "naturalSciences": "Natural Sciences",
+    "socialSciences": "Social Sciences"
   }
 } 
