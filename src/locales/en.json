@@ -102,5 +102,26 @@
   "subjects": {
     "naturalSciences": "Natural Sciences",
     "socialSciences": "Social Sciences"
+  },
+  "userProfile": {
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "settings": {
+    "tabs": {
+      "general": "General",
+      "account": "Account"
+    },
+    "general": {
+      "theme": "Theme",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark",
+      "language": "Language"
+    },
+    "account": {
+      "deleteAccount": "Delete account",
+      "deleteWarning": "Permanently delete your account and all of your data."
+    }
   }
 } 

@@ -79,5 +79,26 @@
   "subjects": {
     "naturalSciences": "Khoa học Tự nhiên",
     "socialSciences": "Khoa học Xã hội"
+  },
+  "userProfile": {
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất"
+  },
+  "settings": {
+    "tabs": {
+      "general": "Chung",
+      "account": "Tài khoản"
+    },
+    "general": {
+      "theme": "Giao diện",
+      "system": "Hệ thống",
+      "light": "Sáng",
+      "dark": "Tối",
+      "language": "Ngôn ngữ"
+    },
+    "account": {
+      "deleteAccount": "Xóa tài khoản",
+      "deleteWarning": "Xóa vĩnh viễn tài khoản và tất cả dữ liệu của bạn."
+    }
   }
 } 
