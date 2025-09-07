@@ -118,7 +118,8 @@ export const useChat = () => {
               sender: sender,
               timestamp: msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : new Date().toLocaleTimeString(),
               type: msg.role === 'continue' ? 'continue' : msg.role === 'full-answer' ? 'full-answer' : msg.role === 'check-answer' ? 'check-answer' : undefined,
-              userAnswer: msg.userAnswer || undefined  // Include user answer if it exists
+              userAnswer: msg.userAnswer || undefined,  // Include user answer if it exists
+              isCorrect: msg.isCorrect
             };
           });
         
@@ -460,7 +461,8 @@ export const useChat = () => {
           id: Date.now() + Math.random(),
           text: data.message,
           sender: 'bot',
-          timestamp: new Date().toLocaleTimeString()
+          timestamp: new Date().toLocaleTimeString(),
+          isCorrect: data.isCorrect
         };
         
         const lastMessage = messages[messages.length - 1];
