@@ -3,6 +3,8 @@ import { isSystemMessage, removeDuplicateMessages } from '../utils/chatUtils';
 import { getLanguage } from '../locales/i18n';
 import { useAuth } from '../context/AuthContext';
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '/api'; // Fallback for safety
+
 export const useChat = () => {
   const { token } = useAuth();
   const [messages, setMessages] = useState([]);
@@ -58,7 +60,7 @@ export const useChat = () => {
 
   const loadConversations = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:9000/api/chat/conversations', {
+      const response = await fetch(`${API_BASE_URL}/chat/conversations`, {
         headers: { ...authHeaders },
       });
       if (response.ok) {
@@ -76,7 +78,7 @@ export const useChat = () => {
 
   const loadConversation = async (sessionId) => {
     try {
-      const response = await fetch(`http://localhost:9000/api/chat/conversations/${sessionId}`, {
+      const response = await fetch(`${API_BASE_URL}/chat/conversations/${sessionId}`, {
         headers: { ...authHeaders },
       });
       if (response.ok) {
@@ -161,7 +163,7 @@ export const useChat = () => {
 
   const deleteConversation = async (sessionIdToDelete) => {
     try {
-      const response = await fetch(`http://localhost:9000/api/chat/conversations/${sessionIdToDelete}`, {
+      const response = await fetch(`${API_BASE_URL}/chat/conversations/${sessionIdToDelete}`, {
         method: 'DELETE',
         headers: { ...authHeaders },
       });
@@ -196,7 +198,7 @@ export const useChat = () => {
     }
     
     try {
-      const response = await fetch('http://localhost:9000/api/chat', {
+      const response = await fetch(`${API_BASE_URL}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
@@ -288,7 +290,7 @@ export const useChat = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch('http://localhost:9000/api/chat/continue', {
+      const response = await fetch(`${API_BASE_URL}/chat/continue`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
@@ -360,7 +362,7 @@ export const useChat = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch('http://localhost:9000/api/chat/full-answer', {
+      const response = await fetch(`${API_BASE_URL}/chat/full-answer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
@@ -443,7 +445,7 @@ export const useChat = () => {
       };
       setMessages(prev => [...prev, checkMessage]);
 
-      const response = await fetch('http://localhost:9000/api/chat/check-answer', {
+      const response = await fetch(`${API_BASE_URL}/chat/check-answer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
