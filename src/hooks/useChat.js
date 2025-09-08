@@ -58,7 +58,7 @@ export const useChat = () => {
 
   const loadConversations = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:9000/api/chat/conversations', {
+      const response = await fetch('api/chat/conversations', {
         headers: { ...authHeaders },
       });
       if (response.ok) {
@@ -76,7 +76,7 @@ export const useChat = () => {
 
   const loadConversation = async (sessionId) => {
     try {
-      const response = await fetch(`http://localhost:9000/api/chat/conversations/${sessionId}`, {
+      const response = await fetch(`api/chat/conversations/${sessionId}`, {
         headers: { ...authHeaders },
       });
       if (response.ok) {
@@ -161,7 +161,7 @@ export const useChat = () => {
 
   const deleteConversation = async (sessionIdToDelete) => {
     try {
-      const response = await fetch(`http://localhost:9000/api/chat/conversations/${sessionIdToDelete}`, {
+      const response = await fetch(`api/chat/conversations/${sessionIdToDelete}`, {
         method: 'DELETE',
         headers: { ...authHeaders },
       });
@@ -196,7 +196,7 @@ export const useChat = () => {
     }
     
     try {
-      const response = await fetch('http://localhost:9000/api/chat', {
+      const response = await fetch('api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
@@ -288,7 +288,7 @@ export const useChat = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch('http://localhost:9000/api/chat/continue', {
+      const response = await fetch('api/chat/continue', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
@@ -360,7 +360,7 @@ export const useChat = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch('http://localhost:9000/api/chat/full-answer', {
+      const response = await fetch('api/chat/full-answer', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
@@ -443,7 +443,7 @@ export const useChat = () => {
       };
       setMessages(prev => [...prev, checkMessage]);
 
-      const response = await fetch('http://localhost:9000/api/chat/check-answer', {
+      const response = await fetch('api/chat/check-answer', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
