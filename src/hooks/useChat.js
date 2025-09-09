@@ -3,10 +3,10 @@ import { isSystemMessage, removeDuplicateMessages } from '../utils/chatUtils';
 import { getLanguage } from '../locales/i18n';
 import { useAuth } from '../context/AuthContext';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '/api'; // Fallback for safety
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:9000'; // Standardized base URL
 
-export const useChat = () => {
-  const { token } = useAuth();
+export const useChat = (onCoinAnimation) => {
+  const { token, updateUserCoins } = useAuth();
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [userAnswer, setUserAnswer] = useState('');
@@ -17,6 +17,7 @@ export const useChat = () => {
   const [hintCount, setHintCount] = useState(0);
   const [showAnswerInput, setShowAnswerInput] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const messagesEndRef = useRef(null);
   const chatSettings = useRef({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
 
@@ -127,7 +128,8 @@ export const useChat = () => {
               timestamp: msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : new Date().toLocaleTimeString(),
               type: msg.role === 'continue' ? 'continue' : msg.role === 'full-answer' ? 'full-answer' : msg.role === 'check-answer' ? 'check-answer' : undefined,
               userAnswer: msg.userAnswer || undefined,  // Include user answer if it exists
-              isCorrect: msg.isCorrect
+              isCorrect: msg.isCorrect,
+              imageUrl: msg.parts[0].image?.url || undefined // Include image URL if it exists
             };
           });
         
@@ -475,6 +477,33 @@ export const useChat = () => {
           isCorrect: data.isCorrect
         };
         
+        // Update user coins if awarded
+        if (data.coinsAwarded && data.totalCoins !== undefined) {
+          updateUserCoins(data.totalCoins);
+          
+          // Trigger coin animation
+          if (onCoinAnimation) {
+            // Get the source element (the answer input or check button)
+            const sourceElement = document.querySelector('[data-coin-source="true"]') || 
+                                 document.querySelector('button[type="submit"]') ||
+                                 document.querySelector('.check-answer-button');
+            onCoinAnimation({
+              amount: data.coinsAwarded,
+              sourceElement: sourceElement
+            });
+          }
+          
+          // Add a system message for coin award
+          const coinMessage = {
+            id: Date.now() + Math.random() + 2, // Ensure unique ID
+            text: `🎉 Bạn đã nhận được ${data.coinsAwarded} xu! Tổng số xu của bạn: ${data.totalCoins} 🎉`,
+            sender: 'system',
+            timestamp: new Date().toLocaleTimeString(),
+            type: 'coin-award'
+          };
+          setMessages(prev => [...prev, coinMessage]);
+        }
+
         const lastMessage = messages[messages.length - 1];
         const isDuplicate = lastMessage && 
           lastMessage.sender === 'bot' && 
@@ -492,6 +521,109 @@ export const useChat = () => {
       const errorMessage = {
         id: Date.now() + Math.random(),
         text: 'Có lỗi xảy ra khi kiểm tra câu trả lời. Vui lòng thử lại!',
+        sender: 'bot',
+        timestamp: new Date().toLocaleTimeString(),
+        isError: true
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const sendImageMessage = async (imageFile, textMessage = '') => {
+    if (!imageFile || isLoading) return;
+    
+    setIsLoading(true);
+    
+    // Create FormData for file upload
+    const formData = new FormData();
+    formData.append('image', imageFile);
+    formData.append('sessionId', sessionId);
+    formData.append('language', getLanguage());
+    formData.append('educationLevel', chatSettings.current.educationLevel);
+    formData.append('subjectArea', chatSettings.current.subjectArea);
+    
+    // Add text message if provided
+    if (textMessage.trim()) {
+      formData.append('message', textMessage.trim());
+    }
+    
+    // Add user message to UI immediately
+    const userMessage = {
+      id: Date.now() + Math.random(),
+      text: textMessage.trim() || (getLanguage() === 'vi' ? 'Trả lời đáp án bên trong hình ảnh' : 'Answer the question shown in the image'),
+      sender: 'user',
+      timestamp: new Date().toLocaleTimeString(),
+      imageUrl: URL.createObjectURL(imageFile) // For immediate preview
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
+    setInputMessage('');
+    setSelectedImage(null);
+    
+    if (messages.length === 0) {
+      setShowAnswerInput(true);
+    }
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/chat/image`, {
+        method: 'POST',
+        headers: { ...authHeaders },
+        body: formData
+      });
+      
+      if (response.status === 429) {
+        const errorData = await response.json();
+        const quotaMessage = {
+          id: Date.now() + Math.random(),
+          text: errorData.message || 'API quota exceeded. Please try again later.',
+          sender: 'bot',
+          timestamp: new Date().toLocaleTimeString(),
+          isError: true
+        };
+        setMessages(prev => [...prev, quotaMessage]);
+      } else if (response.ok) {
+        const data = await response.json();
+        
+        if (data.message && typeof data.message === 'string') {
+          const botMessage = {
+            id: Date.now() + Math.random(),
+            text: data.message,
+            sender: 'bot',
+            timestamp: new Date().toLocaleTimeString()
+          };
+          
+          setMessages(prev => {
+            const lastMessage = prev[prev.length - 1];
+            const isDuplicate = lastMessage && 
+              lastMessage.sender === 'bot' && 
+              lastMessage.text === data.message;
+            
+            if (isDuplicate) {
+              return prev;
+            }
+            return [...prev, botMessage];
+          });
+        } else {
+          console.error('Invalid message format:', data);
+          const errorMessage = {
+            id: Date.now() + Math.random(),
+            text: 'Có lỗi xảy ra: Response format không đúng',
+            sender: 'bot',
+            timestamp: new Date().toLocaleTimeString(),
+            isError: true
+          };
+          setMessages(prev => [...prev, errorMessage]);
+        }
+      } else {
+        throw new Error('Failed to send image message');
+      }
+    } catch (error) {
+      console.error('Error sending image message:', error);
+      const errorMessage = {
+        id: Date.now() + Math.random(),
+        text: 'Có lỗi xảy ra khi gửi hình ảnh. Vui lòng thử lại!',
         sender: 'bot',
         timestamp: new Date().toLocaleTimeString(),
         isError: true
@@ -522,12 +654,15 @@ export const useChat = () => {
     showAnswerInput,
     setShowAnswerInput,
     isInitialized,
+    selectedImage,
+    setSelectedImage,
     messagesEndRef,
     createNewChat,
     loadConversations,
     loadConversation,
     deleteConversation,
     sendMessage,
+    sendImageMessage,
     continueChat,
     getFullAnswer,
     checkUserAnswer,

@@ -10,6 +10,7 @@ const Sidebar = ({
   createNewChat, 
   loadConversation, 
   deleteConversation,
+  coinAnimationTrigger,
 }) => {
   // Ensure conversations is always an array
   const safeConversations = Array.isArray(conversations) ? conversations : [];
@@ -48,7 +49,7 @@ const Sidebar = ({
       </div>
       
       <div className="p-2 border-t border-gray-200 dark:border-gray-700">
-        <UserProfile />
+        <UserProfile coinAnimationTrigger={coinAnimationTrigger} />
       </div>
     </div>
   );

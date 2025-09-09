@@ -29,8 +29,38 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('auth');
   };
 
+  const updateUserCoins = (newCoinCount) => {
+    if (user) {
+      const updatedUser = { ...user, coins: newCoinCount };
+      setUser(updatedUser);
+      const stored = localStorage.getItem('auth');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          parsed.user = updatedUser;
+          localStorage.setItem('auth', JSON.stringify(parsed));
+        } catch {}
+      }
+    }
+  };
+
+  const updateUserAvatar = (userData) => {
+    if (user && userData) {
+      const updatedUser = { ...user, ...userData };
+      setUser(updatedUser);
+      const stored = localStorage.getItem('auth');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          parsed.user = updatedUser;
+          localStorage.setItem('auth', JSON.stringify(parsed));
+        } catch {}
+      }
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ token, user, login, logout }}>
+    <AuthContext.Provider value={{ token, user, login, logout, updateUserCoins, updateUserAvatar }}>
       {children}
     </AuthContext.Provider>
   );

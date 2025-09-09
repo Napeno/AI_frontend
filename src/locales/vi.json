@@ -3,7 +3,8 @@
     "newChat": "Tạo chat mới",
     "send": "Gửi",
     "delete": "Xóa",
-    "cancel": "Hủy"
+    "cancel": "Hủy",
+    "remove": "Xóa"
   },
   "newChatModal": {
     "title": "Bắt đầu cuộc trò chuyện mới",
@@ -19,10 +20,36 @@
     },
     "input": {
       "placeholder": "Nhập câu hỏi của em ở đây...",
+      "placeholderWithImage": "Thêm text hoặc để trống để sử dụng câu hỏi mặc định",
       "answerPlaceholder": "Nhập câu trả lời của em ở đây...",
       "checkAnswerButton": "Kiểm tra câu trả lời ✨",
       "continueButton": "💡 Em cần thêm gợi ý!",
       "fullAnswerButton": "📖 Thầy/cô sẽ trả lời đầy đủ cho em!"
+    },
+    "image": {
+      "selected": "Đã chọn hình ảnh"
+    },
+    "coins": {
+      "earned": "Bạn đã nhận được {amount} xu!",
+      "total": "Tổng số xu: {total}",
+      "firstCorrect": "Phần thưởng câu trả lời đúng đầu tiên!"
+    },
+    "ranking": {
+      "points": "điểm",
+      "rank": "Hạng",
+      "progressTo": "Tiến độ đến",
+      "pointsToNext": "điểm nữa",
+      "maxRank": "Đã đạt rank cao nhất!"
+    },
+    "shop": {
+      "title": "Cửa hàng Avatar",
+      "owned": "Sở hữu",
+      "buy": "Mua",
+      "select": "Chọn",
+      "using": "Đang sử dụng",
+      "notEnough": "Không đủ xu",
+      "purchaseSuccess": "Mua avatar thành công!",
+      "purchaseError": "Có lỗi khi mua avatar!"
     },
     "hintCounter": {
       "one": "🎯 Em đã nhận được 1 gợi ý rồi!",
@@ -70,7 +97,10 @@
     "description": "Nhập câu trả lời của em để thầy/cô đánh giá và đưa ra gợi ý cải thiện nhé! 😊",
     "placeholder": "Nhập câu trả lời của em ở đây...",
     "checkButton": "Kiểm tra câu trả lời ✨",
-    "checking": "Đang kiểm tra..."
+    "checking": "Đang kiểm tra...",
+    "resubmit": "Gửi lại",
+    "duplicateMessage": "Bạn đã trả lời đúng câu này trước đó với cùng đáp án.",
+    "duplicateWarning": "Bạn đã trả lời đúng với câu trả lời này trước đó. Bạn có chắc muốn gửi lại không?"
   },
   "levels": {
     "elementary": "Cấp 1",

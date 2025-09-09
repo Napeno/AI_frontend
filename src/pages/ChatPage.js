@@ -12,6 +12,12 @@ import UserAnswerInput from '../components/chat/UserAnswerInput';
 import ChatActions from '../components/chat/ChatActions';
 
 const ChatPage = () => {
+  const [coinAnimationTrigger, setCoinAnimationTrigger] = useState(null);
+  
+  const handleCoinAnimation = (animationData) => {
+    setCoinAnimationTrigger(animationData);
+  };
+
   const {
     messages,
     inputMessage,
@@ -24,16 +30,19 @@ const ChatPage = () => {
     currentConversationTitle,
     hintCount,
     showAnswerInput,
+    selectedImage,
+    setSelectedImage,
     messagesEndRef,
     createNewChat,
     loadConversations,
     loadConversation,
     deleteConversation,
     sendMessage,
+    sendImageMessage,
     continueChat,
     getFullAnswer,
     checkUserAnswer,
-  } = useChat();
+  } = useChat(handleCoinAnimation);
 
   const [showSidebar, setShowSidebar] = useState(true);
   const [settingsSelected, setSettingsSelected] = useState(false);
@@ -82,6 +91,7 @@ const ChatPage = () => {
         createNewChat={handleNewChatClick}
         loadConversation={loadConversation}
         deleteConversation={deleteConversation}
+        coinAnimationTrigger={coinAnimationTrigger}
       />
 
       {/* Main Chat Area */}
@@ -134,6 +144,9 @@ const ChatPage = () => {
                 sendMessage={sendMessage}
                 handleKeyPress={handleKeyPress}
                 isLoading={isLoading}
+                selectedImage={selectedImage}
+                setSelectedImage={setSelectedImage}
+                sendImageMessage={sendImageMessage}
               />
               
               {/* User answer input when enabled */}
@@ -143,6 +156,8 @@ const ChatPage = () => {
                   setUserAnswer={setUserAnswer}
                   checkUserAnswer={checkUserAnswer}
                   isLoading={isLoading}
+                  handleAnswerKeyPress={handleAnswerKeyPress}
+                  messages={messages}
                 />
               )}
               
