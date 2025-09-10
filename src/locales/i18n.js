@@ -13,7 +13,7 @@ const resources = {
 // Get language from localStorage or default to 'en'
 const getLanguage = () => {
   const savedLang = localStorage.getItem('language');
-  return savedLang && resources[savedLang] ? savedLang : 'en';
+  return savedLang && resources[savedLang] ? savedLang : 'vi';
 };
 
 // Set language to localStorage

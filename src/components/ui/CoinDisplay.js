@@ -70,22 +70,7 @@ const CoinDisplay = ({ onCoinAnimation, coinAnimationTrigger }) => {
         className="flex items-center gap-2 px-3 py-2 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-500 dark:from-yellow-500 dark:to-yellow-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
       >
         <div className="relative">
-          <svg 
-            className="w-6 h-6 text-yellow-100 drop-shadow-sm" 
-            fill="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <circle cx="12" cy="12" r="10" className="text-yellow-600"/>
-            <circle cx="12" cy="12" r="8" className="text-yellow-400"/>
-            <text 
-              x="12" 
-              y="16" 
-              textAnchor="middle" 
-              className="text-xs font-bold fill-yellow-700"
-            >
-              ¥
-            </text>
-          </svg>
+         <img src="/image/coin.png" alt="coin" className="w-6 h-6" />
         </div>
         <span className="font-bold text-yellow-100 text-sm drop-shadow-sm min-w-[2rem] text-center">
           {displayCoins.toLocaleString()}
@@ -108,22 +93,7 @@ const CoinDisplay = ({ onCoinAnimation, coinAnimationTrigger }) => {
           }}
         >
           <div className="animate-spin">
-            <svg 
-              className="w-8 h-8 text-yellow-500 drop-shadow-lg" 
-              fill="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <circle cx="12" cy="12" r="10" className="text-yellow-600"/>
-              <circle cx="12" cy="12" r="8" className="text-yellow-400"/>
-              <text 
-                x="12" 
-                y="16" 
-                textAnchor="middle" 
-                className="text-xs font-bold fill-yellow-700"
-              >
-                ¥
-              </text>
-            </svg>
+            <img src="/image/coin.png" alt="coin" className="w-6 h-6" />
           </div>
         </div>
       ))}

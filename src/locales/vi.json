@@ -122,7 +122,8 @@
   },
   "userProfile": {
     "settings": "Cài đặt",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "buyNow": "Cửa hàng SealEdu"
   },
   "errors": {
     "sessionIdRequired": "Cần có sessionId",
@@ -154,9 +155,11 @@
     "title": "Hình Nền Chat",
     "selectBackground": "Chọn hình nền cho cuộc trò chuyện của bạn",
     "default": "Mặc định",
-    "changeBackground": "Thay đổi hình nền"
+    "changeBackground": "Thay đổi hình nền",
+    "themeBackground": "Theme"
   },
   "home": {
+    "home": "Trang chủ",
     "title": "Chào mừng đến với <strong>SealEdu</strong>",
     "subtitle": "Trợ lý học tập bằng AI của bạn",
     "description": "Luyện tập, nhận gợi ý và kiểm tra đáp án. Học bằng thực hành cùng bạn hải cẩu thân thiện!",

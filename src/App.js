@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-
+import t from './locales/i18n';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -43,7 +43,7 @@ const AppContent = () => {
             {token ? (
               <>
                 <Link to="/leaderboard" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1">
-                  🏆 Leaderboard
+                  🏆 {t('leaderboard.title')}
                 </Link>
                 <Link to="/chat" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1">
                   🦭 Chat

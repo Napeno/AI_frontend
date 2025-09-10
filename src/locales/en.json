@@ -147,7 +147,8 @@
     "title": "Chat Background",
     "selectBackground": "Select a background for your chat",
     "default": "Default",
-    "changeBackground": "Change background"
+    "changeBackground": "Change background",
+    "themeBackground": "Theme"
   },
   "levels": {
     "elementary": "Elementary School",
@@ -160,9 +161,11 @@
   },
   "userProfile": {
     "settings": "Settings",
-    "logout": "Log out"
+    "logout": "Log out",
+    "buyNow": "SealEdu Shop"
   },
   "home": {
+    "home": "Home",
     "title": "Welcome to <strong>SealEdu</strong>",
     "subtitle": "Your AI learning companion",
     "description": "Practice, get hints, and check your answers. Learn by doing with your friendly seal guide!",

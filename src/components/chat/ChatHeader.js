@@ -41,14 +41,14 @@ const ChatHeader = ({
           className="px-3 py-2 text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-md transition-all duration-200 font-medium"
           title="View Leaderboard"
         >
-          🏆 Leaderboard
+          🏆 {t('leaderboard.title')}
         </Link>
         <Link 
           to="/" 
           className="px-3 py-2 text-sm bg-seablue-gradient text-white rounded-lg hover:shadow-md transition-all duration-200 font-medium"
           title="Go to Homepage"
         >
-          🏠 Home
+          🏠 {t('home.home')}
         </Link>
         <LanguageSwitcher />
       </div>

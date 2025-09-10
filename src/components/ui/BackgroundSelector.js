@@ -8,6 +8,7 @@ const BackgroundSelector = ({ onBackgroundChange, currentBackground }) => {
   useEffect(() => {
     // Load all background images with proper names and regions
     const backgroundList = [
+      { id: 'default', name: 'Mặc định', region: 'SealEdu', path: '/background/default.jpeg' },
       { id: 1, name: 'Đại dương xanh', region: 'Biển Đông', path: '/background/bg_1.jpeg' },
       { id: 2, name: 'Rạn san hô', region: 'Nha Trang', path: '/background/bg_2.jpeg' },
       { id: 3, name: 'Bãi biển nhiệt đới', region: 'Phú Quốc', path: '/background/bg_3.jpeg' },
@@ -37,12 +38,13 @@ const BackgroundSelector = ({ onBackgroundChange, currentBackground }) => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 text-seablue-600 dark:text-gray-300 hover:bg-seablue-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
-title={t('background.changeBackground')}
+        className="flex items-center gap-2 p-2 text-seablue-600 dark:text-gray-300 bg-gradient-to-r from-seablue-50 to-seablue-100 dark:from-gray-700 dark:to-gray-600 hover:shadow-md dark:hover:bg-gray-700 rounded-lg transition-colors"
+        title={t('background.changeBackground')}
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
+        <span className="text-sm font-medium">{t('background.themeBackground')}</span>
       </button>
 
       {isOpen && (
@@ -62,7 +64,7 @@ title={t('background.changeBackground')}
             
             <div className="grid grid-cols-2 gap-3 mb-3">
               {/* Default/Clear option */}
-              <div
+              {/* <div
                 onClick={clearBackground}
                 className={`rounded-lg border-2 cursor-pointer transition-all hover:scale-105 ${
                   !currentBackground 
@@ -75,7 +77,7 @@ title={t('background.changeBackground')}
 <div className="text-sm font-medium text-gray-800 dark:text-gray-200">{t('background.default')}</div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">SealEdu Theme</div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Background options */}
               {backgrounds.map((bg) => (

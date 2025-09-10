@@ -22,12 +22,11 @@ const RankDisplay = ({ showProgress = true, size = 'medium', layout = 'badge', p
   }, [pointsAnimationTrigger]);
 
   const RANK_INFO = {
-    iron: { name: 'Iron', nameVi: 'Sắt', color: '#71717A', bgGradient: 'from-gray-400 to-gray-600', icon: '🔗', threshold: 0 },
-    bronze: { name: 'Bronze', nameVi: 'Đồng', color: '#CD7F32', bgGradient: 'from-orange-600 to-orange-800', icon: '🥉', threshold: 100 },
-    silver: { name: 'Silver', nameVi: 'Bạc', color: '#C0C0C0', bgGradient: 'from-gray-300 to-gray-500', icon: '🥈', threshold: 300 },
-    gold: { name: 'Gold', nameVi: 'Vàng', color: '#FFD700', bgGradient: 'from-yellow-400 to-yellow-600', icon: '🥇', threshold: 600 },
-    platinum: { name: 'Platinum', nameVi: 'Bạch Kim', color: '#E5E4E2', bgGradient: 'from-slate-300 to-slate-500', icon: '💎', threshold: 1000 },
-    diamond: { name: 'Diamond', nameVi: 'Kim Cương', color: '#B9F2FF', bgGradient: 'from-cyan-300 to-blue-500', icon: '💠', threshold: 1500 },
+    bronze: { name: 'Bronze', nameVi: 'Đồng', color: '#CD7F32', bgGradient: 'from-orange-600 to-orange-800', icon: '/rank/broze.png', threshold: 0 },
+    silver: { name: 'Silver', nameVi: 'Bạc', color: '#C0C0C0', bgGradient: 'from-gray-300 to-gray-500', icon: '/rank/silver.png', threshold: 100 },
+    gold: { name: 'Gold', nameVi: 'Vàng', color: '#FFD700', bgGradient: 'from-yellow-400 to-yellow-600', icon: '/rank/gold.png', threshold: 300 },
+    platinum: { name: 'Platinum', nameVi: 'Bạch Kim', color: '#E5E4E2', bgGradient: 'from-slate-300 to-slate-500', icon: '/rank/platinum.png', threshold: 600 },
+    diamond: { name: 'Diamond', nameVi: 'Kim Cương', color: '#B9F2FF', bgGradient: 'from-cyan-300 to-blue-500', icon: '/rank/diamond.png', threshold: 1000 },
   };
 
   const userRank = user?.rank || 'iron';
@@ -65,7 +64,7 @@ if (layout === 'leaderboard') {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className={`flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r ${rankInfo.bgGradient} text-white text-lg shadow-md`}>
-              {rankInfo.icon}
+              <img src={rankInfo.icon} alt={rankInfo.nameVi} className="w-8 h-8 object-contain" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-semibold text-gray-900 dark:text-gray-100 text-sm truncate">{user?.name || 'User'}</div>
@@ -106,7 +105,7 @@ return (
       <div className="flex items-center justify-between p-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2">
           <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r ${rankInfo.bgGradient} text-white text-sm`}>
-            {rankInfo.icon}
+            <img src={rankInfo.icon} alt={rankInfo.nameVi} className="w-5 h-5 object-contain" />
           </div>
           <div>
             <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">{rankInfo.nameVi || rankInfo.name}</div>

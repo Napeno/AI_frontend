@@ -22,7 +22,7 @@ const HomePage = () => {
 
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-2" dangerouslySetInnerHTML={{ __html: `${t('home.title')}` }} />
           <p className="text-xl text-gray-700 dark:text-gray-300 mb-2">{t('home.subtitle')}</p>
-          <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">{t('home.description')}</p>
+          <p className="text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">{t('home.description')}</p>
 
           <div className="mt-8 inline-flex items-center justify-center gap-4">
             {!token && (

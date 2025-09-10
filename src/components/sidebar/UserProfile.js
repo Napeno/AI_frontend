@@ -6,6 +6,7 @@ import SettingsModal from '../settings/SettingsModal';
 import CoinDisplay from '../ui/CoinDisplay';
 import RankDisplay from '../ui/RankDisplay';
 import AvatarShop from '../shop/AvatarShop';
+import { AVATAR_EMOJIS } from '../../utils/avatarUtils';
 
 const UserProfile = ({ coinAnimationTrigger, pointsAnimationTrigger }) => {
   const { user, logout } = useAuth();
@@ -14,22 +15,6 @@ const UserProfile = ({ coinAnimationTrigger, pointsAnimationTrigger }) => {
   const [activeTab, setActiveTab] = useState('general');
   const [isShopOpen, setIsShopOpen] = useState(false);
   const profileRef = useRef(null);
-
-  // Get avatar emoji
-  const AVATAR_EMOJIS = {
-    default: '👤',
-    student: '🧑‍🎓',
-    teacher: '👩‍🏫',
-    scientist: '🧑‍🔬',
-    artist: '🧑‍🎨',
-    engineer: '👷',
-    astronaut: '🧑‍🚀',
-    detective: '🕵️',
-    ninja: '🥷',
-    wizard: '🧙‍♂️',
-    crown: '👑',
-    unicorn: '🦄',
-  };
 
   const currentAvatarEmoji = AVATAR_EMOJIS[user?.avatar || 'default'] || '👤';
 
@@ -72,7 +57,7 @@ const UserProfile = ({ coinAnimationTrigger, pointsAnimationTrigger }) => {
           to="/leaderboard"
           className="mt-2 w-full block px-3 py-2 text-center bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm font-medium"
         >
-          🏆 Leaderboard
+          🏆 {t('leaderboard.title')}
         </Link>
       </div>
 
@@ -81,13 +66,13 @@ const UserProfile = ({ coinAnimationTrigger, pointsAnimationTrigger }) => {
         <CoinDisplay coinAnimationTrigger={coinAnimationTrigger} />
         <button
           onClick={handleShopClick}
-          className="px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2"
+          className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2"
           title="Cửa hàng Avatar"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
-          <span className="text-xs font-medium">Mua ngay</span>
+          <span className="text-xs font-medium">{t('userProfile.buyNow')}</span>
         </button>
       </div>
 

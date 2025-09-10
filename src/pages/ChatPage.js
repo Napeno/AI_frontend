@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useChat } from '../hooks/useChat';
 import { formatAIMessage } from '../utils/chatUtils';
+import { useAuth } from '../context/AuthContext';
+import { AVATAR_EMOJIS } from '../utils/avatarUtils';
 
 // Components
 import Sidebar from '../components/sidebar/Sidebar';
@@ -13,11 +15,19 @@ import ChatActions from '../components/chat/ChatActions';
 import SealAnimation from '../components/SealAnimation';
 
 const ChatPage = () => {
+  const { user } = useAuth();
   const [coinAnimationTrigger, setCoinAnimationTrigger] = useState(null);
   const [sealAnimationTrigger, setSealAnimationTrigger] = useState(null);
-  const [currentBackground, setCurrentBackground] = useState(null);
+  const [currentBackground, setCurrentBackground] = useState({
+    id: 'default',
+    name: 'Mặc định',
+    region: 'SealEdu',
+    path: '/background/default.jpeg'
+  }); // Set default background
   const [pointsAnimationTrigger, setPointsAnimationTrigger] = useState(null);
   
+  const userAvatar = AVATAR_EMOJIS[user?.avatar || 'default'] || '👤';
+
   const handleCoinAnimation = (animationData) => {
     setCoinAnimationTrigger(animationData);
   };
@@ -82,8 +92,10 @@ const ChatPage = () => {
       } catch (error) {
         console.error('Error parsing saved background:', error);
         localStorage.removeItem('chatBackground');
+        // Keep the default background if parsing fails
       }
     }
+    // If no saved background, keep the default background that's already set
   }, []);
 
   useEffect(() => {
@@ -187,6 +199,7 @@ coinAnimationTrigger={coinAnimationTrigger}
                   key={message.id}
                   message={message}
                   formatAIMessage={formatAIMessage}
+                  userAvatar={userAvatar}
                 />
               ))
             )}

@@ -93,7 +93,7 @@ const SealAnimation = ({ trigger, onComplete }) => {
 
   return (
     <div className={`${getAnimationClasses()} ${isVisible ? 'show' : 'hide'}`}>
-      <div className="bg-white rounded-full p-3 shadow-lg border-2 border-seablue-300">
+      <div className="bg-white rounded-full p-3 shadow-lg border-2 border-seablue-300 w-40">
         <div className="text-3xl text-center">
           {getSealExpression()}
         </div>

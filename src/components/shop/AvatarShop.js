@@ -108,12 +108,12 @@ const AvatarShop = ({ isOpen, onClose }) => {
 
   const CATEGORIES = {
     basic: { name: 'Cơ bản', color: 'gray' },
-    education: { name: 'Giáo dục', color: 'blue' },
+    education: { name: 'Giáo dục', color: 'gray' },
     science: { name: 'Khoa học', color: 'green' },
-    creative: { name: 'Sáng tạo', color: 'purple' },
+    creative: { name: 'Sáng tạo', color: 'green' },
     tech: { name: 'Công nghệ', color: 'indigo' },
     premium: { name: 'Cao cấp', color: 'yellow' },
-    legendary: { name: 'Huyền thoại', color: 'red' },
+    legendary: { name: 'Huyền thoại', color: 'indigo' },
   };
 
   const userCoins = user?.coins || 0;

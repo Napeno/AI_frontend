@@ -480,11 +480,11 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         // Update user coins and points if awarded
         if (data.coinsAwarded && data.totalCoins !== undefined) {
           updateUserCoins(data.totalCoins, data.totalPoints);
-          
+          let sourceElement = null;
           // Trigger coin animation
           if (onCoinAnimation) {
             // Get the source element (the answer input or check button)
-            const sourceElement = document.querySelector('[data-coin-source="true"]') || 
+            sourceElement = document.querySelector('[data-coin-source="true"]') || 
                                  document.querySelector('button[type="submit"]') ||
                                  document.querySelector('.check-answer-button');
             onCoinAnimation({

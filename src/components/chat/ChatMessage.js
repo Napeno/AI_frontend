@@ -1,7 +1,7 @@
 import React from 'react';
 import { formatAIMessage } from '../../utils/chatUtils';
 
-function ChatMessage({ message, formatAIMessage }) {
+function ChatMessage({ message, formatAIMessage, userAvatar }) {
 
   const isUser = message.sender === 'user';
   const isError = message.isError;
@@ -49,21 +49,31 @@ function ChatMessage({ message, formatAIMessage }) {
       <div className="flex justify-center mb-5">
         <div className={`max-w-[80%] px-5 py-3 rounded-full shadow-sm border-2 border-dashed ${bgColor} ${borderColor} ${textColor}`}>
           <div className="flex items-center justify-center gap-3">
-            {!isCheckAnswer && (
+            {isCoinAward && (
               <div className="text-xl">
                 {icon}
               </div>
             )}
             <span className="text-base font-semibold flex items-center gap-2">
-              {isCheckAnswer && (
-                <img
-                  src="/gif/loading.gif"
-                  alt="loading"
-                  className="w-12 h-12 inline-block align-middle"
-                />
+              {!isCoinAward &&(
+                <>
+                 {isContinue &&(
+                  <img
+                    src="/gif/loading.gif"
+                    alt="loading"
+                    className="w-12 h-12 inline-block align-middle"
+                  />
+                )}
+                {(isCheckAnswer || isFullAnswer) &&(
+                  <img
+                    src="/gif/thinking.gif"
+                    alt="thinking"
+                    className="w-12 h-12 inline-block align-middle"
+                  />
+                )}
+                </>
               )}
               {formattedContent}
-              
             </span>
           </div>
           {message.timestamp && (
@@ -151,7 +161,7 @@ function ChatMessage({ message, formatAIMessage }) {
       </div>
       {/* Add avatar for user messages */}
       {isUser && (
-        <div className="user-avatar ml-3 flex-shrink-0">👤</div>
+        <div className="user-avatar ml-3 flex-shrink-0">{userAvatar}</div>
       )}
     </div>
   );

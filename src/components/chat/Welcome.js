@@ -17,7 +17,7 @@ const Welcome = ({ onStart }) => {
       {/* Content with higher z-index */}
       <div className="relative z-10 p-8">
         <div className="mb-6">
-          <img src="/image/seal-new-chat.png" alt="seal" className="w-40 h-54 flex items-center justify-center mx-auto mb-4" />
+          <img src="/image/seal-new-chat.png" alt="seal" className="w-40 h-54 flex items-center justify-center mx-auto mb-4 animate-float" />
         </div>
         <p className="text-lg mb-2 font-bold text-gray-900 dark:text-gray-200">{t('newChatModal.title')}</p>
         <p className="text-base mb-4 text-gray-700 dark:text-gray-300">{t('newChatModal.description')}</p>

@@ -27,7 +27,6 @@ const RankUpAnimation = ({ rankUpData, onComplete }) => {
   if (!isVisible || !rankUpData) return null;
 
   const RANK_COLORS = {
-    iron: 'from-gray-400 to-gray-600',
     bronze: 'from-orange-600 to-orange-800',
     silver: 'from-gray-300 to-gray-500',
     gold: 'from-yellow-400 to-yellow-600',
