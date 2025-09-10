@@ -518,7 +518,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
           if (data.pointsAwarded && data.pointsAwarded > 0) {
             const pointsMessage = {
               id: Date.now() + Math.random() + 3, // Ensure unique ID  
-              text: `📊 Bạn đã nhận được ${data.pointsAwarded} điểm xếp hạng! Tổng số điểm: ${data.totalPoints} 📊`,
+              text: `Bạn đã nhận được ${data.pointsAwarded} điểm xếp hạng! Tổng số điểm: ${data.totalPoints}`,
               sender: 'system',
               timestamp: new Date().toLocaleTimeString(),
               type: 'points-award'

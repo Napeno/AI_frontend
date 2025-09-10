@@ -29,7 +29,7 @@ const HomePage = () => {
               <>
                 <Link
                   to="/login"
-                  className="px-7 py-3 md:px-8 md:py-4 rounded-xl bg-seablue-gradient text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-seablue-400"
+                  className="px-6 py-3 md:px-7 md:py-4 rounded-xl bg-seablue-gradient text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-seablue-400"
                 >
                   {t('home.login')}
                 </Link>
@@ -44,7 +44,7 @@ const HomePage = () => {
             {token && (
               <Link
                 to="/chat"
-                className="px-7 py-3 md:px-8 md:py-4 rounded-xl bg-seablue-gradient text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-seablue-400"
+                className="px-7 py-3 md:px-8 md:py-4 rounded-xl bg-seablue-gradient text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-seablue-400 flex items-center gap-2"
               >
                 {t('home.start')}
               </Link>
@@ -52,32 +52,28 @@ const HomePage = () => {
           </div>
         </div>
 
+        {/* How it works section */}
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="p-6 rounded-2xl border-2 border-seablue-200 bg-seablue-50 dark:bg-gray-900 hover:bg-seablue-100 dark:hover:bg-gray-800 transition-colors duration-200">
-            <div className="text-seablue-600 dark:text-seablue-300 font-bold mb-2 text-lg flex items-center gap-2">
-              {t('home.steps.step1Title')}
-            </div>
-            <div className="text-gray-800 dark:text-gray-200 font-bold text-lg">{t('home.steps.step1Desc')}</div>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">{t('home.steps.step1Text')}</p>
+          <div className="step">
+            <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">{t('home.steps.step1Title')}</h3>
+            <p className="text-lg font-semibold text-seablue-600 dark:text-seablue-300">{t('home.steps.step1Desc')}</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">{t('home.steps.step1Text')}</p>
           </div>
-          <div className="p-6 rounded-2xl border-2 border-seablue-200 bg-seablue-50 dark:bg-gray-900 hover:bg-seablue-100 dark:hover:bg-gray-800 transition-colors duration-200">
-            <div className="text-seablue-600 dark:text-seablue-300 font-bold mb-2 text-lg flex items-center gap-2">
-              {t('home.steps.step2Title')}
-            </div>
-            <div className="text-gray-800 dark:text-gray-200 font-bold text-lg">{t('home.steps.step2Desc')}</div>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">{t('home.steps.step2Text')}</p>
+          <div className="step">
+            <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">{t('home.steps.step2Title')}</h3>
+            <p className="text-lg font-semibold text-seablue-600 dark:text-seablue-300">{t('home.steps.step2Desc')}</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">{t('home.steps.step2Text')}</p>
           </div>
-          <div className="p-6 rounded-2xl border-2 border-seablue-200 bg-seablue-50 dark:bg-gray-900 hover:bg-seablue-100 dark:hover:bg-gray-800 transition-colors duration-200">
-            <div className="text-seablue-600 dark:text-seablue-300 font-bold mb-2 text-lg flex items-center gap-2">
-              {t('home.steps.step3Title')}
-            </div>
-            <div className="text-gray-800 dark:text-gray-200 font-bold text-lg">{t('home.steps.step3Desc')}</div>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">{t('home.steps.step3Text')}</p>
+          <div className="step">
+            <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">{t('home.steps.step3Title')}</h3>
+            <p className="text-lg font-semibold text-seablue-600 dark:text-seablue-300">{t('home.steps.step3Desc')}</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">{t('home.steps.step3Text')}</p>
           </div>
         </div>
 
-        <div className="mt-8 text-center">
-          <p className="text-base md:text-lg text-gray-500 dark:text-gray-400 italic" dangerouslySetInnerHTML={{ __html: t('home.footer') }} />
+        {/* Footer */}
+        <div className="mt-12 text-center text-gray-500 dark:text-gray-400">
+          <p>{t('home.footer')}</p>
         </div>
       </div>
     </div>

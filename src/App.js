@@ -37,7 +37,8 @@ const AppContent = () => {
       {!isChatPage && (
         <div className="w-full p-3 bg-white border-b border-seablue-200 flex items-center justify-between shadow-sm">
           <Link to="/" className="text-lg font-bold text-seablue-600 flex items-center gap-2">
-            🦭 SealEdu
+            <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-6 h-6" />
+            SealEdu
           </Link>
           <div className="text-sm flex items-center gap-4">
             {token ? (
@@ -46,7 +47,8 @@ const AppContent = () => {
                   🏆 {t('leaderboard.title')}
                 </Link>
                 <Link to="/chat" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1">
-                  🦭 Chat
+                  <img src="/image/sealedu-logo.png" alt="Chat Logo" className="w-5 h-5" />
+                  Chat
                 </Link>
                 <span className="mr-2 text-gray-700">{user?.email}</span>
                 <button onClick={logout} className="text-seablue-600 hover:text-seablue-700 font-medium">Logout</button>

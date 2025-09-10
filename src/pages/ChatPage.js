@@ -206,7 +206,9 @@ coinAnimationTrigger={coinAnimationTrigger}
             
             {isLoading && (
               <div className="flex justify-start mb-5">
-                <div className="seal-avatar mr-3">🦭</div>
+                <div className="seal-avatar mr-3">
+                  <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-6 h-6" />
+                </div>
                 <div className="max-w-[70%] px-4 py-3 rounded-2xl bg-white dark:bg-gray-700 border border-seablue-200 dark:border-gray-600 rounded-bl-md shadow-md">
                   <div className="flex items-center space-x-1">
                     <span className="w-2 h-2 bg-seablue-500 rounded-full animate-typing"></span>

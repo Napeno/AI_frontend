@@ -106,7 +106,9 @@ function ChatMessage({ message, formatAIMessage, userAvatar }) {
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
       {/* Add avatar for AI messages */}
       {!isUser && (
-        <div className="seal-avatar mr-3 flex-shrink-0">🦭</div>
+        <div className="seal-avatar mr-3 flex-shrink-0">
+          <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-6 h-6" />
+        </div>
       )}
       <div className={containerClasses}>
         {isIncorrect && (

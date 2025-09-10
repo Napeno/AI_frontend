@@ -165,7 +165,7 @@
     "description": "Luyện tập, nhận gợi ý và kiểm tra đáp án. Học bằng thực hành cùng bạn hải cẩu thân thiện!",
     "login": "Đăng nhập",
     "register": "Đăng ký",
-    "start": "🦭 Bắt đầu học",
+    "start": "Bắt đầu học",
     "steps": {
       "step1Title": "🤔 Bước 1",
       "step1Desc": "Đặt câu hỏi",
@@ -177,7 +177,7 @@
       "step3Desc": "Kiểm tra bài làm",
       "step3Text": "Gửi câu trả lời của bạn để nhận phản hồi và gợi ý cải thiện."
     },
-    "footer": "🌊 Dành cho người học. Hãy tò mò. Thử nghiệm. Tiến bộ mỗi ngày cùng SealEdu! 🦭"
+    "footer": "🌊 Dành cho người học. Hãy tò mò. Thử nghiệm. Tiến bộ mỗi ngày cùng SealEdu!"
   },
   "settings": {
     "tabs": {

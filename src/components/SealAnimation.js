@@ -70,7 +70,7 @@ const SealAnimation = ({ trigger, onComplete }) => {
       case 'welcome':
         return '🦭👋'; // Waving seal
       default:
-        return '🦭'; // Default seal
+        return <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-8 h-8 mx-auto" />; // Default seal
     }
   };
 

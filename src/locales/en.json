@@ -171,7 +171,7 @@
     "description": "Practice, get hints, and check your answers. Learn by doing with your friendly seal guide!",
     "login": "Login",
     "register": "Register",
-    "start": "🦭 Start Learning",
+    "start": "Start Learning",
     "steps": {
       "step1Title": "🤔 Step 1",
       "step1Desc": "Ask your question",
@@ -183,7 +183,7 @@
       "step3Desc": "Check your work",
       "step3Text": "Submit your attempt and get feedback and suggestions to improve."
     },
-    "footer": "🌊 Built for learners. Be curious. Experiment. Improve daily with SealEdu! 🦭"
+    "footer": "🌊 Built for learners. Be curious. Experiment. Improve daily with SealEdu!"
   },
   "settings": {
     "tabs": {
