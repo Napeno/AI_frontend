@@ -29,9 +29,13 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('auth');
   };
 
-  const updateUserCoins = (newCoinCount) => {
+  const updateUserCoins = (newCoinCount, newPoints = null) => {
     if (user) {
-      const updatedUser = { ...user, coins: newCoinCount };
+      const updatedUser = { 
+        ...user, 
+        coins: newCoinCount,
+        ...(newPoints !== null && { points: newPoints })
+      };
       setUser(updatedUser);
       const stored = localStorage.getItem('auth');
       if (stored) {

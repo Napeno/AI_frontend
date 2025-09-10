@@ -10,18 +10,19 @@ const Welcome = ({ onStart }) => {
   };
 
   return (
-    <div className="text-center text-gray-600 dark:text-gray-400 my-10 flex flex-col items-center justify-center h-full">
-      <div className="mb-6">
-        <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow">
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-          </svg>
-        </div>
-      </div>
-      <p className="text-lg mb-2 font-bold text-gray-900 dark:text-gray-200">{t('newChatModal.title')}</p>
-      <p className="text-base mb-4 text-gray-700 dark:text-gray-300">{t('newChatModal.description')}</p>
+    <div className="text-center text-gray-600 dark:text-gray-400 flex flex-col items-center justify-center h-full relative">
+      {/* Background overlay for better text visibility */}
+      <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg"></div>
       
-      <div className="w-full max-w-md mx-auto space-y-4">
+      {/* Content with higher z-index */}
+      <div className="relative z-10 p-8">
+        <div className="mb-6">
+          <img src="/image/seal-new-chat.png" alt="seal" className="w-40 h-54 flex items-center justify-center mx-auto mb-4 animate-float" />
+        </div>
+        <p className="text-lg mb-2 font-bold text-gray-900 dark:text-gray-200">{t('newChatModal.title')}</p>
+        <p className="text-base mb-4 text-gray-700 dark:text-gray-300">{t('newChatModal.description')}</p>
+        
+        <div className="w-full max-w-md mx-auto space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('sidebar.educationLevel')}</label>
           <select 
@@ -45,15 +46,16 @@ const Welcome = ({ onStart }) => {
             <option value="social_sciences">{t('subjects.socialSciences')}</option>
           </select>
         </div>
-      </div>
+        </div>
 
-      <div className="mt-6">
-        <button 
-          onClick={handleStart}
-          className="bg-indigo-600 text-white rounded-lg px-6 py-3 font-medium hover:bg-indigo-700"
-        >
-          {t('newChatModal.start')}
-        </button>
+        <div className="mt-6">
+          <button 
+            onClick={handleStart}
+            className="bg-indigo-600 text-white rounded-lg px-6 py-3 font-medium hover:bg-indigo-700"
+          >
+            {t('newChatModal.start')}
+          </button>
+        </div>
       </div>
     </div>
   );

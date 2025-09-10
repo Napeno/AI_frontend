@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:9000'; // Standardized base URL
 
-export const useChat = (onCoinAnimation) => {
+export const useChat = (onCoinAnimation, onPointsAnimation) => {
   const { token, updateUserCoins } = useAuth();
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -477,19 +477,30 @@ export const useChat = (onCoinAnimation) => {
           isCorrect: data.isCorrect
         };
         
-        // Update user coins if awarded
+        // Update user coins and points if awarded
         if (data.coinsAwarded && data.totalCoins !== undefined) {
-          updateUserCoins(data.totalCoins);
-          
+          updateUserCoins(data.totalCoins, data.totalPoints);
+          let sourceElement = null;
           // Trigger coin animation
           if (onCoinAnimation) {
             // Get the source element (the answer input or check button)
-            const sourceElement = document.querySelector('[data-coin-source="true"]') || 
+            sourceElement = document.querySelector('[data-coin-source="true"]') || 
                                  document.querySelector('button[type="submit"]') ||
                                  document.querySelector('.check-answer-button');
             onCoinAnimation({
               amount: data.coinsAwarded,
               sourceElement: sourceElement
+            });
+          }
+          
+          // Trigger points animation if points were awarded
+          if (data.pointsAwarded && data.pointsAwarded > 0 && onPointsAnimation) {
+            const rankDisplayElement = document.querySelector('.rank-display') || 
+                                     document.querySelector('[data-rank-display="true"]');
+            onPointsAnimation({
+              amount: data.pointsAwarded,
+              sourceElement: sourceElement,
+              targetElement: rankDisplayElement
             });
           }
           
@@ -502,6 +513,18 @@ export const useChat = (onCoinAnimation) => {
             type: 'coin-award'
           };
           setMessages(prev => [...prev, coinMessage]);
+          
+          // Add points message if points were awarded
+          if (data.pointsAwarded && data.pointsAwarded > 0) {
+            const pointsMessage = {
+              id: Date.now() + Math.random() + 3, // Ensure unique ID  
+              text: `📊 Bạn đã nhận được ${data.pointsAwarded} điểm xếp hạng! Tổng số điểm: ${data.totalPoints} 📊`,
+              sender: 'system',
+              timestamp: new Date().toLocaleTimeString(),
+              type: 'points-award'
+            };
+            setMessages(prev => [...prev, pointsMessage]);
+          }
         }
 
         const lastMessage = messages[messages.length - 1];

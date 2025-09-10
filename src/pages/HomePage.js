@@ -1,63 +1,84 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import t from '../locales/i18n';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 const HomePage = () => {
   const { token } = useAuth();
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center p-6">
-      <div className="max-w-3xl w-full bg-white/90 backdrop-blur rounded-2xl shadow-xl p-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">AI Chatbot for Students</h1>
-          <p className="mt-2 text-gray-600">Practice, get hints, and check your answers. Learn by doing — not just reading.</p>
+    <div className="min-h-screen w-full bg-ocean-gradient flex items-center justify-center homepage-container">
+      <div className="relative max-w-5xl w-full bg-white/90 dark:bg-gray-800/80 backdrop-blur rounded-3xl shadow-2xl homepage-content p-4 sm:p-6 md:p-10">
+        {/* Top-right language switcher */}
+        <div className="absolute top-4 right-4">
+          <LanguageSwitcher />
+        </div>
 
-          <div className="mt-6 inline-flex items-center justify-center gap-3">
+        <div className="text-center">
+          {/* Seal mascot placeholder - you can replace this with actual GIF later */}
+          <div className="seal-container">
+            <img src="/image/homepage.png" alt="seal" className=" bg-seablue-500 rounded-full flex items-center justify-center text-5xl md:text-6xl" />
+          </div>
+
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-2" dangerouslySetInnerHTML={{ __html: `${t('home.title')}` }} />
+          <p className="text-xl text-gray-700 dark:text-gray-300 mb-2">{t('home.subtitle')}</p>
+          <p className="text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">{t('home.description')}</p>
+
+          <div className="mt-8 inline-flex items-center justify-center gap-4">
             {!token && (
               <>
                 <Link
                   to="/login"
-                  className="px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-medium shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  className="px-7 py-3 md:px-8 md:py-4 rounded-xl bg-seablue-gradient text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-seablue-400"
                 >
-                  Login
+                  {t('home.login')}
                 </Link>
                 <Link
                   to="/register"
-                  className="px-5 py-2.5 rounded-lg bg-white text-indigo-700 border border-indigo-200 font-medium shadow hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                  className="px-7 py-3 md:px-8 md:py-4 rounded-xl bg-white dark:bg-gray-900 text-seablue-700 dark:text-seablue-300 border-2 border-seablue-200 dark:border-gray-700 font-semibold shadow-lg hover:shadow-xl hover:bg-seablue-50 dark:hover:bg-gray-800 transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-seablue-300"
                 >
-                  Register
+                  {t('home.register')}
                 </Link>
               </>
             )}
             {token && (
               <Link
                 to="/chat"
-                className="px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-medium shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="px-7 py-3 md:px-8 md:py-4 rounded-xl bg-seablue-gradient text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-seablue-400"
               >
-                Open Chat
+                {t('home.start')}
               </Link>
             )}
           </div>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="p-4 rounded-xl border bg-white">
-            <div className="text-indigo-600 font-semibold mb-1">Step 1</div>
-            <div className="text-gray-800 font-bold">Ask your question</div>
-            <p className="text-sm text-gray-600 mt-1">Describe the problem clearly. Include what you tried.</p>
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="p-6 rounded-2xl border-2 border-seablue-200 bg-seablue-50 dark:bg-gray-900 hover:bg-seablue-100 dark:hover:bg-gray-800 transition-colors duration-200">
+            <div className="text-seablue-600 dark:text-seablue-300 font-bold mb-2 text-lg flex items-center gap-2">
+              {t('home.steps.step1Title')}
+            </div>
+            <div className="text-gray-800 dark:text-gray-200 font-bold text-lg">{t('home.steps.step1Desc')}</div>
+            <p className="text-gray-600 dark:text-gray-300 mt-2">{t('home.steps.step1Text')}</p>
           </div>
-          <div className="p-4 rounded-xl border bg-white">
-            <div className="text-indigo-600 font-semibold mb-1">Step 2</div>
-            <div className="text-gray-800 font-bold">Get hints, not answers</div>
-            <p className="text-sm text-gray-600 mt-1">Use Continue to get step-by-step hints that guide your thinking.</p>
+          <div className="p-6 rounded-2xl border-2 border-seablue-200 bg-seablue-50 dark:bg-gray-900 hover:bg-seablue-100 dark:hover:bg-gray-800 transition-colors duration-200">
+            <div className="text-seablue-600 dark:text-seablue-300 font-bold mb-2 text-lg flex items-center gap-2">
+              {t('home.steps.step2Title')}
+            </div>
+            <div className="text-gray-800 dark:text-gray-200 font-bold text-lg">{t('home.steps.step2Desc')}</div>
+            <p className="text-gray-600 dark:text-gray-300 mt-2">{t('home.steps.step2Text')}</p>
           </div>
-          <div className="p-4 rounded-xl border bg-white">
-            <div className="text-indigo-600 font-semibold mb-1">Step 3</div>
-            <div className="text-gray-800 font-bold">Check your work</div>
-            <p className="text-sm text-gray-600 mt-1">Submit your attempt and get feedback and suggestions.</p>
+          <div className="p-6 rounded-2xl border-2 border-seablue-200 bg-seablue-50 dark:bg-gray-900 hover:bg-seablue-100 dark:hover:bg-gray-800 transition-colors duration-200">
+            <div className="text-seablue-600 dark:text-seablue-300 font-bold mb-2 text-lg flex items-center gap-2">
+              {t('home.steps.step3Title')}
+            </div>
+            <div className="text-gray-800 dark:text-gray-200 font-bold text-lg">{t('home.steps.step3Desc')}</div>
+            <p className="text-gray-600 dark:text-gray-300 mt-2">{t('home.steps.step3Text')}</p>
           </div>
         </div>
 
-        <div className="mt-6 text-center text-xs text-gray-500">Built for learners. Be curious. Experiment. Improve daily.</div>
+        <div className="mt-8 text-center">
+          <p className="text-base md:text-lg text-gray-500 dark:text-gray-400 italic" dangerouslySetInnerHTML={{ __html: t('home.footer') }} />
+        </div>
       </div>
     </div>
   );

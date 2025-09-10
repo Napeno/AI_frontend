@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-
+import t from './locales/i18n';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ChatPage from './pages/ChatPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import LeaderboardPage from './pages/LeaderboardPage';
 
 const AppContent = () => {
   const { token, user, logout } = useAuth();
@@ -34,18 +35,26 @@ const AppContent = () => {
     <div className={isChatPage ? "h-screen w-full" : "w-full"}>
       {/* Show navigation bar only for non-chat pages */}
       {!isChatPage && (
-        <div className="w-full p-3 bg-white border-b border-gray-200 flex items-center justify-between">
-          <Link to="/" className="text-sm font-semibold text-indigo-600">AI Chatbot</Link>
-          <div className="text-sm">
+        <div className="w-full p-3 bg-white border-b border-seablue-200 flex items-center justify-between shadow-sm">
+          <Link to="/" className="text-lg font-bold text-seablue-600 flex items-center gap-2">
+            🦭 SealEdu
+          </Link>
+          <div className="text-sm flex items-center gap-4">
             {token ? (
               <>
+                <Link to="/leaderboard" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1">
+                  🏆 {t('leaderboard.title')}
+                </Link>
+                <Link to="/chat" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1">
+                  🦭 Chat
+                </Link>
                 <span className="mr-2 text-gray-700">{user?.email}</span>
-                <button onClick={logout} className="text-indigo-600">Logout</button>
+                <button onClick={logout} className="text-seablue-600 hover:text-seablue-700 font-medium">Logout</button>
               </>
             ) : (
               <>
-                <Link to="/login" className="text-indigo-600 mr-3">Login</Link>
-                <Link to="/register" className="text-indigo-600">Register</Link>
+                <Link to="/login" className="text-seablue-600 hover:text-seablue-700 mr-3 font-medium">Login</Link>
+                <Link to="/register" className="text-seablue-600 hover:text-seablue-700 font-medium">Register</Link>
               </>
             )}
           </div>
@@ -59,6 +68,7 @@ const AppContent = () => {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/chat" element={token ? <ChatPage /> : <Navigate to="/login" replace />} />
+        <Route path="/leaderboard" element={token ? <LeaderboardPage /> : <Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>

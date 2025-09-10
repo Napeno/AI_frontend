@@ -4,6 +4,10 @@
     "send": "Gửi",
     "delete": "Xóa",
     "cancel": "Hủy",
+    "save": "Lưu",
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "success": "Thành công",
     "remove": "Xóa"
   },
   "newChatModal": {
@@ -12,6 +16,7 @@
     "start": "Bắt đầu"
   },
   "chat": {
+    "title": "Chatbot AI",
     "subtitle": "Học tập thông minh với AI",
     "welcome": {
       "title": "🎉 Chào mừng em đến với lớp học thông minh!",
@@ -59,6 +64,7 @@
     },
     "messages": {
       "error": "Ôi không! Có gì đó sai rồi. Hãy thử lại nhé! 😊",
+      "typing": "AI đang trả lời...",
       "success": "Tuyệt vời! Bạn đã làm rất tốt! 🎉",
       "loading": "Đang suy nghĩ... 🤔"
     },
@@ -71,15 +77,18 @@
     }
   },
   "sidebar": {
+    "title": "Cuộc trò chuyện",
     "educationLevel": "Cấp học",
     "subjectArea": "Lĩnh vực",
     "empty": {
       "title": "Chưa có cuộc trò chuyện nào",
-      "subtitle": "Hãy bắt đầu cuộc trò chuyện mới!"
+      "subtitle": "Lịch sử trò chuyện của bạn sẽ hiển thị ở đây."
     },
     "conversation": {
       "noMessages": "Không có tin nhắn",
-      "newChat": "Chat mới"
+      "newChat": "Chat mới",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa cuộc trò chuyện này không?",
+      "deleteSuccess": "Đã xóa cuộc trò chuyện thành công"
     }
   },
   "conversation": {
@@ -113,7 +122,62 @@
   },
   "userProfile": {
     "settings": "Cài đặt",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "buyNow": "Cửa hàng SealEdu"
+  },
+  "errors": {
+    "sessionIdRequired": "Cần có sessionId",
+    "conversationNotFound": "Không tìm thấy cuộc trò chuyện cho phiên này hoặc cuộc trò chuyện trống.",
+    "conversationNotFoundGeneral": "Không tìm thấy cuộc trò chuyện",
+    "somethingWentWrong": "Có gì đó không ổn",
+    "failedToSend": "Gửi tin nhắn thất bại",
+    "failedToContinue": "Không thể nhận được phần tiếp theo"
+  },
+  "leaderboard": {
+    "title": "Bảng Xếp Hạng",
+    "subtitle": "Những người học xuất sắc nhất trong cộng đồng SealEdu",
+    "yourPosition": "Vị Trí Của Bạn",
+    "topRankings": "Xếp Hạng Hàng Đầu",
+    "coinsEarned": "xu đã kiếm được",
+    "coins": "xu",
+    "you": "Bạn",
+    "noData": "Chưa có dữ liệu xếp hạng",
+    "noDataDescription": "Hãy bắt đầu trò chuyện và kiếm điểm để xuất hiện trên bảng xếp hạng!",
+    "loadingError": "Không thể tải dữ liệu bảng xếp hạng. Vui lòng thử lại sau.",
+    "loading": "Đang tải bảng xếp hạng...",
+    "page": "Trang",
+    "of": "của",
+    "previous": "Trước",
+    "next": "Sau",
+    "backToChat": "Quay lại Chat"
+  },
+  "background": {
+    "title": "Hình Nền Chat",
+    "selectBackground": "Chọn hình nền cho cuộc trò chuyện của bạn",
+    "default": "Mặc định",
+    "changeBackground": "Thay đổi hình nền",
+    "themeBackground": "Theme"
+  },
+  "home": {
+    "home": "Trang chủ",
+    "title": "Chào mừng đến với <strong>SealEdu</strong>",
+    "subtitle": "Trợ lý học tập bằng AI của bạn",
+    "description": "Luyện tập, nhận gợi ý và kiểm tra đáp án. Học bằng thực hành cùng bạn hải cẩu thân thiện!",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "start": "🦭 Bắt đầu học",
+    "steps": {
+      "step1Title": "🤔 Bước 1",
+      "step1Desc": "Đặt câu hỏi",
+      "step1Text": "Mô tả vấn đề rõ ràng. Nêu những gì bạn đã thử. Bạn hải cẩu luôn sẵn sàng giúp đỡ!",
+      "step2Title": "💡 Bước 2",
+      "step2Desc": "Nhận gợi ý, không phải đáp án",
+      "step2Text": "Sử dụng chức năng Gợi ý để nhận hướng dẫn từng bước cho cách suy nghĩ.",
+      "step3Title": "✅ Bước 3",
+      "step3Desc": "Kiểm tra bài làm",
+      "step3Text": "Gửi câu trả lời của bạn để nhận phản hồi và gợi ý cải thiện."
+    },
+    "footer": "🌊 Dành cho người học. Hãy tò mò. Thử nghiệm. Tiến bộ mỗi ngày cùng SealEdu! 🦭"
   },
   "settings": {
     "tabs": {
@@ -131,5 +195,22 @@
       "deleteAccount": "Xóa tài khoản",
       "deleteWarning": "Xóa vĩnh viễn tài khoản và tất cả dữ liệu của bạn."
     }
+  },
+  "auth": {
+    "welcomeBack": "Chào mừng trở lại với SealEdu!",
+    "join": "Tham gia SealEdu",
+    "signInContinue": "Đăng nhập để tiếp tục học cùng bạn hải cẩu nhé!",
+    "startJourney": "Bắt đầu hành trình học tập của bạn cùng chúng tôi!",
+    "name": "Tên",
+    "yourName": "Tên của bạn",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "pleaseWait": "Vui lòng chờ...",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "newToSealEdu": "Chưa có tài khoản SealEdu? Tạo tài khoản",
+    "alreadyHaveAccount": "Đã có tài khoản? Đăng nhập",
+    "forgotPassword": "Quên mật khẩu?",
+    "tip": "🌊 Mẹo: Sử dụng email trường học để khôi phục tài khoản nhanh hơn và nhận đề xuất học tập tốt hơn!"
   }
 } 
