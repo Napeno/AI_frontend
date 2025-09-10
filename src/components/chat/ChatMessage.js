@@ -91,7 +91,7 @@ function ChatMessage({ message, formatAIMessage, userAvatar }) {
 
   let containerClasses = "max-w-[80%] px-5 py-4 rounded-2xl shadow-md";
   if (isUser) {
-    containerClasses += " bg-seablue-gradient text-white rounded-br-md";
+    containerClasses += " bg-gradient-to-r from-ocean-medium to-ocean-deep text-white rounded-br-md";
   } else if (isError) {
     containerClasses += " bg-red-500 text-white rounded-bl-md";
   } else if (isCorrect) {

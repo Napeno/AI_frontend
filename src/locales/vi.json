@@ -195,5 +195,22 @@
       "deleteAccount": "Xóa tài khoản",
       "deleteWarning": "Xóa vĩnh viễn tài khoản và tất cả dữ liệu của bạn."
     }
+  },
+  "auth": {
+    "welcomeBack": "Chào mừng trở lại với SealEdu!",
+    "join": "Tham gia SealEdu",
+    "signInContinue": "Đăng nhập để tiếp tục học cùng bạn hải cẩu nhé!",
+    "startJourney": "Bắt đầu hành trình học tập của bạn cùng chúng tôi!",
+    "name": "Tên",
+    "yourName": "Tên của bạn",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "pleaseWait": "Vui lòng chờ...",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "newToSealEdu": "Chưa có tài khoản SealEdu? Tạo tài khoản",
+    "alreadyHaveAccount": "Đã có tài khoản? Đăng nhập",
+    "forgotPassword": "Quên mật khẩu?",
+    "tip": "🌊 Mẹo: Sử dụng email trường học để khôi phục tài khoản nhanh hơn và nhận đề xuất học tập tốt hơn!"
   }
 } 

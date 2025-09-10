@@ -29,9 +29,9 @@ const RankDisplay = ({ showProgress = true, size = 'medium', layout = 'badge', p
     diamond: { name: 'Diamond', nameVi: 'Kim Cương', color: '#B9F2FF', bgGradient: 'from-cyan-300 to-blue-500', icon: '/rank/diamond.png', threshold: 1000 },
   };
 
-  const userRank = user?.rank || 'iron';
+  const userRank = user?.rank || 'bronze';
   const userPoints = user?.points || 0;
-  const rankInfo = RANK_INFO[userRank];
+  const rankInfo = RANK_INFO[userRank] || RANK_INFO.bronze;
 
   const ranks = Object.keys(RANK_INFO);
   const currentRankIndex = ranks.indexOf(userRank);

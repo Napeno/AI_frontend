@@ -201,5 +201,22 @@
       "deleteAccount": "Delete account",
       "deleteWarning": "Permanently delete your account and all of your data."
     }
+  },
+  "auth": {
+    "welcomeBack": "Welcome back to SealEdu!",
+    "join": "Join SealEdu",
+    "signInContinue": "Sign in to continue learning with your seal friend!",
+    "startJourney": "Start your learning journey with us!",
+    "name": "Name",
+    "yourName": "Your name",
+    "email": "Email",
+    "password": "Password",
+    "pleaseWait": "Please wait...",
+    "login": "Login",
+    "register": "Register",
+    "newToSealEdu": "New to SealEdu? Create account",
+    "alreadyHaveAccount": "Already have an account? Login",
+    "forgotPassword": "Forgot password?",
+    "tip": "🌊 Tip: Use your school email for faster account recovery and better learning recommendations!"
   }
 } 
