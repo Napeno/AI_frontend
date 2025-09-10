@@ -8,9 +8,11 @@ function ChatMessage({ message, formatAIMessage }) {
   const isContinue = message.sender === 'continue';
   const isFullAnswer = message.sender === 'full-answer';
   const isCheckAnswer = message.sender === 'check-answer';
-  const isSystemAction = isContinue || isFullAnswer || isCheckAnswer;
+  const isCoinAward = message.sender === 'system' && message.type === 'coin-award';
+  const isSystemAction = isContinue || isFullAnswer || isCheckAnswer || isCoinAward;
 
   const messageContent = message.text || '';
+  const hasImage = message.imageUrl || message.image;
 
 
   const formattedContent = isUser || isError || isSystemAction
@@ -37,6 +39,11 @@ function ChatMessage({ message, formatAIMessage }) {
       borderColor = 'border-green-300 dark:border-green-700/50';
       textColor = 'text-green-700 dark:text-green-300';
       icon = '🔍';
+    } else if (isCoinAward) {
+      bgColor = 'bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/30 dark:to-amber-900/30';
+      borderColor = 'border-yellow-300 dark:border-yellow-700/50';
+      textColor = 'text-yellow-800 dark:text-yellow-300';
+      icon = '🪙';
     }
     
     return (
@@ -95,6 +102,19 @@ function ChatMessage({ message, formatAIMessage }) {
             <span>Câu trả lời chính xác!</span>
           </div>
         )}
+        
+        {/* Display image if present */}
+        {hasImage && (
+          <div className="mb-3">
+            <img
+              src={message.imageUrl || message.image}
+              alt="Message attachment"
+              className="max-w-full h-auto rounded-lg border border-gray-200 dark:border-gray-600"
+              style={{ maxWidth: '300px', maxHeight: '300px' }}
+            />
+          </div>
+        )}
+        
         <div 
           className={`${!isUser && !isError ? 'chat-message dark:text-gray-300' : ''}`}
           dangerouslySetInnerHTML={{ __html: formattedContent }}

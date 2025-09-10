@@ -7,7 +7,8 @@
     "save": "Save",
     "loading": "Loading...",
     "error": "Error",
-    "success": "Success"
+    "success": "Success",
+    "remove": "Remove"
   },
   "newChatModal": {
     "title": "Start a New Chat",
@@ -24,10 +25,36 @@
     },
     "input": {
       "placeholder": "Type your question here...",
+      "placeholderWithImage": "Add text or leave empty to use default question",
       "continueButton": "💡 I need more hints!",
       "fullAnswerButton": "📖 Teacher will give me the full answer!",
       "checkAnswerButton": "Check My Answer ✨",
       "answerPlaceholder": "Type your answer here..."
+    },
+    "image": {
+      "selected": "Image selected"
+    },
+    "coins": {
+      "earned": "You earned {amount} coins!",
+      "total": "Total coins: {total}",
+      "firstCorrect": "First correct answer bonus!"
+    },
+    "ranking": {
+      "points": "points",
+      "rank": "Rank",
+      "progressTo": "Progress to",
+      "pointsToNext": "points to next rank",
+      "maxRank": "Maximum rank achieved!"
+    },
+    "shop": {
+      "title": "Avatar Shop",
+      "owned": "Owned",
+      "buy": "Buy",
+      "select": "Select",
+      "using": "In Use",
+      "notEnough": "Not enough coins",
+      "purchaseSuccess": "Successfully purchased avatar!",
+      "purchaseError": "Error purchasing avatar!"
     },
     "messages": {
       "error": "Oops! Something went wrong. Please try again! 😊",
@@ -79,7 +106,10 @@
     "description": "Type your answer so your teacher can evaluate and give improvement suggestions! 😊",
     "placeholder": "Type your answer here...",
     "checkButton": "Check My Answer ✨",
-    "checking": "Checking..."
+    "checking": "Checking...",
+    "resubmit": "Submit Again",
+    "duplicateMessage": "You have already answered this question correctly with the same answer.",
+    "duplicateWarning": "You have already given this correct answer before. Are you sure you want to submit it again?"
   },
   "settings": {
     "language": "Language",
