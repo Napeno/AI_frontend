@@ -105,7 +105,8 @@ setError(t('leaderboard.loadingError'));
               to="/chat" 
               className="px-4 py-2 bg-seablue-gradient text-white rounded-lg hover:shadow-md transition-all duration-200 font-medium flex items-center gap-2"
             >
-🦭 {t('leaderboard.backToChat')}
+              <img src="/image/sealedu-logo.png" alt="Chat Logo" className="w-5 h-5" />
+              {t('leaderboard.backToChat')}
             </Link>
           </div>
         </div>
@@ -250,7 +251,7 @@ setError(t('leaderboard.loadingError'));
 
         {leaderboardData.length === 0 && !loading && (
           <div className="text-center py-12">
-            <div className="text-6xl mb-4">🦭</div>
+            <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-16 h-16 mx-auto mb-4" />
             <p className="text-gray-500 dark:text-gray-400 text-lg mb-2">Chưa có dữ liệu xếp hạng</p>
             <p className="text-sm text-gray-400 dark:text-gray-500">Hãy bắt đầu trò chuyện và kiếm điểm để xuất hiện trên bảng xếp hạng!</p>
           </div>

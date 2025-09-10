@@ -25,7 +25,8 @@ const ChatHeader = ({
         </button>
         <div className="flex-1">
           <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
-            🦭 {currentConversationTitle}
+            <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-6 h-6" />
+            {currentConversationTitle}
           </h1>
           <p className="text-sm text-seablue-600 dark:text-gray-400">{t('chat.subtitle')}</p>
         </div>

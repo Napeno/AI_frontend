@@ -42,7 +42,7 @@ const AuthForm = ({ initialMode = 'login' }) => {
     <div className="min-h-screen w-full bg-ocean-gradient flex items-center justify-center p-4 md:p-6">
       <form onSubmit={onSubmit} className="w-full max-w-md bg-white/90 dark:bg-gray-800/90 backdrop-blur rounded-3xl shadow-2xl auth-form-mobile md:p-8">
         <div className="text-center mb-6">
-          <div className="text-4xl mb-3">🦭</div>
+          <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-16 h-16 mx-auto mb-3" />
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-200">
             {mode === 'login' ? t('auth.welcomeBack') : t('auth.join')}
           </h1>
@@ -71,8 +71,8 @@ const AuthForm = ({ initialMode = 'login' }) => {
         {error && <div className="mb-4 text-sm text-red-600 dark:text-red-400 bg-red-50 p-3 rounded-lg">{error}</div>}
 
         <div className="mb-6">
-          <button disabled={loading} className="w-full bg-seablue-gradient text-white rounded-xl px-4 py-3 font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:transform-none">
-            {loading ? t('auth.pleaseWait') : (mode === 'login' ? `🦭 ${t('auth.login')}` : `🦭 ${t('auth.register')}`)}
+          <button disabled={loading} className="w-full bg-seablue-gradient text-white rounded-xl px-4 py-3 font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:transform-none flex items-center justify-center">
+            {loading ? t('auth.pleaseWait') : (mode === 'login' ? t('auth.login') : t('auth.register'))}
           </button>
         </div>
 
