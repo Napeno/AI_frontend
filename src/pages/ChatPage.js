@@ -10,12 +10,34 @@ import ChatMessage from '../components/chat/ChatMessage';
 import ChatInput from '../components/chat/ChatInput';
 import UserAnswerInput from '../components/chat/UserAnswerInput';
 import ChatActions from '../components/chat/ChatActions';
+import SealAnimation from '../components/SealAnimation';
 
 const ChatPage = () => {
   const [coinAnimationTrigger, setCoinAnimationTrigger] = useState(null);
+  const [sealAnimationTrigger, setSealAnimationTrigger] = useState(null);
+  const [currentBackground, setCurrentBackground] = useState(null);
+  const [pointsAnimationTrigger, setPointsAnimationTrigger] = useState(null);
   
   const handleCoinAnimation = (animationData) => {
     setCoinAnimationTrigger(animationData);
+  };
+
+  const handlePointsAnimation = (animationData) => {
+    setPointsAnimationTrigger(animationData);
+  };
+
+  const handleSealAnimation = (type, data = {}) => {
+    setSealAnimationTrigger({ type, ...data, timestamp: Date.now() });
+  };
+
+  const handleBackgroundChange = (background) => {
+    setCurrentBackground(background);
+    // Store in localStorage for persistence
+    if (background) {
+      localStorage.setItem('chatBackground', JSON.stringify(background));
+    } else {
+      localStorage.removeItem('chatBackground');
+    }
   };
 
   const {
@@ -42,7 +64,7 @@ const ChatPage = () => {
     continueChat,
     getFullAnswer,
     checkUserAnswer,
-  } = useChat(handleCoinAnimation);
+} = useChat(handleCoinAnimation, handlePointsAnimation);
 
   const [showSidebar, setShowSidebar] = useState(true);
   const [settingsSelected, setSettingsSelected] = useState(false);
@@ -51,9 +73,31 @@ const ChatPage = () => {
     loadConversations();
   }, [loadConversations]);
 
+  // Load background from localStorage on mount
+  useEffect(() => {
+    const savedBackground = localStorage.getItem('chatBackground');
+    if (savedBackground) {
+      try {
+        setCurrentBackground(JSON.parse(savedBackground));
+      } catch (error) {
+        console.error('Error parsing saved background:', error);
+        localStorage.removeItem('chatBackground');
+      }
+    }
+  }, []);
+
   useEffect(() => {
     if (messages.length > 0) {
       setSettingsSelected(true);
+    }
+  }, [messages]);
+
+  // Trigger animation based on answer check results
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage && lastMessage.sender === 'check-answer') {
+      const isCorrect = lastMessage.isCorrect;
+      handleSealAnimation('check-answer', { isCorrect });
     }
   }, [messages]);
 
@@ -61,6 +105,7 @@ const ChatPage = () => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
+      handleSealAnimation('new-question');
     }
   };
 
@@ -69,6 +114,21 @@ const ChatPage = () => {
       e.preventDefault();
       checkUserAnswer();
     }
+  };
+
+  const handleContinueChat = () => {
+    continueChat();
+    handleSealAnimation('hint');
+  };
+
+  const handleGetFullAnswer = () => {
+    getFullAnswer();
+    handleSealAnimation('full-answer');
+  };
+
+  const handleCheckAnswer = () => {
+    checkUserAnswer();
+    // Animation will be triggered based on the result in useEffect
   };
 
   const handleStartChat = (settings) => {
@@ -82,7 +142,7 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="h-screen bg-gray-100 dark:bg-gray-900 flex overflow-hidden">
+    <div className="h-screen bg-seablue-50 dark:bg-gray-900 flex overflow-hidden">
       {/* Sidebar */}
       <Sidebar
         showSidebar={showSidebar}
@@ -91,7 +151,8 @@ const ChatPage = () => {
         createNewChat={handleNewChatClick}
         loadConversation={loadConversation}
         deleteConversation={deleteConversation}
-        coinAnimationTrigger={coinAnimationTrigger}
+coinAnimationTrigger={coinAnimationTrigger}
+        pointsAnimationTrigger={pointsAnimationTrigger}
       />
 
       {/* Main Chat Area */}
@@ -101,10 +162,21 @@ const ChatPage = () => {
           showSidebar={showSidebar}
           setShowSidebar={setShowSidebar}
           currentConversationTitle={currentConversationTitle}
+          onBackgroundChange={handleBackgroundChange}
+          currentBackground={currentBackground}
         />
 
         {/* Chat Container - Fixed height with internal scroll */}
-        <div className="flex-1 bg-gray-50 dark:bg-gray-800 flex flex-col min-h-0">
+        <div 
+          className="flex-1 chat-background dark:bg-gray-800 flex flex-col min-h-0"
+          style={currentBackground ? {
+            backgroundImage: `url(${currentBackground.path})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          } : {}}
+          data-bg-image={currentBackground ? 'true' : undefined}
+        >
           {/* Messages - Scrollable area */}
           <div className="flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-700">
             {!settingsSelected && messages.length === 0 ? (
@@ -121,11 +193,12 @@ const ChatPage = () => {
             
             {isLoading && (
               <div className="flex justify-start mb-5">
-                <div className="max-w-[70%] px-4 py-3 rounded-2xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-bl-md shadow-md">
+                <div className="seal-avatar mr-3">🦭</div>
+                <div className="max-w-[70%] px-4 py-3 rounded-2xl bg-white dark:bg-gray-700 border border-seablue-200 dark:border-gray-600 rounded-bl-md shadow-md">
                   <div className="flex items-center space-x-1">
-                    <span className="w-2 h-2 bg-indigo-500 rounded-full animate-typing"></span>
-                    <span className="w-2 h-2 bg-indigo-500 rounded-full animate-typing" style={{animationDelay: '-0.32s'}}></span>
-                    <span className="w-2 h-2 bg-indigo-500 rounded-full animate-typing" style={{animationDelay: '-0.16s'}}></span>
+                    <span className="w-2 h-2 bg-seablue-500 rounded-full animate-typing"></span>
+                    <span className="w-2 h-2 bg-seablue-500 rounded-full animate-typing" style={{animationDelay: '-0.32s'}}></span>
+                    <span className="w-2 h-2 bg-seablue-500 rounded-full animate-typing" style={{animationDelay: '-0.16s'}}></span>
                   </div>
                 </div>
               </div>
@@ -154,7 +227,7 @@ const ChatPage = () => {
                 <UserAnswerInput
                   userAnswer={userAnswer}
                   setUserAnswer={setUserAnswer}
-                  checkUserAnswer={checkUserAnswer}
+                  checkUserAnswer={handleCheckAnswer}
                   isLoading={isLoading}
                   handleAnswerKeyPress={handleAnswerKeyPress}
                   messages={messages}
@@ -164,8 +237,8 @@ const ChatPage = () => {
               {/* Action buttons */}
               <ChatActions
                 hintCount={hintCount}
-                continueChat={continueChat}
-                getFullAnswer={getFullAnswer}
+                continueChat={handleContinueChat}
+                getFullAnswer={handleGetFullAnswer}
                 isLoading={isLoading}
                 showActions={messages.length > 0}
               />
@@ -173,6 +246,12 @@ const ChatPage = () => {
           )}
         </div>
       </div>
+
+      {/* SealEdu Animation */}
+      <SealAnimation 
+        trigger={sealAnimationTrigger}
+        onComplete={() => setSealAnimationTrigger(null)}
+      />
     </div>
   );
 };

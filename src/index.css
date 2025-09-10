@@ -8,6 +8,9 @@
     margin: 0;
     padding: 0;
     height: 100%;
+    font-family: theme('fontFamily.sans');
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   #root {
@@ -24,10 +27,10 @@
   }
 }
 
-/* Custom scrollbar styles */
+/* Custom scrollbar styles with SealEdu sea theme */
 .scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: rgb(209 213 219) rgb(243 244 246);
+  scrollbar-color: #7eeadd #f0fdfc;
 }
 
 .scrollbar-thin::-webkit-scrollbar {
@@ -35,18 +38,18 @@
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {
-  background: rgb(243 244 246);
+  background: #f0fdfc;
   border-radius: 10px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: rgb(209 213 219);
+  background: #7eeadd;
   border-radius: 10px;
-  border: 2px solid rgb(243 244 246);
+  border: 2px solid #f0fdfc;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: rgb(156 163 175);
+  background: #5eeee8;
 }
 
 /* Hide scrollbar for better UX on mobile */
@@ -75,6 +78,21 @@
 
 .animate-typing {
   animation: typing 1.4s infinite ease-in-out;
+}
+
+@keyframes pointsFly {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-40px) scale(0.8);
+    opacity: 0;
+  }
 }
 
 /* Math formula styling */
@@ -130,4 +148,131 @@
 
 .chat-message li {
   @apply mb-1;
+}
+
+/* SealEdu specific styles */
+.seal-avatar {
+  @apply w-8 h-8 rounded-full bg-seablue-gradient flex items-center justify-center text-white font-bold text-sm shadow-lg;
+}
+
+.user-avatar {
+  @apply w-8 h-8 rounded-full bg-gradient-to-br from-ocean-light to-ocean-medium flex items-center justify-center text-white font-bold text-sm shadow-lg;
+}
+
+/* SealEdu animations */
+.seal-animation {
+  @apply fixed left-4 bottom-20 z-50 w-16 h-16 animate-seal-bounce;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.seal-animation.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.seal-animation.hide {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+/* Ocean wave background for chat - with image placeholder support */
+.chat-background {
+  background: linear-gradient(135deg, #f0fdfc 0%, #ccfbf7 100%);
+  position: relative;
+}
+
+.chat-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237eeadd' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Support for custom background image */
+.chat-background[data-bg-image] {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.chat-background[data-bg-image]::before {
+  background-color: rgba(240, 253, 252, 0.3);
+  background-image: none;
+  z-index: -1;
+}
+
+/* Ensure all chat content stays above background */
+.chat-background > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Seal GIF container for homepage */
+.seal-container {
+  @apply flex items-center justify-center w-48 h-48 mx-auto mb-8 bg-seablue-gradient rounded-full shadow-xl animate-float;
+}
+
+.seal-gif {
+  @apply w-32 h-32 object-contain;
+}
+
+/* Responsive Design Improvements */
+@media (max-width: 768px) {
+  /* Make website larger on mobile */
+  .homepage-container {
+    @apply p-4;
+  }
+  
+  .homepage-content {
+    @apply p-6 text-base;
+  }
+  
+  .seal-container {
+    @apply w-32 h-32 mb-6;
+  }
+  
+  .seal-gif {
+    @apply w-24 h-24 text-3xl;
+  }
+  
+  /* Chat responsive improvements */
+  .chat-message {
+    @apply text-base leading-relaxed;
+  }
+  
+  /* Sidebar responsive */
+  .sidebar-mobile {
+    @apply fixed inset-y-0 left-0 z-50 w-full bg-white dark:bg-gray-800;
+  }
+  
+  /* Animation positioning for mobile */
+  .seal-animation {
+    @apply left-2 bottom-16 w-12 h-12;
+  }
+  
+  /* Auth form mobile optimization */
+  .auth-form-mobile {
+    @apply p-6 mx-4;
+  }
+}
+
+@media (min-width: 769px) {
+  /* Desktop optimizations */
+  .homepage-container {
+    @apply p-6;
+  }
+  
+  .homepage-content {
+    @apply p-8 text-lg;
+  }
+  
+  /* Larger text and elements on desktop */
+  .desktop-lg {
+    @apply text-xl;
+  }
 }

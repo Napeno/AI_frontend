@@ -235,56 +235,56 @@ const AvatarShop = ({ isOpen, onClose }) => {
                   {/* Avatar */}
                   <div className="text-center flex flex-col h-full">
                     <div> {/* Content wrapper */}
-                      <div className="text-6xl mb-2">{avatar.emoji}</div>
-                      <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">
-                        {avatar.name}
-                      </h3>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
-                        {avatar.description}
-                      </p>
+                    <div className="text-6xl mb-2">{avatar.emoji}</div>
+                    <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">
+                      {avatar.name}
+                    </h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                      {avatar.description}
+                    </p>
 
-                      {/* Price/Status */}
-                      {avatar.price === 0 ? (
+                    {/* Price/Status */}
+                    {avatar.price === 0 ? (
                         <div className="text-green-600 dark:text-green-400 font-semibold text-sm mb-3">
-                          Miễn phí
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-center gap-1 mb-3">
-                          <span className="text-yellow-600 dark:text-yellow-400">🪙</span>
-                          <span className="font-semibold text-gray-800 dark:text-gray-200">
-                            {avatar.price}
-                          </span>
-                        </div>
-                      )}
+                        Miễn phí
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-1 mb-3">
+                        <span className="text-yellow-600 dark:text-yellow-400">🪙</span>
+                        <span className="font-semibold text-gray-800 dark:text-gray-200">
+                          {avatar.price}
+                        </span>
+                      </div>
+                    )}
                     </div>
 
                     {/* Action Button */}
                     <div className="mt-auto">
-                      {isOwned ? (
-                        <button
-                          onClick={() => handleSelectAvatar(avatar.id)}
-                          disabled={isSelected}
-                          className={`w-full py-2 px-4 rounded-lg font-semibold transition-colors ${
-                            isSelected
-                              ? 'bg-indigo-500 text-white cursor-default'
-                              : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
-                          }`}
-                        >
-                          {isSelected ? 'Đang sử dụng' : 'Chọn'}
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handlePurchaseAvatar(avatar.id)}
-                          disabled={!canAfford || isLoading}
-                          className={`w-full py-2 px-4 rounded-lg font-semibold transition-colors ${
-                            canAfford
-                              ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                              : 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
-                          }`}
-                        >
-                          {isLoading ? 'Đang mua...' : canAfford ? 'Mua' : 'Không đủ xu'}
-                        </button>
-                      )}
+                    {isOwned ? (
+                      <button
+                        onClick={() => handleSelectAvatar(avatar.id)}
+                        disabled={isSelected}
+                        className={`w-full py-2 px-4 rounded-lg font-semibold transition-colors ${
+                          isSelected
+                            ? 'bg-indigo-500 text-white cursor-default'
+                            : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
+                        }`}
+                      >
+                        {isSelected ? 'Đang sử dụng' : 'Chọn'}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handlePurchaseAvatar(avatar.id)}
+                        disabled={!canAfford || isLoading}
+                        className={`w-full py-2 px-4 rounded-lg font-semibold transition-colors ${
+                          canAfford
+                            ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                            : 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
+                        }`}
+                      >
+                        {isLoading ? 'Đang mua...' : canAfford ? 'Mua' : 'Không đủ xu'}
+                      </button>
+                    )}
                     </div>
                   </div>
 

@@ -125,6 +125,30 @@
     "failedToSend": "Failed to send message",
     "failedToContinue": "Failed to get continuation"
   },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "subtitle": "Top performers in the SealEdu community",
+    "yourPosition": "Your Position",
+    "topRankings": "Top Rankings",
+    "coinsEarned": "coins earned",
+    "coins": "coins",
+    "you": "You",
+    "noData": "No leaderboard data available",
+    "noDataDescription": "Start chatting and earn points to appear on the leaderboard!",
+    "loadingError": "Unable to load leaderboard data. Please try again later.",
+    "loading": "Loading leaderboard...",
+    "page": "Page",
+    "of": "of",
+    "previous": "Previous",
+    "next": "Next",
+    "backToChat": "Back to Chat"
+  },
+  "background": {
+    "title": "Chat Background",
+    "selectBackground": "Select a background for your chat",
+    "default": "Default",
+    "changeBackground": "Change background"
+  },
   "levels": {
     "elementary": "Elementary School",
     "middle": "Middle School",
@@ -137,6 +161,26 @@
   "userProfile": {
     "settings": "Settings",
     "logout": "Log out"
+  },
+  "home": {
+    "title": "Welcome to <strong>SealEdu</strong>",
+    "subtitle": "Your AI learning companion",
+    "description": "Practice, get hints, and check your answers. Learn by doing with your friendly seal guide!",
+    "login": "Login",
+    "register": "Register",
+    "start": "🦭 Start Learning",
+    "steps": {
+      "step1Title": "🤔 Step 1",
+      "step1Desc": "Ask your question",
+      "step1Text": "Describe the problem clearly. Include what you tried. Your seal friend is ready to help!",
+      "step2Title": "💡 Step 2",
+      "step2Desc": "Get hints, not answers",
+      "step2Text": "Use Continue to get step-by-step hints that guide your thinking process.",
+      "step3Title": "✅ Step 3",
+      "step3Desc": "Check your work",
+      "step3Text": "Submit your attempt and get feedback and suggestions to improve."
+    },
+    "footer": "🌊 Built for learners. Be curious. Experiment. Improve daily with SealEdu! 🦭"
   },
   "settings": {
     "tabs": {
