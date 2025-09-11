@@ -221,31 +221,34 @@
   @apply w-32 h-32 object-contain;
 }
 
-/* Responsive Design Improvements */
-@media (max-width: 768px) {
-  /* Make website larger on mobile */
-  .homepage-container {
-    @apply p-4;
-  }
-  
-  .homepage-content {
-    @apply p-6 text-base;
-  }
-  
-  .seal-container {
-    @apply w-32 h-32 mb-6;
-  }
-  
-  .seal-gif {
-    @apply w-24 h-24 text-3xl;
-  }
-  
-  /* Chat responsive improvements */
+/* Enhanced Mobile Responsive Design */
+@media (max-width: 475px) {
+  /* Extra small devices */
   .chat-message {
-    @apply text-base leading-relaxed;
+    @apply text-sm leading-relaxed px-2;
   }
   
-  /* Sidebar responsive */
+  .seal-animation {
+    @apply left-2 bottom-14 w-10 h-10;
+  }
+  
+  /* Compact spacing for very small screens */
+  .homepage-hero-title {
+    @apply text-xl;
+  }
+  
+  .homepage-hero-subtitle {
+    @apply text-base;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Small devices - phones */
+  .chat-message {
+    @apply text-sm sm:text-base leading-relaxed;
+  }
+  
+  /* Sidebar should be full-width on mobile */
   .sidebar-mobile {
     @apply fixed inset-y-0 left-0 z-50 w-full bg-white dark:bg-gray-800;
   }
@@ -255,24 +258,46 @@
     @apply left-2 bottom-16 w-12 h-12;
   }
   
-  /* Auth form mobile optimization */
-  .auth-form-mobile {
-    @apply p-6 mx-4;
+  /* Optimize touch targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  /* Better button spacing on mobile */
+  .mobile-button-spacing {
+    @apply space-y-3;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  /* Medium devices - tablets */
+  .tablet-optimized {
+    @apply text-base;
   }
 }
 
 @media (min-width: 769px) {
   /* Desktop optimizations */
-  .homepage-container {
-    @apply p-6;
-  }
-  
-  .homepage-content {
-    @apply p-8 text-lg;
-  }
-  
-  /* Larger text and elements on desktop */
   .desktop-lg {
     @apply text-xl;
+  }
+  
+  /* Better desktop spacing */
+  .desktop-spacing {
+    @apply space-x-4;
+  }
+}
+
+/* Touch improvements for mobile */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .hover-effect:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Increase button sizes for better touch targets */
+  .touch-button {
+    @apply py-3 px-4 text-base;
   }
 }

@@ -8,7 +8,7 @@ const SettingsSidebar = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <div className="w-64 bg-gray-100 dark:bg-gray-900/50 p-4 border-r border-gray-200 dark:border-gray-700">
+    <div className="w-full md:w-64 bg-gray-100 dark:bg-gray-900/50 p-4 border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-700">
       <h2 className="text-lg font-semibold mb-4 dark:text-gray-200">{t('userProfile.settings')}</h2>
       <ul>
         {tabs.map(tab => (
