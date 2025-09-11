@@ -1,5 +1,4 @@
 import React from 'react';
-import { formatAIMessage } from '../../utils/chatUtils';
 
 function ChatMessage({ message, formatAIMessage, userAvatar }) {
 
@@ -46,34 +45,34 @@ function ChatMessage({ message, formatAIMessage, userAvatar }) {
     }
     
     return (
-      <div className="flex justify-center mb-5">
-        <div className={`max-w-[80%] px-5 py-3 rounded-full shadow-sm border-2 border-dashed ${bgColor} ${borderColor} ${textColor}`}>
-          <div className="flex items-center justify-center gap-3">
+      <div className="flex justify-center mb-4 sm:mb-5 px-2">
+        <div className={`max-w-[90%] sm:max-w-[80%] px-3 py-2 sm:px-5 sm:py-3 rounded-2xl sm:rounded-full shadow-sm border-2 border-dashed ${bgColor} ${borderColor} ${textColor}`}>
+          <div className="flex items-center justify-center gap-2 sm:gap-3">
             {isCoinAward && (
-              <div className="text-xl">
+              <div className="text-lg sm:text-xl">
                 {icon}
               </div>
             )}
-            <span className="text-base font-semibold flex items-center gap-2">
+            <span className="text-sm sm:text-base font-semibold flex items-center gap-1.5 sm:gap-2">
               {!isCoinAward &&(
                 <>
                  {isContinue &&(
                   <img
                     src="/gif/loading.gif"
                     alt="loading"
-                    className="w-12 h-12 inline-block align-middle"
+                    className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block align-middle"
                   />
                 )}
                 {(isCheckAnswer || isFullAnswer) &&(
                   <img
                     src="/gif/thinking.gif"
                     alt="thinking"
-                    className="w-12 h-12 inline-block align-middle"
+                    className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 inline-block align-middle"
                   />
                 )}
                 </>
               )}
-              {formattedContent}
+              <span className="text-center">{formattedContent}</span>
             </span>
           </div>
           {message.timestamp && (
@@ -89,7 +88,7 @@ function ChatMessage({ message, formatAIMessage, userAvatar }) {
   const isCorrect = message.isCorrect === true;
   const isIncorrect = message.isCorrect === false;
 
-  let containerClasses = "max-w-[80%] px-5 py-4 rounded-2xl shadow-md";
+  let containerClasses = "max-w-[75%] sm:max-w-[80%] px-3 py-3 sm:px-5 sm:py-4 rounded-2xl shadow-md";
   if (isUser) {
     containerClasses += " bg-gradient-to-r from-ocean-medium to-ocean-deep text-white rounded-br-md";
   } else if (isError) {
@@ -103,67 +102,67 @@ function ChatMessage({ message, formatAIMessage, userAvatar }) {
   }
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3 sm:mb-4 px-2`}>
       {/* Add avatar for AI messages */}
       {!isUser && (
-        <div className="seal-avatar mr-3 flex-shrink-0">
-          <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-6 h-6" />
+        <div className="seal-avatar mr-1.5 sm:mr-3 flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8">
+          <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-4 h-4 sm:w-6 sm:h-6" />
         </div>
       )}
       <div className={containerClasses}>
         {isIncorrect && (
           <div className="flex items-center mb-2 font-bold text-red-600 dark:text-red-400">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 mr-1.5 sm:mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
             </svg>
-            <span>Câu trả lời chưa chính xác</span>
+            <span className="text-xs sm:text-sm lg:text-base">Câu trả lời chưa chính xác</span>
           </div>
         )}
         {isCorrect && (
           <div className="flex items-center mb-2 font-bold text-green-600 dark:text-green-400">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 mr-1.5 sm:mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
-            <span>Câu trả lời chính xác!</span>
+            <span className="text-xs sm:text-sm lg:text-base">Câu trả lời chính xác!</span>
           </div>
         )}
 
         {/* Centered status image for correct/incorrect */}
         {(isCorrect || isIncorrect) && (
-          <div className="flex justify-center my-2">
+          <div className="flex justify-center my-2 sm:my-3">
             <img
               src={isCorrect ? '/image/seal-happy.png' : '/image/seal-sad.png'}
               alt={isCorrect ? 'correct' : 'incorrect'}
-              className="w-24 h-24 object-contain"
+              className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-contain"
             />
           </div>
         )}
         
         {/* Display image if present */}
         {hasImage && (
-          <div className="mb-3">
+          <div className="mb-2 sm:mb-3">
             <img
               src={message.imageUrl || message.image}
               alt="Message attachment"
               className="max-w-full h-auto rounded-lg border border-gray-200 dark:border-gray-600"
-              style={{ maxWidth: '520px', maxHeight: '520px' }}
+              style={{ maxWidth: '100%', maxHeight: '400px' }}
             />
           </div>
         )}
         
         <div 
-          className={`${!isUser && !isError ? 'chat-message dark:text-gray-300' : ''}`}
+          className={`text-sm sm:text-base ${!isUser && !isError ? 'chat-message dark:text-gray-300' : ''}`}
           dangerouslySetInnerHTML={{ __html: formattedContent }}
         ></div>
         {message.timestamp && (
-          <span className={`block text-xs mt-2 ${isUser ? 'text-blue-200' : 'text-gray-500 dark:text-gray-400'}`}>
+          <span className={`block text-xs mt-1.5 sm:mt-2 ${isUser ? 'text-blue-200' : 'text-gray-500 dark:text-gray-400'}`}>
             {message.timestamp}
           </span>
         )}
       </div>
       {/* Add avatar for user messages */}
       {isUser && (
-        <div className="user-avatar ml-3 flex-shrink-0">{userAvatar}</div>
+        <div className="user-avatar ml-1.5 sm:ml-3 flex-shrink-0 text-xs sm:text-base w-6 h-6 sm:w-8 sm:h-8">{userAvatar}</div>
       )}
     </div>
   );

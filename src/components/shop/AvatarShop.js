@@ -181,17 +181,17 @@ const AvatarShop = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-0 sm:p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-none sm:rounded-xl shadow-2xl w-full sm:max-w-4xl max-h-[100vh] sm:max-h-[90vh] overflow-hidden mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">🛒</span>
+        <div className="flex items-center justify-between p-3 sm:p-5 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="text-xl sm:text-2xl">🛒</span>
             <div>
-              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200">
                 Cửa hàng Avatar
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 Sở hữu: {userCoins} xu
               </p>
             </div>
@@ -200,15 +200,15 @@ const AvatarShop = ({ isOpen, onClose }) => {
             onClick={onClose}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="p-3 sm:p-5 overflow-y-auto max-h-[calc(100vh-64px)] sm:max-h-[calc(90vh-88px)]">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {AVATARS.map((avatar) => {
               const isOwned = ownedAvatars.includes(avatar.id);
               const isSelected = selectedAvatar === avatar.id;
@@ -219,7 +219,7 @@ const AvatarShop = ({ isOpen, onClose }) => {
               return (
                 <div
                   key={avatar.id}
-                  className={`relative p-4 rounded-xl border-2 transition-all duration-300 hover:scale-105 ${
+                  className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 hover:scale-[1.02] ${
                     isSelected
                       ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30'
                       : isOwned
@@ -228,18 +228,19 @@ const AvatarShop = ({ isOpen, onClose }) => {
                   }`}
                 >
                   {/* Category Badge */}
-                  <div className={`absolute -top-3 -right-3 px-2 py-1 rounded-full text-xs font-semibold bg-${category.color}-100 text-${category.color}-800 dark:bg-${category.color}-900/50 dark:text-${category.color}-200`}>
-                    {category.name}
+                  <div className={`absolute -top-2 sm:-top-3 -right-2 sm:-right-3 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold bg-${category.color}-100 text-${category.color}-800 dark:bg-${category.color}-900/50 dark:text-${category.color}-200`}>
+                    <span className="hidden sm:inline">{category.name}</span>
+                    <span className="sm:hidden">●</span>
                   </div>
 
                   {/* Avatar */}
                   <div className="text-center flex flex-col h-full">
                     <div> {/* Content wrapper */}
-                    <div className="text-6xl mb-2">{avatar.emoji}</div>
-                    <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">
+                    <div className="text-5xl sm:text-6xl mb-2">{avatar.emoji}</div>
+                    <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1 text-sm sm:text-base">
                       {avatar.name}
                     </h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2 sm:mb-3 hidden sm:block">
                       {avatar.description}
                     </p>
 
@@ -251,7 +252,7 @@ const AvatarShop = ({ isOpen, onClose }) => {
                     ) : (
                       <div className="flex items-center justify-center gap-1 mb-3">
                         <span className="text-yellow-600 dark:text-yellow-400">🪙</span>
-                        <span className="font-semibold text-gray-800 dark:text-gray-200">
+                        <span className="font-semibold text-gray-800 dark:text-gray-200 text-sm">
                           {avatar.price}
                         </span>
                       </div>
@@ -264,7 +265,7 @@ const AvatarShop = ({ isOpen, onClose }) => {
                       <button
                         onClick={() => handleSelectAvatar(avatar.id)}
                         disabled={isSelected}
-                        className={`w-full py-2 px-4 rounded-lg font-semibold transition-colors ${
+                        className={`w-full py-2 px-4 rounded-lg font-semibold text-sm transition-colors ${
                           isSelected
                             ? 'bg-indigo-500 text-white cursor-default'
                             : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
@@ -276,7 +277,7 @@ const AvatarShop = ({ isOpen, onClose }) => {
                       <button
                         onClick={() => handlePurchaseAvatar(avatar.id)}
                         disabled={!canAfford || isLoading}
-                        className={`w-full py-2 px-4 rounded-lg font-semibold transition-colors ${
+                        className={`w-full py-2 px-4 rounded-lg font-semibold text-sm transition-colors ${
                           canAfford
                             ? 'bg-blue-500 hover:bg-blue-600 text-white'
                             : 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
@@ -291,7 +292,7 @@ const AvatarShop = ({ isOpen, onClose }) => {
                   {/* Owned Badge */}
                   {isOwned && (
                     <div className="absolute top-2 left-2">
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                      <span className="bg-green-500 text-white text-[10px] sm:text-xs px-2 py-1 rounded-full">
                         ✓ Sở hữu
                       </span>
                     </div>

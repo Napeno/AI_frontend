@@ -35,28 +35,37 @@ const AppContent = () => {
     <div className={isChatPage ? "h-screen w-full" : "w-full"}>
       {/* Show navigation bar only for non-chat pages */}
       {!isChatPage && (
-        <div className="w-full p-3 bg-white border-b border-seablue-200 flex items-center justify-between shadow-sm">
-          <Link to="/" className="text-lg font-bold text-seablue-600 flex items-center gap-2">
-            <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-6 h-6" />
-            SealEdu
+        <div className="w-full p-3 sm:p-4 bg-white border-b border-seablue-200 flex items-center justify-between shadow-sm">
+          <Link to="/" className="text-lg sm:text-xl font-bold text-seablue-600 flex items-center gap-2">
+            <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-6 h-6 sm:w-7 sm:h-7" />
+            <span className="hidden xs:inline">SealEdu</span>
+            <span className="xs:hidden">SE</span>
           </Link>
-          <div className="text-sm flex items-center gap-4">
+          <div className="text-xs sm:text-sm flex items-center gap-2 sm:gap-4">
             {token ? (
               <>
-                <Link to="/leaderboard" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1">
-                  🏆 {t('leaderboard.title')}
+                <Link to="/leaderboard" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">
+                  <span className="text-sm">🏆</span>
+                  <span className="hidden sm:inline">{t('leaderboard.title')}</span>
                 </Link>
-                <Link to="/chat" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1">
-                  <img src="/image/sealedu-logo.png" alt="Chat Logo" className="w-5 h-5" />
-                  Chat
+                <Link to="/chat" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">
+                  <img src="/image/sealedu-logo.png" alt="Chat Logo" className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="hidden sm:inline">Chat</span>
                 </Link>
-                <span className="mr-2 text-gray-700">{user?.email}</span>
-                <button onClick={logout} className="text-seablue-600 hover:text-seablue-700 font-medium">Logout</button>
+                <div className="hidden md:flex items-center gap-2">
+                  <span className="text-gray-700 text-xs">{user?.email}</span>
+                  <button onClick={logout} className="text-seablue-600 hover:text-seablue-700 font-medium px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">Logout</button>
+                </div>
+                <div className="md:hidden">
+                  <button onClick={logout} className="text-seablue-600 hover:text-seablue-700 font-medium px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors text-xs">
+                    👋
+                  </button>
+                </div>
               </>
             ) : (
               <>
-                <Link to="/login" className="text-seablue-600 hover:text-seablue-700 mr-3 font-medium">Login</Link>
-                <Link to="/register" className="text-seablue-600 hover:text-seablue-700 font-medium">Register</Link>
+                <Link to="/login" className="text-seablue-600 hover:text-seablue-700 font-medium px-3 py-1.5 rounded-lg hover:bg-seablue-50 transition-colors">Login</Link>
+                <Link to="/register" className="bg-seablue-gradient text-white font-medium px-3 py-1.5 rounded-lg hover:shadow-md transition-all duration-200">Register</Link>
               </>
             )}
           </div>

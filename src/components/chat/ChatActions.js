@@ -12,10 +12,10 @@ const ChatActions = ({
   if (!showActions) return null;
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2 sm:space-y-3">
       {/* Hint counter display - only show if there are actual hints */}
       {hintCount > 0 && (
-        <div className="text-center text-sm text-gray-600 dark:text-gray-400">
+        <div className="text-center text-xs sm:text-sm text-gray-600 dark:text-gray-400 px-2">
           {hintCount === 1 && t('chat.hintCounter.one')}
           {hintCount === 2 && t('chat.hintCounter.two')}
           {hintCount === 3 && t('chat.hintCounter.three')}
@@ -28,7 +28,7 @@ const ChatActions = ({
         <button 
           onClick={continueChat} 
           disabled={isLoading}
-          className="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-full hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+          className="w-full py-2.5 sm:py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-2xl sm:rounded-full hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none text-sm sm:text-base touch-target"
         >
           {isLoading ? t('chat.actions.thinking') : t('chat.input.continueButton')}
         </button>
@@ -39,7 +39,7 @@ const ChatActions = ({
         <button 
           onClick={getFullAnswer} 
           disabled={isLoading}
-          className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+          className="w-full py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl sm:rounded-full hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none text-sm sm:text-base touch-target"
         >
           {isLoading ? t('chat.actions.preparing') : t('chat.input.fullAnswerButton')}
         </button>

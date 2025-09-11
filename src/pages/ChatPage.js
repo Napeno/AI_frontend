@@ -16,6 +16,7 @@ import SealAnimation from '../components/SealAnimation';
 
 const ChatPage = () => {
   const { user } = useAuth();
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
   const [coinAnimationTrigger, setCoinAnimationTrigger] = useState(null);
   const [sealAnimationTrigger, setSealAnimationTrigger] = useState(null);
   const [currentBackground, setCurrentBackground] = useState({
@@ -76,7 +77,7 @@ const ChatPage = () => {
     checkUserAnswer,
 } = useChat(handleCoinAnimation, handlePointsAnimation);
 
-  const [showSidebar, setShowSidebar] = useState(true);
+  const [showSidebar, setShowSidebar] = useState(window.innerWidth >= 768);
   const [settingsSelected, setSettingsSelected] = useState(false);
 
   useEffect(() => {
@@ -103,6 +104,30 @@ const ChatPage = () => {
       setSettingsSelected(true);
     }
   }, [messages]);
+
+  // Lift input above mobile keyboard using VisualViewport
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const updateOffset = () => {
+      const offset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      // Only apply on small screens
+      if (window.innerWidth < 768) {
+        setKeyboardOffset(offset);
+      } else {
+        setKeyboardOffset(0);
+      }
+    };
+    updateOffset();
+    vv.addEventListener('resize', updateOffset);
+    vv.addEventListener('scroll', updateOffset);
+    window.addEventListener('orientationchange', updateOffset);
+    return () => {
+      vv.removeEventListener('resize', updateOffset);
+      vv.removeEventListener('scroll', updateOffset);
+      window.removeEventListener('orientationchange', updateOffset);
+    };
+  }, []);
 
   // Trigger animation based on answer check results
   useEffect(() => {
@@ -154,18 +179,52 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="h-screen bg-seablue-50 dark:bg-gray-900 flex overflow-hidden">
+    <div className="h-screen bg-seablue-50 dark:bg-gray-900 flex overflow-hidden relative">
+      
       {/* Sidebar */}
-      <Sidebar
-        showSidebar={showSidebar}
-        conversations={conversations}
-        sessionId={sessionId}
-        createNewChat={handleNewChatClick}
-        loadConversation={loadConversation}
-        deleteConversation={deleteConversation}
-coinAnimationTrigger={coinAnimationTrigger}
-        pointsAnimationTrigger={pointsAnimationTrigger}
-      />
+      {/* Desktop sidebar (push layout) */}
+      <div className={`${showSidebar ? 'w-80 sm:w-72 md:w-80' : 'w-0'} md:w-80 transition-[width] duration-300 ease-out overflow-hidden h-full flex-shrink-0 hidden md:block`}>
+        <Sidebar
+          showSidebar={true}
+          conversations={conversations}
+          sessionId={sessionId}
+          createNewChat={handleNewChatClick}
+          loadConversation={loadConversation}
+          deleteConversation={deleteConversation}
+          coinAnimationTrigger={coinAnimationTrigger}
+          pointsAnimationTrigger={pointsAnimationTrigger}
+        />
+      </div>
+
+      {/* Mobile sidebar (overlay with white background and close button) */}
+      <div className={`md:hidden fixed inset-0 z-50 transition-opacity duration-300 ${showSidebar ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+        <div className={`w-full h-full bg-white dark:bg-gray-900 transform transition-transform duration-300 ease-out ${showSidebar ? 'translate-x-0' : '-translate-x-full'} flex flex-col`}>
+          <div className="p-3 sm:p-4 border-b border-seablue-200 dark:border-gray-700 flex items-center justify-between">
+            <div className="text-sm font-semibold text-gray-800 dark:text-gray-200">Menu</div>
+            <button
+              onClick={() => setShowSidebar(false)}
+              className="p-2 text-gray-600 dark:text-gray-300 hover:bg-seablue-50 dark:hover:bg-gray-800 rounded-lg"
+              aria-label="Close sidebar"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            <Sidebar
+              showSidebar={true}
+              conversations={conversations}
+              sessionId={sessionId}
+              createNewChat={handleNewChatClick}
+              loadConversation={loadConversation}
+              deleteConversation={deleteConversation}
+              coinAnimationTrigger={coinAnimationTrigger}
+              pointsAnimationTrigger={pointsAnimationTrigger}
+            />
+          </div>
+        </div>
+      </div>
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0">
@@ -190,7 +249,7 @@ coinAnimationTrigger={coinAnimationTrigger}
           data-bg-image={currentBackground ? 'true' : undefined}
         >
           {/* Messages - Scrollable area */}
-          <div className="flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-700">
+          <div className="flex-1 p-3 sm:p-4 lg:p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-700">
             {!settingsSelected && messages.length === 0 ? (
               <Welcome onStart={handleStartChat} />
             ) : (
@@ -224,7 +283,7 @@ coinAnimationTrigger={coinAnimationTrigger}
           
           {/* Input - Fixed at bottom */}
           {settingsSelected && (
-            <div className="flex-shrink-0 p-6 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex-shrink-0 p-3 sm:p-4 lg:p-6 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 max-h-[50vh] overflow-y-auto sm:max-h-none" style={{ transform: keyboardOffset ? `translateY(-${keyboardOffset}px)` : undefined }}>
               {/* Main chat input */}
               <ChatInput
                 inputMessage={inputMessage}
