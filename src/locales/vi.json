@@ -118,7 +118,21 @@
   },
   "subjects": {
     "naturalSciences": "Khoa học Tự nhiên",
-    "socialSciences": "Khoa học Xã hội"
+    "socialSciences": "Khoa học Xã hội",
+    "mathematics": "Toán học",
+    "englishLanguage": "Tiếng Anh"
+  },
+  "courses": {
+    "mathematics": "Toán học",
+    "physics": "Vật lý",
+    "chemistry": "Hóa học",
+    "biology": "Sinh học",
+    "history": "Lịch sử",
+    "geography": "Địa lý",
+    "civics": "Giáo dục công dân",
+    "literature": "Ngữ văn",
+    "foreignLanguage": "Ngoại ngữ",
+    "englishLanguage": "Tiếng Anh"
   },
   "userProfile": {
     "settings": "Cài đặt",
@@ -203,7 +217,7 @@
     "startJourney": "Bắt đầu hành trình học tập của bạn cùng chúng tôi!",
     "name": "Tên",
     "yourName": "Tên của bạn",
-    "email": "Email",
+    "username": "Tên đăng nhập",
     "password": "Mật khẩu",
     "pleaseWait": "Vui lòng chờ...",
     "login": "Đăng nhập",

@@ -157,7 +157,21 @@
   },
   "subjects": {
     "naturalSciences": "Natural Sciences",
-    "socialSciences": "Social Sciences"
+    "socialSciences": "Social Sciences", 
+    "mathematics": "Mathematics",
+    "englishLanguage": "English Language"
+  },
+  "courses": {
+    "mathematics": "Mathematics",
+    "physics": "Physics", 
+    "chemistry": "Chemistry",
+    "biology": "Biology",
+    "history": "History",
+    "geography": "Geography",
+    "civics": "Civics",
+    "literature": "Literature", 
+    "foreignLanguage": "Foreign Language",
+    "englishLanguage": "English Language"
   },
   "userProfile": {
     "settings": "Settings",
@@ -209,7 +223,7 @@
     "startJourney": "Start your learning journey with us!",
     "name": "Name",
     "yourName": "Your name",
-    "email": "Email",
+    "username": "Username",
     "password": "Password",
     "pleaseWait": "Please wait...",
     "login": "Login",

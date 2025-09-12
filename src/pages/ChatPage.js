@@ -179,7 +179,7 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="h-screen bg-seablue-50 dark:bg-gray-900 flex overflow-hidden relative">
+    <div className="h-screen bg-seablue-50 dark:bg-gray-900 flex overflow-hidden relative safari-transform-fix">
       
       {/* Sidebar */}
       {/* Desktop sidebar (push layout) */}
@@ -249,7 +249,7 @@ const ChatPage = () => {
           data-bg-image={currentBackground ? 'true' : undefined}
         >
           {/* Messages - Scrollable area */}
-          <div className="flex-1 p-3 sm:p-4 lg:p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-700">
+          <div className="flex-1 p-3 sm:p-4 lg:p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-700 scrollable-content">
             {!settingsSelected && messages.length === 0 ? (
               <Welcome onStart={handleStartChat} />
             ) : (
@@ -283,7 +283,7 @@ const ChatPage = () => {
           
           {/* Input - Fixed at bottom */}
           {settingsSelected && (
-            <div className="flex-shrink-0 p-3 sm:p-4 lg:p-6 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 max-h-[50vh] overflow-y-auto sm:max-h-none" style={{ transform: keyboardOffset ? `translateY(-${keyboardOffset}px)` : undefined }}>
+            <div className="flex-shrink-0 p-3 sm:p-4 lg:p-6 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 max-h-[50vh] overflow-y-auto sm:max-h-none input-container" style={{ transform: keyboardOffset ? `translateY(-${keyboardOffset}px)` : undefined }}>
               {/* Main chat input */}
               <ChatInput
                 inputMessage={inputMessage}

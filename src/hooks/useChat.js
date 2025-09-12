@@ -184,6 +184,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     if (!inputMessage.trim() || isLoading) return;
     
     const userMessage = inputMessage.trim();
+    const isFirstMessage = messages.length === 0; // Check if this is the first message
     setInputMessage('');
     setIsLoading(true);
     
@@ -247,6 +248,15 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
             }
             return [...prev, botMessage];
           });
+
+          // If this was the first message, update title and reload conversations to update sidebar
+          if (isFirstMessage) {
+            const newTitle = userMessage.length > 50 
+              ? userMessage.substring(0, 50) + '...' 
+              : userMessage;
+            setCurrentConversationTitle(newTitle);
+            loadConversations();
+          }
         } else {
           console.error('Invalid message format:', data);
           const errorMessage = {

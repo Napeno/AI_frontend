@@ -40,6 +40,8 @@ const NewChatModal = ({ isOpen, onClose, onStartChat }) => {
             >
               <option value="natural_sciences">{t('subjects.naturalSciences')}</option>
               <option value="social_sciences">{t('subjects.socialSciences')}</option>
+              <option value="mathematics">{t('subjects.mathematics')}</option>
+              <option value="english_language">{t('subjects.englishLanguage')}</option>
             </select>
           </div>
         </div>

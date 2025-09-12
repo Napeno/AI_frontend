@@ -8,7 +8,7 @@ const AuthForm = ({ initialMode = 'login' }) => {
   const navigate = useNavigate();
   const [mode, setMode] = useState(initialMode);
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ const AuthForm = ({ initialMode = 'login' }) => {
       const res = await fetch(`${API_BASE_URL}/auth/${mode === 'login' ? 'login' : 'register'}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(mode === 'login' ? { email, password } : { name, email, password }),
+        body: JSON.stringify(mode === 'login' ? { username, password } : { name, username, password }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -39,7 +39,7 @@ const AuthForm = ({ initialMode = 'login' }) => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-ocean-gradient flex items-center justify-center px-4 py-6 sm:p-6">
+    <div className="min-h-screen w-full bg-ocean-gradient flex items-center justify-center px-4 py-6 sm:p-6 safari-transform-fix">
       <form onSubmit={onSubmit} className="w-full max-w-md bg-white/90 dark:bg-gray-800/90 backdrop-blur rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8">
         <div className="text-center mb-6 sm:mb-8">
           <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3" />
@@ -59,8 +59,8 @@ const AuthForm = ({ initialMode = 'login' }) => {
         )}
 
         <div className="mb-4">
-          <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400 mb-2">{t('auth.email')}</label>
-          <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} className="w-full border-2 border-seablue-200 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-seablue-400 focus:border-seablue-400 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 transition-colors" placeholder="you@example.com" required />
+          <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400 mb-2">{t('auth.username')}</label>
+          <input type="text" value={username} onChange={(e)=>setUsername(e.target.value)} className="w-full border-2 border-seablue-200 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-seablue-400 focus:border-seablue-400 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 transition-colors" placeholder="your_username" required />
         </div>
 
         <div className="mb-4">
@@ -82,11 +82,6 @@ const AuthForm = ({ initialMode = 'login' }) => {
           </button>
         </div>
 
-        {mode === 'login' && (
-          <div className="mt-4 text-center">
-            <Link to="/forgot-password" className="text-seablue-500 hover:text-seablue-600 text-xs sm:text-sm">{t('auth.forgotPassword')}</Link>
-          </div>
-        )}
 
         <div className="mt-6 text-xs text-gray-500 dark:text-gray-400 text-center bg-seablue-50 dark:bg-gray-700/50 p-3 rounded-lg">
           {t('auth.tip')}
