@@ -6,8 +6,6 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ChatPage from './pages/ChatPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 
 const AppContent = () => {
@@ -53,7 +51,7 @@ const AppContent = () => {
                   <span className="hidden sm:inline">Chat</span>
                 </Link>
                 <div className="hidden md:flex items-center gap-2">
-                  <span className="text-gray-700 text-xs">{user?.email}</span>
+                  <span className="text-gray-700 text-xs">{user?.username}</span>
                   <button onClick={logout} className="text-seablue-600 hover:text-seablue-700 font-medium px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">Logout</button>
                 </div>
                 <div className="md:hidden">
@@ -76,8 +74,6 @@ const AppContent = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={token ? <Navigate to="/chat" replace /> : <LoginPage />} />
         <Route path="/register" element={token ? <Navigate to="/chat" replace /> : <RegisterPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/chat" element={token ? <ChatPage /> : <Navigate to="/login" replace />} />
         <Route path="/leaderboard" element={token ? <LeaderboardPage /> : <Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />

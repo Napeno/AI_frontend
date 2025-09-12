@@ -38,6 +38,7 @@ const LeaderboardPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 20;
+  console.log(user);
 
   useEffect(() => {
     fetchLeaderboard();
