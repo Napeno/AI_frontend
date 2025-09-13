@@ -12,7 +12,7 @@ import ChatMessage from '../components/chat/ChatMessage';
 import ChatInput from '../components/chat/ChatInput';
 import UserAnswerInput from '../components/chat/UserAnswerInput';
 import ChatActions from '../components/chat/ChatActions';
-import SealAnimation from '../components/SealAnimation';
+// import SealAnimation from '../components/SealAnimation';
 
 const ChatPage = () => {
   const { user } = useAuth();
@@ -37,9 +37,9 @@ const ChatPage = () => {
     setPointsAnimationTrigger(animationData);
   };
 
-  const handleSealAnimation = (type, data = {}) => {
-    setSealAnimationTrigger({ type, ...data, timestamp: Date.now() });
-  };
+  // const handleSealAnimation = (type, data = {}) => {
+  //   setSealAnimationTrigger({ type, ...data, timestamp: Date.now() });
+  // };
 
   const handleBackgroundChange = (background) => {
     setCurrentBackground(background);
@@ -137,7 +137,7 @@ const ChatPage = () => {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage && lastMessage.sender === 'check-answer') {
       const isCorrect = lastMessage.isCorrect;
-      handleSealAnimation('check-answer', { isCorrect });
+      // handleSealAnimation('check-answer', { isCorrect });
     }
   }, [messages]);
 
@@ -145,7 +145,7 @@ const ChatPage = () => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
-      handleSealAnimation('new-question');
+      // handleSealAnimation('new-question');
     }
   };
 
@@ -158,12 +158,12 @@ const ChatPage = () => {
 
   const handleContinueChat = () => {
     continueChat();
-    handleSealAnimation('hint');
+    // handleSealAnimation('hint');
   };
 
   const handleGetFullAnswer = () => {
     getFullAnswer();
-    handleSealAnimation('full-answer');
+    // handleSealAnimation('full-answer');
   };
 
   const handleCheckAnswer = () => {
@@ -328,10 +328,10 @@ const ChatPage = () => {
       </div>
 
       {/* SealEdu Animation */}
-      <SealAnimation 
+      {/* <SealAnimation 
         trigger={sealAnimationTrigger}
         onComplete={() => setSealAnimationTrigger(null)}
-      />
+      /> */}
     </div>
   );
 };
