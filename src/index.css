@@ -399,7 +399,10 @@ button,
   /* Force hardware acceleration for smoother animations */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
-  will-change: transform;
+  will-change: padding-bottom;
+  transition: padding-bottom 0.2s ease-out;
+  /* Ensure container stays at bottom */
+  overflow: visible;
 }
 
 /* Safari mobile overlay and modal fixes */

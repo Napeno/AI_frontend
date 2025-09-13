@@ -40,11 +40,11 @@ const UserAnswerInput = ({
   };
 
   return (
-    <div className="mb-3 sm:mb-4 p-3 sm:p-4 bg-blue-50 rounded-lg border border-blue-200 dark:bg-blue-900/50 dark:border-blue-700/60">
-      <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-200 mb-2 font-medium">
+    <div className="mb-2 sm:mb-3 p-2.5 sm:p-3 bg-blue-50 rounded-lg border border-blue-200 dark:bg-blue-900/50 dark:border-blue-700/60">
+      <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-200 mb-1 sm:mb-2 font-medium">
         {t('userAnswer.title')}
       </p>
-      <p className="text-xs text-blue-600 dark:text-blue-300 mb-2 sm:mb-3">
+      <p className="text-xs text-blue-600 dark:text-blue-300 mb-2">
         {t('userAnswer.description')}
       </p>
       
@@ -68,13 +68,13 @@ const UserAnswerInput = ({
           onKeyPress={handleAnswerKeyPress}
           placeholder={t('userAnswer.placeholder')}
           disabled={isLoading}
-          rows="2"
-          className="flex-1 px-3 py-2.5 sm:px-4 sm:py-3 border-2 border-blue-200 rounded-lg text-sm resize-none outline-none focus:border-blue-500 transition-colors disabled:bg-blue-100 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-blue-700 dark:text-gray-200 dark:focus:border-blue-500 dark:disabled:bg-gray-700"
+          rows="1"
+          className="flex-1 px-3 py-2 sm:px-4 sm:py-3 border-2 border-blue-200 rounded-lg text-sm resize-none outline-none focus:border-blue-500 transition-colors disabled:bg-blue-100 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-blue-700 dark:text-gray-200 dark:focus:border-blue-500 dark:disabled:bg-gray-700"
         />
         <button 
           onClick={handleAnswerSubmit} 
           disabled={isLoading || !userAnswer.trim()}
-          className={`check-answer-button px-4 py-2.5 sm:px-6 sm:py-3 font-semibold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none text-sm sm:text-base touch-target ${
+          className={`check-answer-button px-3 py-2 sm:px-6 sm:py-3 font-semibold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none text-sm sm:text-base touch-target ${
             hasDuplicateAnswer 
               ? 'bg-yellow-600 hover:bg-yellow-700 text-white' 
               : 'bg-blue-600 hover:bg-blue-700 text-white'

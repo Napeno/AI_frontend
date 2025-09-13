@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
+import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
 import t from '../locales/i18n';
 
 const AuthForm = ({ initialMode = 'login' }) => {
@@ -12,6 +13,7 @@ const AuthForm = ({ initialMode = 'login' }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '/api';
 
@@ -27,6 +29,9 @@ const AuthForm = ({ initialMode = 'login' }) => {
       });
       const data = await res.json();
       if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          throw new Error(mode === 'login' ? 'Tên đăng nhập hoặc mật khẩu không đúng' : (data.error || 'Auth failed'));
+        }
         throw new Error(data.error || 'Auth failed');
       }
       login(data);
@@ -65,10 +70,33 @@ const AuthForm = ({ initialMode = 'login' }) => {
 
         <div className="mb-4">
           <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400 mb-2">{t('auth.password')}</label>
-          <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} className="w-full border-2 border-seablue-200 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-seablue-400 focus:border-seablue-400 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 transition-colors" placeholder="••••••••" required />
+          <div className="relative">
+            <input 
+              type={showPassword ? "text" : "password"} 
+              value={password} 
+              onChange={(e)=>setPassword(e.target.value)} 
+              className="w-full border-2 border-seablue-200 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3 pr-10 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-seablue-400 focus:border-seablue-400 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 transition-colors" 
+              placeholder="••••••••" 
+              required 
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+            >
+              {showPassword ? <IoEyeOffOutline size={20} /> : <IoEyeOutline size={20} />}
+            </button>
+          </div>
         </div>
 
-        {error && <div className="mb-4 text-xs sm:text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">{error}</div>}
+        {error && (
+          <div className="mb-4 text-xs sm:text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 p-3 rounded-lg flex items-center">
+            <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            <span>{error}</span>
+          </div>
+        )}
 
         <div className="mb-6">
           <button disabled={loading} className="w-full bg-seablue-gradient text-white rounded-xl px-4 py-2.5 sm:py-3 text-sm sm:text-base font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:transform-none flex items-center justify-center">
