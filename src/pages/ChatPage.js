@@ -105,26 +105,29 @@ const ChatPage = () => {
     }
   }, [messages]);
 
-  // Lift input above mobile keyboard using VisualViewport
+  // Stable mobile keyboard handling using VisualViewport
   useEffect(() => {
     const vv = window.visualViewport;
     if (!vv) return;
+    
     const updateOffset = () => {
-      const offset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-      // Only apply on small screens
+      // Only apply on mobile screens
       if (window.innerWidth < 768) {
-        setKeyboardOffset(offset);
+        const keyboardHeight = Math.max(0, window.innerHeight - vv.height);
+        setKeyboardOffset(keyboardHeight);
       } else {
         setKeyboardOffset(0);
       }
     };
+    
     updateOffset();
     vv.addEventListener('resize', updateOffset);
-    vv.addEventListener('scroll', updateOffset);
-    window.addEventListener('orientationchange', updateOffset);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(updateOffset, 100); // Delay to allow orientation change
+    });
+    
     return () => {
       vv.removeEventListener('resize', updateOffset);
-      vv.removeEventListener('scroll', updateOffset);
       window.removeEventListener('orientationchange', updateOffset);
     };
   }, []);
@@ -283,7 +286,10 @@ const ChatPage = () => {
           
           {/* Input - Fixed at bottom */}
           {settingsSelected && (
-            <div className="flex-shrink-0 p-3 sm:p-4 lg:p-6 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 max-h-[50vh] overflow-y-auto sm:max-h-none input-container" style={{ transform: keyboardOffset ? `translateY(-${keyboardOffset}px)` : undefined }}>
+            <div 
+              className="flex-shrink-0 p-2 sm:p-4 lg:p-6 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 max-h-[50vh] overflow-y-auto sm:max-h-none input-container" 
+              style={{ paddingBottom: keyboardOffset ? `${keyboardOffset + 8}px` : undefined }}
+            >
               {/* Main chat input */}
               <ChatInput
                 inputMessage={inputMessage}

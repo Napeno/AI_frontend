@@ -36,22 +36,22 @@ const ChatInput = ({
   };
 
   return (
-    <div className="mb-3 sm:mb-4">
-      {/* Image preview */}
+    <div className="mb-2 sm:mb-3">
+      {/* Image preview - More compact on mobile */}
       {selectedImage && (
-        <div className="mb-3 p-2.5 sm:p-3 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">
+        <div className="mb-2 sm:mb-3 p-2 sm:p-2.5 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
+            <span className="text-xs text-gray-600 dark:text-gray-400 truncate">
               {t('chat.image.selected')}: {selectedImage.name}
             </span>
             <button
               onClick={handleImageRemove}
-              className="text-red-500 hover:text-red-700 text-xs sm:text-sm font-medium px-2 py-1 rounded touch-target"
+              className="text-red-500 hover:text-red-700 text-xs font-medium px-1.5 py-0.5 rounded touch-target"
             >
               {t('common.remove')}
             </button>
           </div>
-          <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
+          <div className="w-16 h-16 sm:w-24 sm:h-24 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
             <img
               src={URL.createObjectURL(selectedImage)}
               alt="Preview"
@@ -68,15 +68,13 @@ const ChatInput = ({
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             onFocus={(e) => {
-              // On mobile, scroll the input into view when keyboard appears
-              setTimeout(() => {
-                e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }, 300);
+              // Mobile keyboard handling is done at page level
+              // Just ensure the input stays visible without aggressive scrolling
             }}
             placeholder={selectedImage ? t('chat.input.placeholderWithImage') : t('chat.input.placeholder')}
             disabled={isLoading}
             rows="1"
-            className="w-full px-3 py-2.5 pr-10 sm:px-4 sm:py-3 sm:pr-12 border-2 border-gray-200 rounded-2xl sm:rounded-full text-sm resize-none outline-none focus:border-indigo-500 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:border-indigo-500 dark:disabled:bg-gray-700"
+            className="w-full px-3 py-2 pr-10 sm:px-4 sm:py-3 sm:pr-12 border-2 border-gray-200 rounded-2xl sm:rounded-full text-sm resize-none outline-none focus:border-indigo-500 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:border-indigo-500 dark:disabled:bg-gray-700"
           />
           
           {/* Image upload button */}
@@ -102,7 +100,7 @@ const ChatInput = ({
         <button 
           onClick={handleSend} 
           disabled={isLoading || (!inputMessage.trim() && !selectedImage)}
-          className="px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-2xl sm:rounded-full hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none text-sm sm:text-base touch-target"
+          className="px-3 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-2xl sm:rounded-full hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none text-sm sm:text-base touch-target"
         >
           <span className="hidden sm:inline">{t('common.send')}</span>
           <span className="sm:hidden">📤</span>
