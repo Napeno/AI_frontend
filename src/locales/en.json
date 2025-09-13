@@ -20,14 +20,14 @@
     "subtitle": "Smart Learning with AI",
     "welcome": {
       "title": "🎉 Welcome to the smart classroom!",
-      "description": "Your teacher will help you learn in the most interesting way",
+      "description": "I will help you learn in the most interesting way",
       "instruction": "Ask any question and you'll receive helpful hints! ✨"
     },
     "input": {
       "placeholder": "Type your question here...",
       "placeholderWithImage": "Add text or leave empty to use default question",
       "continueButton": "💡 I need more hints!",
-      "fullAnswerButton": "📖 Teacher will give me the full answer!",
+      "fullAnswerButton": "📖 I'll give you the full answer!",
       "checkAnswerButton": "Check My Answer ✨",
       "answerPlaceholder": "Type your answer here..."
     },
@@ -73,7 +73,7 @@
       "preparing": "Preparing... 📚",
       "checking": "Checking...",
       "needMoreHints": "💡 I need more hints!",
-      "fullAnswer": "📖 Teacher will give me the full answer!"
+      "fullAnswer": "📖 I'll give you the full answer!"
     }
   },
   "sidebar": {
@@ -103,7 +103,7 @@
   },
   "userAnswer": {
     "title": "💭 Would you like to check your answer?",
-    "description": "Type your answer so your teacher can evaluate and give improvement suggestions! 😊",
+    "description": "Type your answer so I can evaluate and give improvement suggestions! 😊",
     "placeholder": "Type your answer here...",
     "checkButton": "Check My Answer ✨",
     "checking": "Checking...",
@@ -219,7 +219,7 @@
   "auth": {
     "welcomeBack": "Welcome back to SealEdu!",
     "join": "Join SealEdu",
-    "signInContinue": "Sign in to continue learning with your seal friend!",
+    "signInContinue": "Sign in to continue learning with us!",
     "startJourney": "Start your learning journey with us!",
     "name": "Name",
     "yourName": "Your name",

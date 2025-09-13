@@ -25,11 +25,11 @@ const AvatarShop = ({ isOpen, onClose }) => {
       category: 'education',
     },
     {
-      id: 'teacher',
-      name: 'Giáo viên',
+      id: 'friend',
+      name: 'Bạn học',
       price: 100,
       emoji: '👩‍🏫',
-      description: 'Phong cách giáo viên chuyên nghiệp',
+      description: 'Phong cách bạn học thân thiện',
       category: 'education',
     },
     {

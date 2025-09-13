@@ -19,17 +19,17 @@
     "title": "Chatbot AI",
     "subtitle": "Học tập thông minh với AI",
     "welcome": {
-      "title": "🎉 Chào mừng em đến với lớp học thông minh!",
-      "description": "Thầy/cô sẽ giúp em học tập theo cách thú vị nhất",
-      "instruction": "Hãy đặt câu hỏi và em sẽ nhận được những gợi ý hữu ích! ✨"
+      "title": "🎉 Chào mừng bạn đến với lớp học thông minh!",
+      "description": "Tớ sẽ giúp bạn học tập theo cách thú vị nhất",
+      "instruction": "Hãy đặt câu hỏi và bạn sẽ nhận được những gợi ý hữu ích! ✨"
     },
     "input": {
-      "placeholder": "Nhập câu hỏi của em ở đây...",
+      "placeholder": "Nhập câu hỏi của bạn ở đây...",
       "placeholderWithImage": "Thêm text hoặc để trống để sử dụng câu hỏi mặc định",
-      "answerPlaceholder": "Nhập câu trả lời của em ở đây...",
+      "answerPlaceholder": "Nhập câu trả lời của bạn ở đây...",
       "checkAnswerButton": "Kiểm tra câu trả lời ✨",
-      "continueButton": "💡 Em cần thêm gợi ý!",
-      "fullAnswerButton": "📖 Thầy/cô sẽ trả lời đầy đủ cho em!"
+      "continueButton": "💡 Tớ cần thêm gợi ý!",
+      "fullAnswerButton": "📖 Tớ sẽ trả lời đầy đủ cho bạn!"
     },
     "image": {
       "selected": "Đã chọn hình ảnh"
@@ -57,10 +57,10 @@
       "purchaseError": "Có lỗi khi mua avatar!"
     },
     "hintCounter": {
-      "one": "🎯 Em đã nhận được 1 gợi ý rồi!",
-      "two": "🎯 Em đã nhận được 2 gợi ý rồi!",
-      "three": "🎯 Em đã nhận được 3 gợi ý rồi!",
-      "four": "🎯 Em đã nhận được 4 gợi ý rồi!"
+      "one": "🎯 Bạn đã nhận được 1 gợi ý rồi!",
+      "two": "🎯 Bạn đã nhận được 2 gợi ý rồi!",
+      "three": "🎯 Bạn đã nhận được 3 gợi ý rồi!",
+      "four": "🎯 Bạn đã nhận được 4 gợi ý rồi!"
     },
     "messages": {
       "error": "Ôi không! Có gì đó sai rồi. Hãy thử lại nhé! 😊",
@@ -72,8 +72,8 @@
       "thinking": "Đang suy nghĩ... 🤔",
       "preparing": "Đang chuẩn bị... 📚",
       "checking": "Đang kiểm tra...",
-      "needMoreHints": "💡 Em cần thêm gợi ý!",
-      "fullAnswer": "📖 Thầy/cô sẽ trả lời đầy đủ cho em!"
+      "needMoreHints": "💡 Tớ cần thêm gợi ý!",
+      "fullAnswer": "📖 Tớ sẽ trả lời đầy đủ cho bạn!"
     }
   },
   "sidebar": {
@@ -102,9 +102,9 @@
     }
   },
   "userAnswer": {
-    "title": "💭 Em có muốn kiểm tra câu trả lời của mình không?",
-    "description": "Nhập câu trả lời của em để thầy/cô đánh giá và đưa ra gợi ý cải thiện nhé! 😊",
-    "placeholder": "Nhập câu trả lời của em ở đây...",
+    "title": "💭 Bạn có muốn kiểm tra câu trả lời của mình không?",
+    "description": "Nhập câu trả lời của bạn để tớ đánh giá và đưa ra gợi ý cải thiện nhé! 😊",
+    "placeholder": "Nhập câu trả lời của bạn ở đây...",
     "checkButton": "Kiểm tra câu trả lời ✨",
     "checking": "Đang kiểm tra...",
     "resubmit": "Gửi lại",
@@ -183,7 +183,7 @@
     "steps": {
       "step1Title": "🤔 Bước 1",
       "step1Desc": "Đặt câu hỏi",
-      "step1Text": "Mô tả vấn đề rõ ràng. Nêu những gì bạn đã thử. Bạn hải cẩu luôn sẵn sàng giúp đỡ!",
+      "step1Text": "Mô tả vấn đề rõ ràng. Nêu những gì bạn đã thử. Cậu hải cẩu luôn sẵn sàng giúp đỡ!",
       "step2Title": "💡 Bước 2",
       "step2Desc": "Nhận gợi ý, không phải đáp án",
       "step2Text": "Sử dụng chức năng Gợi ý để nhận hướng dẫn từng bước cho cách suy nghĩ.",
@@ -214,7 +214,7 @@
     "welcomeBack": "Chào mừng trở lại với SealEdu!",
     "join": "Tham gia SealEdu",
     "signInContinue": "Đăng nhập để tiếp tục học cùng bạn hải cẩu nhé!",
-    "startJourney": "Bắt đầu hành trình học tập của bạn cùng chúng tôi!",
+    "startJourney": "Bắt đầu hành trình học tập của bạn cùng chúng tớ!",
     "name": "Tên",
     "yourName": "Tên của bạn",
     "username": "Tên đăng nhập",

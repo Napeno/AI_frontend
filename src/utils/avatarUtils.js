@@ -1,7 +1,7 @@
 export const AVATAR_EMOJIS = {
   default: '👤',
   student: '🧑‍🎓',
-  teacher: '👩‍🏫',
+  friend: '👩‍🏫',
   scientist: '🧑‍🔬',
   artist: '🧑‍🎨',
   engineer: '👷',

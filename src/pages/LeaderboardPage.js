@@ -9,7 +9,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:900
 const AVATAR_EMOJIS = {
   default: '👤',
   student: '🧑‍🎓',
-  teacher: '👩‍🏫',
+  friend: '👩‍🏫',
   scientist: '🧑‍🔬',
   artist: '🧑‍🎨',
   engineer: '👷',

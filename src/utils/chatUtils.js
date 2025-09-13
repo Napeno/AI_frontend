@@ -13,15 +13,15 @@ export const isSystemMessage = (text) => {
     "Học sinh đã đưa ra câu trả lời để kiểm tra. Hãy:",
     "Học sinh đang gặp khó khăn và cần thêm gợi ý. Hãy:",
     "Học sinh đã yêu cầu được trả lời đầy đủ. Hãy:",
-    "Bạn là một người thầy thân thiện và kiên nhẫn",
+    "Bạn là một người bạn thân thiện và kiên nhẫn",
     "Người dùng đang bị kẹt. Hãy xem câu hỏi cuối cùng",
-    "Bạn là một người thầy theo phương pháp Socratic",
+    "Bạn là một người bạn theo phương pháp Socratic",
     
     // New AI internal prompts (English)
     "The student has provided their answer for checking. Please:",
     "The student is having difficulty and needs more hints. Please:",
     "The student has requested a complete answer. Please:",
-    "You are a friendly and patient teacher",
+    "You are a friendly and patient friend",
     "The user is stuck. Look at the last user question",
     "You are a Socratic tutor",
     
