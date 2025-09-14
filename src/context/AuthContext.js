@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { setAuthContext } from '../utils/apiClient';
 
 const AuthContext = createContext(null);
 
@@ -62,6 +63,12 @@ export const AuthProvider = ({ children }) => {
       }
     }
   };
+
+  // Set auth context reference for API client
+  const authContextMethods = { logout, login };
+  useEffect(() => {
+    setAuthContext(authContextMethods);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ token, user, login, logout, updateUserCoins, updateUserAvatar }}>

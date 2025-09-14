@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import { setNavigate } from './utils/apiClient';
 import t from './locales/i18n';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -11,6 +12,12 @@ import LeaderboardPage from './pages/LeaderboardPage';
 const AppContent = () => {
   const { token, user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Set navigate function for API client
+  useEffect(() => {
+    setNavigate(navigate);
+  }, [navigate]);
   
   // Check if current page is chat page
   const isChatPage = location.pathname === '/chat';

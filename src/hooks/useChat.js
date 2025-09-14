@@ -2,11 +2,10 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { isSystemMessage, removeDuplicateMessages } from '../utils/chatUtils';
 import { getLanguage } from '../locales/i18n';
 import { useAuth } from '../context/AuthContext';
-
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:9000'; // Standardized base URL
+import { apiClient, get, post } from '../utils/apiClient';
 
 export const useChat = (onCoinAnimation, onPointsAnimation) => {
-  const { token, updateUserCoins } = useAuth();
+  const { updateUserCoins } = useAuth();
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [userAnswer, setUserAnswer] = useState('');
@@ -57,13 +56,9 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     }
   }, [messages.length]);
 
-  const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
-
   const loadConversations = useCallback(async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/chat/conversations`, {
-        headers: { ...authHeaders },
-      });
+      const response = await get('/chat/conversations');
       if (response.ok) {
         const data = await response.json();
         setConversations(Array.isArray(data) ? data : []);
@@ -75,13 +70,11 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       console.error('Error loading conversations:', error);
       setConversations([]);
     }
-  }, [token]);
+  }, []);
 
   const loadConversation = async (sessionId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/chat/conversations/${sessionId}`, {
-        headers: { ...authHeaders },
-      });
+      const response = await get(`/chat/conversations/${sessionId}`);
       if (response.ok) {
         const data = await response.json();
         setSessionId(sessionId);
@@ -165,9 +158,8 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
 
   const deleteConversation = async (sessionIdToDelete) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/chat/conversations/${sessionIdToDelete}`, {
+      const response = await apiClient(`/chat/conversations/${sessionIdToDelete}`, {
         method: 'DELETE',
-        headers: { ...authHeaders },
       });
       if (response.ok) {
         await loadConversations();
@@ -201,16 +193,12 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     }
     
     try {
-      const response = await fetch(`${API_BASE_URL}/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...authHeaders },
-        body: JSON.stringify({
-          message: userMessage,
-          sessionId,
-          language: getLanguage(),
-          educationLevel: chatSettings.current.educationLevel,
-          subjectArea: chatSettings.current.subjectArea,
-        })
+      const response = await post('/chat', {
+        message: userMessage,
+        sessionId,
+        language: getLanguage(),
+        educationLevel: chatSettings.current.educationLevel,
+        subjectArea: chatSettings.current.subjectArea,
       });
       
       
@@ -302,13 +290,9 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     setIsLoading(true);
     
     try {
-      const response = await fetch(`${API_BASE_URL}/chat/continue`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...authHeaders },
-        body: JSON.stringify({
-          sessionId,
-          language: getLanguage(),
-        })
+      const response = await post('/chat/continue', {
+        sessionId,
+        language: getLanguage(),
       });
       
       if (response.status === 429) {
@@ -374,13 +358,9 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     setIsLoading(true);
     
     try {
-      const response = await fetch(`${API_BASE_URL}/chat/full-answer`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...authHeaders },
-        body: JSON.stringify({
-          sessionId,
-          language: getLanguage(),
-        })
+      const response = await post('/chat/full-answer', {
+        sessionId,
+        language: getLanguage(),
       });
       
       if (response.status === 429) {
@@ -457,14 +437,10 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       };
       setMessages(prev => [...prev, checkMessage]);
 
-      const response = await fetch(`${API_BASE_URL}/chat/check-answer`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...authHeaders },
-        body: JSON.stringify({
-          sessionId,
-          userAnswer: userSubmittedAnswer,
-          language: getLanguage(),
-        })
+      const response = await post('/chat/check-answer', {
+        sessionId,
+        userAnswer: userSubmittedAnswer,
+        language: getLanguage(),
       });
 
       if (response.status === 429) {
@@ -600,9 +576,8 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     }
     
     try {
-      const response = await fetch(`${API_BASE_URL}/chat/image`, {
+      const response = await apiClient('/chat/image', {
         method: 'POST',
-        headers: { ...authHeaders },
         body: formData
       });
       

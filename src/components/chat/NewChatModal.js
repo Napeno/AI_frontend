@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
 import t from '../../locales/i18n';
+import { ALL_AVAILABLE_SUBJECTS, getSubjectArea } from '../../utils/subjectMapping';
 
 const NewChatModal = ({ isOpen, onClose, onStartChat }) => {
   const [educationLevel, setEducationLevel] = useState('middle');
-  const [subjectArea, setSubjectArea] = useState('natural_sciences');
+  const [subject, setSubject] = useState('mathematics'); // Chọn trực tiếp môn học
 
   if (!isOpen) return null;
 
   const handleStart = () => {
-    onStartChat({ educationLevel, subjectArea });
+    // Tự động xác định lĩnh vực từ môn học được chọn
+    const subjectArea = getSubjectArea(subject);
+    onStartChat({ 
+      educationLevel, 
+      subjectArea,
+      course: subject 
+    });
     onClose();
   };
 
@@ -32,16 +39,17 @@ const NewChatModal = ({ isOpen, onClose, onStartChat }) => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t('sidebar.subjectArea')}</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Môn học</label>
             <select 
-              value={subjectArea} 
-              onChange={(e) => setSubjectArea(e.target.value)}
+              value={subject} 
+              onChange={(e) => setSubject(e.target.value)}
               className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300"
             >
-              <option value="natural_sciences">{t('subjects.naturalSciences')}</option>
-              <option value="social_sciences">{t('subjects.socialSciences')}</option>
-              <option value="mathematics">{t('subjects.mathematics')}</option>
-              <option value="english_language">{t('subjects.englishLanguage')}</option>
+              {ALL_AVAILABLE_SUBJECTS.map(subjectId => (
+                <option key={subjectId} value={subjectId}>
+                  {t(`courses.${subjectId === 'foreign_language' ? 'foreignLanguage' : subjectId}`)}
+                </option>
+              ))}
             </select>
           </div>
         </div>

@@ -120,7 +120,7 @@
     "naturalSciences": "Khoa học Tự nhiên",
     "socialSciences": "Khoa học Xã hội",
     "mathematics": "Toán học",
-    "englishLanguage": "Tiếng Anh"
+    "english_language": "Tiếng Anh"
   },
   "courses": {
     "mathematics": "Toán học",
@@ -132,7 +132,7 @@
     "civics": "Giáo dục công dân",
     "literature": "Ngữ văn",
     "foreignLanguage": "Ngoại ngữ",
-    "englishLanguage": "Tiếng Anh"
+    "english_language": "Tiếng Anh"
   },
   "userProfile": {
     "settings": "Cài đặt",

@@ -159,7 +159,7 @@
     "naturalSciences": "Natural Sciences",
     "socialSciences": "Social Sciences", 
     "mathematics": "Mathematics",
-    "englishLanguage": "English Language"
+    "english_language": "English Language"
   },
   "courses": {
     "mathematics": "Mathematics",
@@ -171,7 +171,7 @@
     "civics": "Civics",
     "literature": "Literature", 
     "foreignLanguage": "Foreign Language",
-    "englishLanguage": "English Language"
+    "english_language": "English Language"
   },
   "userProfile": {
     "settings": "Settings",

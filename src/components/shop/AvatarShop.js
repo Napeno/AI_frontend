@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { post, put } from '../../utils/apiClient';
 import t from '../../locales/i18n';
 
 const AvatarShop = ({ isOpen, onClose }) => {
-  const { user, updateUserAvatar, token } = useAuth(); // Get token from useAuth
+  const { user, updateUserAvatar } = useAuth();
   const [selectedAvatar, setSelectedAvatar] = useState(user?.avatar || 'default');
   const [purchaseLoading, setPurchaseLoading] = useState(null);
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:9000'; // Corrected base URL
+
   const AVATARS = [
     {
       id: 'default',
@@ -131,14 +132,7 @@ const AvatarShop = ({ isOpen, onClose }) => {
     setPurchaseLoading(avatarId);
     
     try {
-      const response = await fetch(`${API_BASE_URL}/shop/purchase-avatar`, { // Added /api prefix
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Use token from context
-        },
-        body: JSON.stringify({ avatarId }),
-      });
+      const response = await post('/shop/purchase-avatar', { avatarId });
 
       if (response.ok) {
         const data = await response.json();
@@ -160,14 +154,7 @@ const AvatarShop = ({ isOpen, onClose }) => {
     if (!ownedAvatars.includes(avatarId)) return;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/user/change-avatar`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Use token from context
-        },
-        body: JSON.stringify({ avatarId }),
-      });
+      const response = await put('/user/change-avatar', { avatarId });
 
       if (response.ok) {
         setSelectedAvatar(avatarId);

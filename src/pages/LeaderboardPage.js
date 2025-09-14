@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { get } from '../utils/apiClient';
 import t from '../locales/i18n';
-
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:9000';
 
 // Avatar emojis mapping
 const AVATAR_EMOJIS = {
@@ -31,7 +30,7 @@ const getRankInfo = (rank) => {
 };
 
 const LeaderboardPage = () => {
-  const { token, user } = useAuth();
+  const { user } = useAuth();
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -47,9 +46,7 @@ const LeaderboardPage = () => {
   const fetchLeaderboard = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/leaderboard?page=${currentPage}&limit=${itemsPerPage}`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
+      const response = await get(`/leaderboard?page=${currentPage}&limit=${itemsPerPage}`);
 
       if (response.ok) {
         const data = await response.json();

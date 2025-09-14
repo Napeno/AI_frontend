@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
+import { post } from '../utils/apiClient';
 import t from '../locales/i18n';
 
 const AuthForm = ({ initialMode = 'login' }) => {
@@ -15,18 +16,16 @@ const AuthForm = ({ initialMode = 'login' }) => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '/api';
+
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/${mode === 'login' ? 'login' : 'register'}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(mode === 'login' ? { username, password } : { name, username, password }),
-      });
+      const res = await post(`/auth/${mode === 'login' ? 'login' : 'register'}`, 
+        mode === 'login' ? { username, password } : { name, username, password }
+      );
       const data = await res.json();
       if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
