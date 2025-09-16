@@ -409,9 +409,146 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     }
   };
 
+  const checkUserAnswerWithImage = async (imageFile, textAnswer = '') => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    const userSubmittedAnswer = textAnswer.trim();
+    setUserAnswer('');
+
+    // Create FormData for file upload
+    const formData = new FormData();
+    formData.append('image', imageFile);
+    formData.append('sessionId', sessionId);
+    formData.append('userAnswer', userSubmittedAnswer);
+    formData.append('language', getLanguage());
+
+    try {
+      // First add the user's answer as a regular user message
+      const userAnswerMessage = {
+        id: Date.now() + Math.random(),
+        text: userSubmittedAnswer || (getLanguage() === 'vi' ? 'Kiểm tra đáp án với hình ảnh' : 'Check answer with image'),
+        sender: 'user',
+        timestamp: new Date().toLocaleTimeString(),
+        imageUrl: URL.createObjectURL(imageFile) // For immediate preview
+      };
+      setMessages(prev => [...prev, userAnswerMessage]);
+
+      // Then add visual feedback for check action
+      const checkMessage = {
+        id: Date.now() + Math.random() + 1,
+        text: `Đang kiểm tra câu trả lời với hình ảnh: "${userSubmittedAnswer}"`,
+        sender: 'check-answer',
+        timestamp: new Date().toLocaleTimeString(),
+        type: 'check-answer',
+        userAnswer: userSubmittedAnswer,
+        hasImage: true
+      };
+      setMessages(prev => [...prev, checkMessage]);
+
+      const response = await apiClient('/chat/check-answer-image', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.status === 429) {
+        const errorData = await response.json();
+        const quotaMessage = {
+          id: Date.now() + Math.random(),
+          text: errorData.message || 'API quota exceeded. Please try again later.',
+          sender: 'bot',
+          timestamp: new Date().toLocaleTimeString(),
+          isError: true
+        };
+        setMessages(prev => [...prev, quotaMessage]);
+      } else if (response.ok) {
+        const data = await response.json();
+        const botMessage = {
+          id: Date.now() + Math.random(),
+          text: data.message,
+          sender: 'bot',
+          timestamp: new Date().toLocaleTimeString(),
+          isCorrect: data.isCorrect
+        };
+
+        // Update user coins and points if awarded
+        if (data.coinsAwarded && data.totalCoins !== undefined) {
+          updateUserCoins(data.totalCoins, data.totalPoints);
+          let sourceElement = null;
+          // Trigger coin animation
+          if (onCoinAnimation) {
+            sourceElement = document.querySelector('[data-coin-source="true"]') ||
+                                 document.querySelector('button[type="submit"]') ||
+                                 document.querySelector('.check-answer-button');
+            onCoinAnimation({
+              amount: data.coinsAwarded,
+              sourceElement: sourceElement
+            });
+          }
+
+          // Trigger points animation if points were awarded
+          if (data.pointsAwarded && data.pointsAwarded > 0 && onPointsAnimation) {
+            const rankDisplayElement = document.querySelector('.rank-display') ||
+                                     document.querySelector('[data-rank-display="true"]');
+            onPointsAnimation({
+              amount: data.pointsAwarded,
+              sourceElement: sourceElement,
+              targetElement: rankDisplayElement
+            });
+          }
+
+          // Add a system message for coin award
+          const coinMessage = {
+            id: Date.now() + Math.random() + 2,
+            text: `🎉 Bạn đã nhận được ${data.coinsAwarded} xu! Tổng số xu của bạn: ${data.totalCoins} 🎉`,
+            sender: 'system',
+            timestamp: new Date().toLocaleTimeString(),
+            type: 'coin-award'
+          };
+          setMessages(prev => [...prev, coinMessage]);
+
+          // Add points message if points were awarded
+          if (data.pointsAwarded && data.pointsAwarded > 0) {
+            const pointsMessage = {
+              id: Date.now() + Math.random() + 3,
+              text: `Bạn đã nhận được ${data.pointsAwarded} điểm xếp hạng! Tổng số điểm: ${data.totalPoints}`,
+              sender: 'system',
+              timestamp: new Date().toLocaleTimeString(),
+              type: 'points-award'
+            };
+            setMessages(prev => [...prev, pointsMessage]);
+          }
+        }
+
+        const lastMessage = messages[messages.length - 1];
+        const isDuplicate = lastMessage &&
+          lastMessage.sender === 'bot' &&
+          lastMessage.text === data.message;
+
+        if (!isDuplicate) {
+          setMessages(prev => [...prev, botMessage]);
+        }
+      } else {
+        throw new Error('Failed to check answer with image');
+      }
+    } catch (error) {
+      console.error('Error checking answer with image:', error);
+      const errorMessage = {
+        id: Date.now() + Math.random(),
+        text: 'Có lỗi xảy ra khi kiểm tra câu trả lời với hình ảnh. Vui lòng thử lại!',
+        sender: 'bot',
+        timestamp: new Date().toLocaleTimeString(),
+        isError: true
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const checkUserAnswer = async () => {
     if (isLoading || !userAnswer.trim()) return;
-    
+
     setIsLoading(true);
     const userSubmittedAnswer = userAnswer.trim();
     setUserAnswer('');
@@ -674,5 +811,6 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     continueChat,
     getFullAnswer,
     checkUserAnswer,
+    checkUserAnswerWithImage,
   };
 }; 

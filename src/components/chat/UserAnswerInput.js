@@ -1,14 +1,32 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import t from '../../locales/i18n';
 
-const UserAnswerInput = ({ 
-  userAnswer, 
-  setUserAnswer, 
-  checkUserAnswer, 
-  isLoading, 
+const UserAnswerInput = ({
+  userAnswer,
+  setUserAnswer,
+  checkUserAnswer,
+  checkUserAnswerWithImage,
+  isLoading,
   handleAnswerKeyPress,
   messages = []
 }) => {
+  const fileInputRef = useRef(null);
+  const [selectedAnswerImage, setSelectedAnswerImage] = React.useState(null);
+
+  const handleAnswerImageSelect = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      setSelectedAnswerImage(file);
+    }
+  };
+
+  const handleAnswerImageRemove = () => {
+    setSelectedAnswerImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   // Check if user has already given this answer correctly
   const normalizedCurrentAnswer = userAnswer.toLowerCase().trim();
   const hasDuplicateAnswer = normalizedCurrentAnswer && messages.some(msg => {
@@ -29,14 +47,23 @@ const UserAnswerInput = ({
   const handleAnswerSubmit = () => {
     if (hasDuplicateAnswer) {
       const confirmed = window.confirm(
-        t('userAnswer.duplicateWarning') || 
+        t('userAnswer.duplicateWarning') ||
         'Bạn đã trả lời đúng với câu trả lời này trước đó. Bạn có chắc muốn gửi lại không?'
       );
       if (!confirmed) {
         return;
       }
     }
-    checkUserAnswer();
+
+    if (selectedAnswerImage && checkUserAnswerWithImage) {
+      checkUserAnswerWithImage(selectedAnswerImage, userAnswer);
+      setSelectedAnswerImage(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } else {
+      checkUserAnswer();
+    }
   };
 
   return (
@@ -61,19 +88,66 @@ const UserAnswerInput = ({
           </div>
         </div>
       )}
+
+      {/* Image preview for answer check */}
+      {selectedAnswerImage && (
+        <div className="mb-2 sm:mb-3 p-2 sm:p-2.5 border border-blue-200 rounded-lg bg-blue-50 dark:bg-blue-800 dark:border-blue-600">
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
+            <span className="text-xs text-blue-600 dark:text-blue-300 truncate">
+              {t('chat.image.selectedForAnswer')}: {selectedAnswerImage.name}
+            </span>
+            <button
+              onClick={handleAnswerImageRemove}
+              className="text-red-500 hover:text-red-700 text-xs font-medium px-1.5 py-0.5 rounded touch-target"
+            >
+              {t('common.remove')}
+            </button>
+          </div>
+          <div className="w-16 h-16 sm:w-24 sm:h-24 bg-blue-100 dark:bg-blue-700 rounded-lg overflow-hidden">
+            <img
+              src={URL.createObjectURL(selectedAnswerImage)}
+              alt="Answer Preview"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-        <textarea
-          value={userAnswer}
-          onChange={(e) => setUserAnswer(e.target.value)}
-          onKeyPress={handleAnswerKeyPress}
-          placeholder={t('userAnswer.placeholder')}
-          disabled={isLoading}
-          rows="1"
-          className="flex-1 px-3 py-2 sm:px-4 sm:py-3 border-2 border-blue-200 rounded-lg text-sm resize-none outline-none focus:border-blue-500 transition-colors disabled:bg-blue-100 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-blue-700 dark:text-gray-200 dark:focus:border-blue-500 dark:disabled:bg-gray-700"
-        />
-        <button 
-          onClick={handleAnswerSubmit} 
-          disabled={isLoading || !userAnswer.trim()}
+        <div className="flex-1 relative">
+          <textarea
+            value={userAnswer}
+            onChange={(e) => setUserAnswer(e.target.value)}
+            onKeyPress={handleAnswerKeyPress}
+            placeholder={selectedAnswerImage ? t('userAnswer.placeholderWithImage') || "Nhập câu trả lời của bạn (có kèm hình ảnh)" : t('userAnswer.placeholder')}
+            disabled={isLoading}
+            rows="1"
+            className="w-full px-3 py-2 pr-10 sm:px-4 sm:py-3 sm:pr-12 border-2 border-blue-200 rounded-lg text-sm resize-none outline-none focus:border-blue-500 transition-colors disabled:bg-blue-100 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-blue-700 dark:text-gray-200 dark:focus:border-blue-500 dark:disabled:bg-gray-700"
+          />
+
+          {/* Image upload button for answer */}
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isLoading}
+            className="absolute right-1.5 sm:right-2 top-1/2 transform -translate-y-1/2 p-1.5 sm:p-2 text-blue-500 hover:text-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-target"
+            title={t('userAnswer.addImage') || "Thêm hình ảnh"}
+          >
+            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </button>
+
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleAnswerImageSelect}
+            accept="image/*"
+            className="hidden"
+          />
+        </div>
+        <button
+          onClick={handleAnswerSubmit}
+          disabled={isLoading || (!userAnswer.trim() && !selectedAnswerImage)}
           className={`check-answer-button px-3 py-2 sm:px-6 sm:py-3 font-semibold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none text-sm sm:text-base touch-target ${
             hasDuplicateAnswer 
               ? 'bg-yellow-600 hover:bg-yellow-700 text-white' 

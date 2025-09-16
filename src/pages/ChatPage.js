@@ -75,6 +75,7 @@ const ChatPage = () => {
     continueChat,
     getFullAnswer,
     checkUserAnswer,
+    checkUserAnswerWithImage,
 } = useChat(handleCoinAnimation, handlePointsAnimation);
 
   const [showSidebar, setShowSidebar] = useState(window.innerWidth >= 768);
@@ -308,6 +309,7 @@ const ChatPage = () => {
                   userAnswer={userAnswer}
                   setUserAnswer={setUserAnswer}
                   checkUserAnswer={handleCheckAnswer}
+                  checkUserAnswerWithImage={checkUserAnswerWithImage}
                   isLoading={isLoading}
                   handleAnswerKeyPress={handleAnswerKeyPress}
                   messages={messages}
