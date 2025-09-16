@@ -1,27 +1,34 @@
-# Cập nhật hệ thống chọn môn học
+# Cập nhật hệ thống chọn môn học - Gộp Lý Hóa Sinh
+
+## Thay đổi mới nhất: Gộp 3 môn Lý, Hóa, Sinh thành "Khoa học Tự nhiên"
+
+### Trước đây
+Cấp 2 có 3 môn riêng biệt:
+- Vật lý (Physics)
+- Hóa học (Chemistry)
+- Sinh học (Biology)
+
+### Bây giờ
+Cấp 2 chỉ có **1 môn gộp**: **Khoa học Tự nhiên** (Natural Sciences)
 
 ## Thay đổi thực hiện
 
-### Trước đây (Old)
-User phải chọn 2 bước:
-1. **Lĩnh vực**: Khoa học Tự nhiên hoặc Khoa học Xã hội  
-2. **Môn học**: Môn cụ thể trong lĩnh vực đã chọn
+### 1. Backend Prompts
+- ✅ Gộp prompts: physics + chemistry + biology → natural_sciences
+- ✅ Prompt mới tích hợp kiến thức từ cả 3 môn
+- ✅ API vẫn gửi `natural_sciences` cho cấp 2
 
-### Bây giờ (New)  
-User chỉ cần chọn 1 bước:
-1. **Môn học**: Chọn trực tiếp môn học cụ thể
-2. **Hệ thống tự động**: Xác định lĩnh vực từ môn học được chọn
+### 2. Frontend
+- ✅ Loại bỏ: physics, chemistry, biology từ danh sách chọn
+- ✅ Thêm: natural_sciences cho cấp 2
+- ✅ UI hiển thị "Khoa học Tự nhiên" thay vì 3 môn riêng
 
-## Cách hoạt động
-
-### 1. Mapping tự động (`src/utils/subjectMapping.js`)
+### 3. Mapping tự động (`src/utils/subjectMapping.js`)
 
 ```javascript
-// Tự động mapping môn học -> lĩnh vực
+// Mapping cập nhật
 'mathematics' -> 'natural_sciences'
-'physics' -> 'natural_sciences'  
-'chemistry' -> 'natural_sciences'
-'biology' -> 'natural_sciences'
+'natural_sciences' -> 'natural_sciences'  // Môn gộp mới
 
 'history' -> 'social_sciences'
 'geography' -> 'social_sciences'

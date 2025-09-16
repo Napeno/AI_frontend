@@ -163,13 +163,11 @@
   },
   "courses": {
     "mathematics": "Mathematics",
-    "physics": "Physics", 
-    "chemistry": "Chemistry",
-    "biology": "Biology",
+    "natural_sciences": "Natural Sciences",
     "history": "History",
     "geography": "Geography",
     "civics": "Civics",
-    "literature": "Literature", 
+    "literature": "Literature",
     "foreignLanguage": "Foreign Language",
     "english_language": "English Language"
   },

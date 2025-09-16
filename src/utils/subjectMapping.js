@@ -4,17 +4,15 @@
 export const SUBJECT_TO_AREA_MAPPING = {
   // Natural Sciences
   'mathematics': 'natural_sciences',
-  'physics': 'natural_sciences', 
-  'chemistry': 'natural_sciences',
-  'biology': 'natural_sciences',
-  
+  'natural_sciences': 'natural_sciences',
+
   // Social Sciences
   'history': 'social_sciences',
-  'geography': 'social_sciences', 
+  'geography': 'social_sciences',
   'civics': 'social_sciences',
   'literature': 'social_sciences',
   'foreign_language': 'social_sciences',
-  
+
   // Standalone subjects
   'english_language': 'english_language'
 };
@@ -23,17 +21,15 @@ export const SUBJECT_TO_AREA_MAPPING = {
 export const ALL_AVAILABLE_SUBJECTS = [
   // Natural Sciences
   'mathematics',
-  'physics', 
-  'chemistry',
-  'biology',
-  
-  // Social Sciences  
+  'natural_sciences',
+
+  // Social Sciences
   'history',
   'geography',
-  'civics', 
+  'civics',
   'literature',
   'foreign_language',
-  
+
   // Standalone
   'english_language'
 ];
