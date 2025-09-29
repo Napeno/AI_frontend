@@ -76,7 +76,10 @@ const ChatPage = () => {
     getFullAnswer,
     checkUserAnswer,
     checkUserAnswerWithImage,
+    getCurrentChatSettings,
 } = useChat(handleCoinAnimation, handlePointsAnimation);
+
+  const currentChatSettings = getCurrentChatSettings();
 
   const [showSidebar, setShowSidebar] = useState(window.innerWidth >= 768);
   const [settingsSelected, setSettingsSelected] = useState(false);
@@ -179,7 +182,7 @@ const ChatPage = () => {
 
   const handleNewChatClick = () => {
     setSettingsSelected(false);
-    createNewChat({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
+    createNewChat(getCurrentChatSettings());
   }
 
   return (
@@ -255,7 +258,7 @@ const ChatPage = () => {
           {/* Messages - Scrollable area */}
           <div className="flex-1 p-3 sm:p-4 lg:p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-700 scrollable-content">
             {!settingsSelected && messages.length === 0 ? (
-              <Welcome onStart={handleStartChat} />
+              <Welcome onStart={handleStartChat} initialSettings={currentChatSettings} />
             ) : (
               messages.map((message) => (
                 <ChatMessage

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import t from '../../locales/i18n';
-import { ALL_AVAILABLE_SUBJECTS } from '../../utils/subjectMapping';
+import { ALL_AVAILABLE_SUBJECTS, getSubjectArea } from '../../utils/subjectMapping';
 
 const NewChatModal = ({ isOpen, onClose, onStartChat }) => {
   const [educationLevel, setEducationLevel] = useState('middle');
@@ -9,10 +9,10 @@ const NewChatModal = ({ isOpen, onClose, onStartChat }) => {
   if (!isOpen) return null;
 
   const handleStart = () => {
-    // Gửi trực tiếp subject đã chọn làm subjectArea và course
+    const subjectArea = getSubjectArea(subject);
     onStartChat({ 
       educationLevel, 
-      subjectArea: subject,
+      subjectArea,
       course: subject 
     });
     onClose();
