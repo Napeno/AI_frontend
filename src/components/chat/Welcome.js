@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import t from '../../locales/i18n';
-import { ALL_AVAILABLE_SUBJECTS, getSubjectArea } from '../../utils/subjectMapping';
+import { ALL_AVAILABLE_SUBJECTS } from '../../utils/subjectMapping';
 
 const Welcome = ({ onStart }) => {
   const [educationLevel, setEducationLevel] = useState('middle');
   const [subject, setSubject] = useState('mathematics'); // Chọn trực tiếp môn học
 
   const handleStart = () => {
-    // Tự động xác định lĩnh vực từ môn học được chọn
-    const subjectArea = getSubjectArea(subject);
+    // Gửi trực tiếp subject đã chọn làm subjectArea và course
     onStart({ 
       educationLevel, 
-      subjectArea, 
+      subjectArea: subject, 
       course: subject 
     });
   };

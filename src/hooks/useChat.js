@@ -18,7 +18,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const messagesEndRef = useRef(null);
-  const chatSettings = useRef({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
+  const chatSettings = useRef({ educationLevel: 'middle', subjectArea: 'natural_sciences', course: undefined });
 
   const createNewChat = useCallback((settings) => {
     const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -81,6 +81,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         chatSettings.current = {
           educationLevel: data.educationLevel || 'middle',
           subjectArea: data.subjectArea || 'natural_sciences',
+          course: data.course || undefined,
         };
         
         const conversationMessages = data.history
@@ -199,6 +200,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         language: getLanguage(),
         educationLevel: chatSettings.current.educationLevel,
         subjectArea: chatSettings.current.subjectArea,
+        course: chatSettings.current.course,
       });
       
       
@@ -689,6 +691,9 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     formData.append('language', getLanguage());
     formData.append('educationLevel', chatSettings.current.educationLevel);
     formData.append('subjectArea', chatSettings.current.subjectArea);
+    if (chatSettings.current.course) {
+      formData.append('course', chatSettings.current.course);
+    }
     
     // Add text message if provided
     if (textMessage.trim()) {
