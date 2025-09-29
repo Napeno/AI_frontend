@@ -124,7 +124,9 @@
   },
   "courses": {
     "mathematics": "Toán học",
-    "natural_sciences": "Khoa học Tự nhiên",
+    "physics": "Vật lý",
+    "chemistry": "Hóa học",
+    "biology": "Sinh học",
     "history": "Lịch sử",
     "geography": "Địa lý",
     "civics": "Giáo dục công dân",
