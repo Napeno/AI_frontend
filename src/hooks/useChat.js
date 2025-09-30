@@ -3,6 +3,21 @@ import { isSystemMessage, removeDuplicateMessages } from '../utils/chatUtils';
 import { getLanguage } from '../locales/i18n';
 import { useAuth } from '../context/AuthContext';
 import { apiClient, get, post } from '../utils/apiClient';
+import { getSubjectArea } from '../utils/subjectMapping';
+
+const DEFAULT_SUBJECT = 'mathematics';
+const DEFAULT_EDUCATION_LEVEL = 'middle';
+
+const buildSettings = ({ course = DEFAULT_SUBJECT, educationLevel = DEFAULT_EDUCATION_LEVEL }) => {
+  const subjectArea = getSubjectArea(course);
+  return {
+    educationLevel,
+    subjectArea,
+    course,
+  };
+};
+
+const DEFAULT_CHAT_SETTINGS = buildSettings({});
 
 export const useChat = (onCoinAnimation, onPointsAnimation) => {
   const { updateUserCoins } = useAuth();
@@ -18,7 +33,13 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const messagesEndRef = useRef(null);
-  const chatSettings = useRef({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
+  const chatSettings = useRef({ ...DEFAULT_CHAT_SETTINGS });
+
+  const normalizeSettings = useCallback((incoming = {}) => {
+    const course = incoming.course || incoming.subjectArea || chatSettings.current.course || DEFAULT_CHAT_SETTINGS.course;
+    const educationLevel = incoming.educationLevel || chatSettings.current.educationLevel || DEFAULT_CHAT_SETTINGS.educationLevel;
+    return buildSettings({ course, educationLevel });
+  }, []);
 
   const createNewChat = useCallback((settings) => {
     const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -27,17 +48,19 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     setInputMessage('');
     setUserAnswer('');
     setCurrentConversationTitle('New Chat');
-    chatSettings.current = settings;
+    chatSettings.current = normalizeSettings(settings);
     setHintCount(0);
     setShowAnswerInput(false);
-  }, []);
+  }, [normalizeSettings]);
+
+  const getCurrentChatSettings = useCallback(() => ({ ...chatSettings.current }), []);
 
   // Generate a unique session ID when component mounts
   useEffect(() => {
     if (!sessionId && !isInitialized) {
       setIsInitialized(true);
       // Create a default chat so the screen isn't empty
-      createNewChat({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
+      createNewChat(DEFAULT_CHAT_SETTINGS);
     }
   }, [sessionId, isInitialized, createNewChat]);
 
@@ -78,10 +101,11 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       if (response.ok) {
         const data = await response.json();
         setSessionId(sessionId);
-        chatSettings.current = {
-          educationLevel: data.educationLevel || 'middle',
-          subjectArea: data.subjectArea || 'natural_sciences',
-        };
+        chatSettings.current = normalizeSettings({
+          educationLevel: data.educationLevel,
+          subjectArea: data.subjectArea,
+          course: data.course
+        });
         
         const conversationMessages = data.history
           .filter(msg => {
@@ -164,7 +188,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       if (response.ok) {
         await loadConversations();
         if (sessionId === sessionIdToDelete) {
-          createNewChat({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
+          createNewChat(DEFAULT_CHAT_SETTINGS);
         }
       }
     } catch (error) {
@@ -199,6 +223,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         language: getLanguage(),
         educationLevel: chatSettings.current.educationLevel,
         subjectArea: chatSettings.current.subjectArea,
+        course: chatSettings.current.course,
       });
       
       
@@ -689,6 +714,9 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     formData.append('language', getLanguage());
     formData.append('educationLevel', chatSettings.current.educationLevel);
     formData.append('subjectArea', chatSettings.current.subjectArea);
+    if (chatSettings.current.course) {
+      formData.append('course', chatSettings.current.course);
+    }
     
     // Add text message if provided
     if (textMessage.trim()) {
@@ -812,5 +840,6 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     getFullAnswer,
     checkUserAnswer,
     checkUserAnswerWithImage,
+    getCurrentChatSettings,
   };
 }; 
