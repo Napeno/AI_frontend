@@ -9,6 +9,7 @@ const NewChatModal = ({ isOpen, onClose, onStartChat }) => {
   if (!isOpen) return null;
 
   const handleStart = () => {
+    // Tự động xác định lĩnh vực từ môn học được chọn
     const subjectArea = getSubjectArea(subject);
     onStartChat({ 
       educationLevel, 

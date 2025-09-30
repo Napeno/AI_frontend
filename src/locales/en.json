@@ -111,6 +111,12 @@
     "duplicateMessage": "You have already answered this question correctly with the same answer.",
     "duplicateWarning": "You have already given this correct answer before. Are you sure you want to submit it again?"
   },
+  "settings": {
+    "language": "Language",
+    "theme": "Theme",
+    "dark": "Dark",
+    "light": "Light"
+  },
   "errors": {
     "sessionIdRequired": "sessionId is required",
     "conversationNotFound": "No conversation found for this session or conversation is empty.",
@@ -157,13 +163,11 @@
   },
   "courses": {
     "mathematics": "Mathematics",
-    "physics": "Physics", 
-    "chemistry": "Chemistry",
-    "biology": "Biology",
+    "natural_sciences": "Natural Sciences",
     "history": "History",
     "geography": "Geography",
     "civics": "Civics",
-    "literature": "Literature", 
+    "literature": "Literature",
     "foreignLanguage": "Foreign Language",
     "english_language": "English Language"
   },
