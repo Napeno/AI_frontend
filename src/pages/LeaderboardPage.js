@@ -36,12 +36,20 @@ const LeaderboardPage = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [myRank, setMyRank] = useState(null);
+  const [myRankError, setMyRankError] = useState(null);
   const itemsPerPage = 20;
   console.log(user);
 
   useEffect(() => {
     fetchLeaderboard();
   }, [currentPage]);
+
+  useEffect(() => {
+    if (user) {
+      fetchMyRank();
+    }
+  }, [user]);
 
   const fetchLeaderboard = async () => {
     try {
@@ -61,6 +69,32 @@ setError(t('leaderboard.loadingError'));
       setLeaderboardData([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchMyRank = async () => {
+    try {
+      setMyRankError(null);
+      const response = await get('/leaderboard/my-rank');
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.success) {
+          setMyRank({
+            rank: data.rank,
+            points: data.points,
+            coins: data.coins,
+          });
+        } else {
+          throw new Error('Invalid rank payload');
+        }
+      } else {
+        throw new Error('Failed to fetch rank');
+      }
+    } catch (err) {
+      console.error('Error fetching user rank:', err);
+      setMyRank(null);
+      setMyRankError(t('leaderboard.rankError'));
     }
   };
 
@@ -131,6 +165,23 @@ setError(t('leaderboard.loadingError'));
                 <div>
                   <p className="font-semibold text-gray-800 dark:text-gray-200 text-sm sm:text-base">{user.name || 'You'}</p>
                   <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
+                  {myRank && (
+                    <div className="mt-1 inline-flex items-center gap-1 px-2 py-0.5 bg-seablue-600/10 text-seablue-700 dark:text-seablue-300 rounded-full text-[11px] sm:text-xs font-semibold">
+                      <span>#</span>
+                      <span>{myRank.rank?.toLocaleString()}</span>
+                      <span>{t('leaderboard.rankLabel')}</span>
+                    </div>
+                  )}
+                  {!myRank && !myRankError && (
+                    <div className="mt-1 text-[11px] sm:text-xs text-gray-400 dark:text-gray-500">
+                      {t('leaderboard.rankLoading')}
+                    </div>
+                  )}
+                  {myRankError && (
+                    <div className="mt-1 text-[11px] sm:text-xs text-red-500">
+                      {myRankError}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="text-right flex-shrink-0 ml-2">
@@ -143,6 +194,11 @@ setError(t('leaderboard.loadingError'));
                   <span className="font-bold text-blue-600 text-sm sm:text-base">{(user.points || 0).toLocaleString()}</span>
                 </div>
                 <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">điểm xếp hạng</p>
+                {myRank && (
+                  <p className="text-[11px] sm:text-xs text-gray-400 dark:text-gray-500 mt-1">
+                    {t('leaderboard.rankCoins', { coins: (myRank.coins || 0).toLocaleString() })}
+                  </p>
+                )}
               </div>
             </div>
           </div>

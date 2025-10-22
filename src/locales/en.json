@@ -147,7 +147,11 @@
     "of": "of",
     "previous": "Previous",
     "next": "Next",
-    "backToChat": "Back to Chat"
+    "backToChat": "Back to Chat",
+    "rankLabel": "in leaderboard",
+    "rankCoins": "With {{coins}} coins",
+    "rankLoading": "Fetching your rank...",
+    "rankError": "Unable to load your leaderboard position."
   },
   "background": {
     "title": "Chat Background",
