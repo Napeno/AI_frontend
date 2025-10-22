@@ -167,7 +167,11 @@
     "of": "của",
     "previous": "Trước",
     "next": "Sau",
-    "backToChat": "Quay lại Chat"
+    "backToChat": "Quay lại Chat",
+    "rankLabel": "trên bảng xếp hạng",
+    "rankCoins": "Sở hữu {{coins}} xu",
+    "rankLoading": "Đang lấy vị trí xếp hạng...",
+    "rankError": "Không thể tải vị trí xếp hạng của bạn."
   },
   "background": {
     "title": "Hình Nền Chat",
