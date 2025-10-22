@@ -3,7 +3,7 @@
 
 export const SUBJECT_TO_AREA_MAPPING = {
   // Natural Sciences
-  'mathematics': 'natural_sciences',
+  'mathematics': 'mathematics',
   'natural_sciences': 'natural_sciences',
 
   // Social Sciences
