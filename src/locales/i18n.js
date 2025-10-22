@@ -35,7 +35,20 @@ const getAvailableLanguages = () => {
 };
 
 // Translation function
-const t = (key, lang = getLanguage()) => {
+const t = (key, options) => {
+  let lang = getLanguage();
+  let params = {};
+
+  if (typeof options === 'string') {
+    lang = options;
+  } else if (options && typeof options === 'object') {
+    const { lang: langOverride, ...interpolation } = options;
+    if (langOverride && resources[langOverride]) {
+      lang = langOverride;
+    }
+    params = interpolation;
+  }
+
   const keys = key.split('.');
   let value = resources[lang]?.translation;
   
@@ -59,6 +72,9 @@ const t = (key, lang = getLanguage()) => {
   if (typeof value === 'string') {
     // Handle interpolation for dynamic values like {{days}}
     return value.replace(/\{\{(\w+)\}\}/g, (match, placeholder) => {
+      if (params && Object.prototype.hasOwnProperty.call(params, placeholder)) {
+        return params[placeholder];
+      }
       return placeholder;
     });
   }

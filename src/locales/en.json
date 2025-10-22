@@ -34,6 +34,12 @@
     "image": {
       "selected": "Image selected"
     },
+    "cooldown": {
+      "button": "Wait {{seconds}}s",
+      "helper": "Please wait {{seconds}} seconds before sending the next request.",
+      "tooltip": "Please wait {{seconds}} seconds before sending again.",
+      "actionHelper": "Cooldown active — {{seconds}} seconds remaining."
+    },
     "coins": {
       "earned": "You earned {amount} coins!",
       "total": "Total coins: {total}",

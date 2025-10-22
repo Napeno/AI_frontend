@@ -6,10 +6,23 @@ const ChatActions = ({
   continueChat, 
   getFullAnswer, 
   isLoading,
+  isCoolingDown,
+  cooldownRemaining,
   showActions = true  // New prop to control visibility
 }) => {
   // Don't show actions if explicitly disabled
   if (!showActions) return null;
+
+  const actionDisabled = isLoading || isCoolingDown;
+  const continueLabel = isCoolingDown
+    ? t('chat.cooldown.button', { seconds: cooldownRemaining })
+    : t('chat.input.continueButton');
+  const fullAnswerLabel = isCoolingDown
+    ? t('chat.cooldown.button', { seconds: cooldownRemaining })
+    : t('chat.input.fullAnswerButton');
+  const actionTitle = isCoolingDown
+    ? t('chat.cooldown.tooltip', { seconds: cooldownRemaining })
+    : undefined;
 
   return (
     <div className="space-y-2 sm:space-y-3">
@@ -27,10 +40,11 @@ const ChatActions = ({
       {hintCount < 4 && (
         <button 
           onClick={continueChat} 
-          disabled={isLoading}
+          disabled={actionDisabled}
+          title={actionTitle}
           className="w-full py-2.5 sm:py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-2xl sm:rounded-full hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none text-sm sm:text-base touch-target"
         >
-          {isLoading ? t('chat.actions.thinking') : t('chat.input.continueButton')}
+          {isLoading ? t('chat.actions.thinking') : continueLabel}
         </button>
       )}
       
@@ -38,11 +52,18 @@ const ChatActions = ({
       {hintCount >= 4 && (
         <button 
           onClick={getFullAnswer} 
-          disabled={isLoading}
+          disabled={actionDisabled}
+          title={actionTitle}
           className="w-full py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl sm:rounded-full hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none text-sm sm:text-base touch-target"
         >
-          {isLoading ? t('chat.actions.preparing') : t('chat.input.fullAnswerButton')}
+          {isLoading ? t('chat.actions.preparing') : fullAnswerLabel}
         </button>
+      )}
+
+      {isCoolingDown && (
+        <div className="text-center text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+          {t('chat.cooldown.actionHelper', { seconds: cooldownRemaining })}
+        </div>
       )}
     </div>
   );

@@ -34,6 +34,12 @@
     "image": {
       "selected": "Đã chọn hình ảnh"
     },
+    "cooldown": {
+      "button": "Đợi {{seconds}} giây",
+      "helper": "Vui lòng đợi thêm {{seconds}} giây trước khi gửi yêu cầu tiếp theo.",
+      "tooltip": "Bạn cần đợi {{seconds}} giây nữa trước khi gửi tiếp.",
+      "actionHelper": "Đang chờ — còn {{seconds}} giây."
+    },
     "coins": {
       "earned": "Bạn đã nhận được {amount} xu!",
       "total": "Tổng số xu: {total}",
