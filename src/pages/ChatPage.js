@@ -145,7 +145,12 @@ const ChatPage = () => {
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      sendMessage();
+
+      if (selectedImage) {
+        sendImageMessage(selectedImage, inputMessage);
+      } else {
+        sendMessage();
+      }
       // handleSealAnimation('new-question');
     }
   };
