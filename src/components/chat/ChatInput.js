@@ -4,12 +4,13 @@ import t from '../../locales/i18n';
 const ChatInput = ({ 
   inputMessage, 
   setInputMessage, 
-  sendMessage, 
   isLoading, 
+  isCoolingDown,
+  cooldownRemaining,
+  onSend,
   handleKeyPress,
   selectedImage,
   setSelectedImage,
-  sendImageMessage
 }) => {
   const fileInputRef = useRef(null);
 
@@ -28,12 +29,22 @@ const ChatInput = ({
   };
 
   const handleSend = () => {
-    if (selectedImage) {
-      sendImageMessage(selectedImage, inputMessage);
-    } else {
-      sendMessage();
+    if (typeof onSend === 'function') {
+      onSend();
     }
   };
+
+  const trimmedInput = (inputMessage || '').trim();
+  const sendDisabled = isLoading || isCoolingDown || (!trimmedInput && !selectedImage);
+  const buttonTitle = isCoolingDown
+    ? t('chat.cooldown.tooltip', { seconds: cooldownRemaining })
+    : undefined;
+  const buttonLabelDesktop = isCoolingDown
+    ? t('chat.cooldown.button', { seconds: cooldownRemaining })
+    : t('common.send');
+  const buttonLabelMobile = isCoolingDown
+    ? `${cooldownRemaining}s`
+    : '📤';
 
   return (
     <div className="mb-2 sm:mb-3">
@@ -99,13 +110,20 @@ const ChatInput = ({
         
         <button 
           onClick={handleSend} 
-          disabled={isLoading || (!inputMessage.trim() && !selectedImage)}
+          disabled={sendDisabled}
+          title={buttonTitle}
           className="px-3 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-2xl sm:rounded-full hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none text-sm sm:text-base touch-target"
         >
-          <span className="hidden sm:inline">{t('common.send')}</span>
-          <span className="sm:hidden">📤</span>
+          <span className="hidden sm:inline">{buttonLabelDesktop}</span>
+          <span className="sm:hidden">{buttonLabelMobile}</span>
         </button>
       </div>
+
+      {isCoolingDown && (
+        <div className="mt-1 sm:mt-2 text-right text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+          {t('chat.cooldown.helper', { seconds: cooldownRemaining })}
+        </div>
+      )}
     </div>
   );
 };

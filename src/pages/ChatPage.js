@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useChat } from '../hooks/useChat';
 import { formatAIMessage } from '../utils/chatUtils';
 import { useAuth } from '../context/AuthContext';
@@ -13,6 +13,8 @@ import ChatInput from '../components/chat/ChatInput';
 import UserAnswerInput from '../components/chat/UserAnswerInput';
 import ChatActions from '../components/chat/ChatActions';
 // import SealAnimation from '../components/SealAnimation';
+
+const CHAT_COOLDOWN_SECONDS = 10;
 
 const ChatPage = () => {
   const { user } = useAuth();
@@ -80,6 +82,8 @@ const ChatPage = () => {
 
   const [showSidebar, setShowSidebar] = useState(window.innerWidth >= 768);
   const [settingsSelected, setSettingsSelected] = useState(false);
+  const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const isCoolingDown = cooldownRemaining > 0;
 
   useEffect(() => {
     loadConversations();
@@ -103,6 +107,22 @@ const ChatPage = () => {
   useEffect(() => {
     if (messages.length > 0) {
       setSettingsSelected(true);
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (!cooldownRemaining) return;
+
+    const intervalId = setInterval(() => {
+      setCooldownRemaining(prev => (prev > 1 ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [cooldownRemaining]);
+
+  useEffect(() => {
+    if (messages.length === 0) {
+      setCooldownRemaining(0);
     }
   }, [messages]);
 
@@ -142,15 +162,40 @@ const ChatPage = () => {
     }
   }, [messages]);
 
+  const startCooldown = useCallback(() => {
+    setCooldownRemaining(CHAT_COOLDOWN_SECONDS);
+  }, []);
+
+  const handleSendMessage = useCallback(async () => {
+    if (isLoading || isCoolingDown) return;
+
+    const hasImageAttached = Boolean(selectedImage);
+    const hasText = inputMessage.trim().length > 0;
+
+    if (!hasImageAttached && !hasText) {
+      return;
+    }
+
+    try {
+      if (hasImageAttached) {
+        await sendImageMessage(selectedImage, inputMessage);
+      } else {
+        await sendMessage();
+      }
+    } finally {
+      startCooldown();
+    }
+  }, [inputMessage, isCoolingDown, isLoading, selectedImage, sendImageMessage, sendMessage, startCooldown]);
+
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
 
-      if (selectedImage) {
-        sendImageMessage(selectedImage, inputMessage);
-      } else {
-        sendMessage();
+      if (isCoolingDown) {
+        return;
       }
+
+      handleSendMessage();
       // handleSealAnimation('new-question');
     }
   };
@@ -162,15 +207,27 @@ const ChatPage = () => {
     }
   };
 
-  const handleContinueChat = () => {
-    continueChat();
-    // handleSealAnimation('hint');
-  };
+  const handleContinueChat = useCallback(async () => {
+    if (isLoading || isCoolingDown) return;
 
-  const handleGetFullAnswer = () => {
-    getFullAnswer();
-    // handleSealAnimation('full-answer');
-  };
+    try {
+      await continueChat();
+      // handleSealAnimation('hint');
+    } finally {
+      startCooldown();
+    }
+  }, [continueChat, isCoolingDown, isLoading, startCooldown]);
+
+  const handleGetFullAnswer = useCallback(async () => {
+    if (isLoading || isCoolingDown) return;
+
+    try {
+      await getFullAnswer();
+      // handleSealAnimation('full-answer');
+    } finally {
+      startCooldown();
+    }
+  }, [getFullAnswer, isCoolingDown, isLoading, startCooldown]);
 
   const handleCheckAnswer = () => {
     checkUserAnswer();
@@ -300,12 +357,13 @@ const ChatPage = () => {
               <ChatInput
                 inputMessage={inputMessage}
                 setInputMessage={setInputMessage}
-                sendMessage={sendMessage}
-                handleKeyPress={handleKeyPress}
                 isLoading={isLoading}
+                isCoolingDown={isCoolingDown}
+                cooldownRemaining={cooldownRemaining}
+                onSend={handleSendMessage}
+                handleKeyPress={handleKeyPress}
                 selectedImage={selectedImage}
                 setSelectedImage={setSelectedImage}
-                sendImageMessage={sendImageMessage}
               />
               
               {/* User answer input when enabled */}
@@ -327,6 +385,8 @@ const ChatPage = () => {
                 continueChat={handleContinueChat}
                 getFullAnswer={handleGetFullAnswer}
                 isLoading={isLoading}
+                isCoolingDown={isCoolingDown}
+                cooldownRemaining={cooldownRemaining}
                 showActions={messages.length > 0}
               />
             </div>
