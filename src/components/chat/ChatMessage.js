@@ -92,7 +92,7 @@ function ChatMessage({ message, formatAIMessage, userAvatar }) {
   if (isUser) {
     containerClasses += " bg-gradient-to-r from-ocean-medium to-ocean-deep text-white rounded-br-md";
   } else if (isError) {
-    containerClasses += " bg-red-500 text-white rounded-bl-md";
+    containerClasses += " bg-white border border-seablue-200 rounded-bl-md dark:bg-gray-700 dark:border-gray-600";
   } else if (isCorrect) {
     containerClasses += " bg-green-50 border border-green-300 rounded-bl-md dark:bg-green-900/50 dark:border-green-700";
   } else if (isIncorrect) {
