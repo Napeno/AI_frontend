@@ -331,7 +331,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       console.error('Error getting continuation:', error);
       const errorMessage = {
         id: Date.now() + Math.random(),
-        text: 'Có lỗi xảy ra khi lấy gợi ý. Vui lòng thử lại!',
+        text: 'Tớ vẫn chưa hiểu ý cậu lắm, cậu giải thích lại giúp tớ theo cách khác được không?',
         sender: 'bot',
         timestamp: new Date().toLocaleTimeString(),
         isError: true
