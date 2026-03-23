@@ -49,6 +49,12 @@ const HomePage = () => {
                 {t('home.start')}
               </Link>
             )}
+            <Link
+              to="/game"
+              className="w-full sm:w-auto px-6 py-3 sm:px-7 sm:py-4 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400 flex items-center justify-center gap-2"
+            >
+              <span>🎮</span> Chơi Game
+            </Link>
           </div>
         </div>
 
