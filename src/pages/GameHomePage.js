@@ -3,17 +3,41 @@ import { Link } from 'react-router-dom';
 
 const GameHomePage = () => {
     const [isVisible, setIsVisible] = useState(false);
-    const [activeReason, setActiveReason] = useState(null);
+    const [isMuted, setIsMuted] = useState(false);
+    const audioRef = React.useRef(null);
 
     useEffect(() => {
         setIsVisible(true);
+
+        audioRef.current = new Audio('/survey/bgm.mp3');
+        audioRef.current.loop = true;
+        audioRef.current.volume = 0.4;
+
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log("Autoplay prevented:", error);
+                setIsMuted(true);
+            });
+        }
+
+        return () => {
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.src = "";
+            }
+        };
     }, []);
 
-    const reasons = [
-        { emoji: '🧐', text: 'Tò mò', color: 'from-yellow-400 to-orange-500' },
-        { emoji: '😅', text: 'Bị cô giao', color: 'from-pink-400 to-rose-500' },
-        { emoji: '🤖', text: 'Muốn xem AI với bạn… ai thân hơn ai?', color: 'from-cyan-400 to-blue-500' },
-    ];
+    const toggleMute = () => {
+        if (!audioRef.current) return;
+        if (isMuted) {
+            audioRef.current.play().catch(e => console.error("Play failed", e));
+        } else {
+            audioRef.current.pause();
+        }
+        setIsMuted(!isMuted);
+    };
 
     return (
         <div className="relative min-h-[100dvh] w-screen bg-[#1a0e08] flex flex-col items-center justify-end overflow-hidden pb-8">
@@ -84,30 +108,17 @@ const GameHomePage = () => {
                 {/* Bottom Panel - RPG style info panel */}
                 <div className="relative z-[6] w-full max-w-xl mt-[-20px] bg-gradient-to-b from-[#5a3a1e] via-[#3d2215] to-[#2d1810] border-2 border-[#6b4a1e] rounded-xl shadow-[inset_0_2px_4px_rgba(255,200,100,0.1),0_-4px_20px_rgba(0,0,0,0.5),0_8px_30px_rgba(0,0,0,0.4)] overflow-hidden before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-[1px] before:bg-gradient-to-r before:from-transparent before:via-[#8b6914] before:to-transparent">
                     <div className="p-5 sm:p-6">
-                        {/* Reasons section */}
-                        <div className="mb-4">
-                            <p className="text-[#d4a55e] text-[0.85rem] font-semibold mb-2.5 text-center drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">Bạn đến đây vì:</p>
-                            <div className="flex flex-wrap gap-2 justify-center">
-                                {reasons.map((reason, index) => (
-                                    <button
-                                        key={index}
-                                        className={`relative flex items-center gap-1.5 px-3.5 py-2 sm:py-2.5 bg-gradient-to-br border-[1.5px] rounded-lg text-[#e8c88a] text-[0.8rem] font-medium cursor-pointer transition-all duration-300 overflow-hidden group before:content-[''] before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-transparent before:via-[rgba(255,200,100,0.1)] before:to-transparent before:transition-all before:duration-500 hover:before:left-full ${activeReason === index ? '!border-[#f5d68a] !from-[rgba(139,105,20,0.7)] !to-[rgba(107,74,30,0.9)] !shadow-[0_0_12px_rgba(245,214,138,0.2),0_4px_12px_rgba(0,0,0,0.3)]' : 'from-[rgba(107,74,30,0.6)] to-[rgba(61,35,23,0.8)] border-[#6b4a1e] hover:border-[#d4a55e] hover:from-[rgba(107,74,30,0.8)] hover:to-[rgba(90,58,30,0.9)] hover:-translate-y-[1px] hover:shadow-[0_4px_12px_rgba(0,0,0,0.3)]'}`}
-                                        onClick={() => setActiveReason(index)}
-                                    >
-                                        <span className="text-[1.1rem] z-[1]">{reason.emoji}</span>
-                                        <span className="max-w-[200px] text-left z-[1]">{reason.text}</span>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
                         {/* CTA Button */}
-                        <div className="flex flex-col items-center gap-2.5 mt-5">
-                            <Link to="/game/quiz" className="relative inline-flex flex-col sm:flex-row items-center justify-center overflow-hidden rounded-lg font-bold text-[0.95rem] sm:text-[1.05rem] transition-all duration-300 px-8 py-3.5 bg-gradient-to-br from-[#8b6914] via-[#b8863a] to-[#d4a55e] text-[#1a0e08] border-2 border-[#d4a55e] shadow-[0_4px_15px_rgba(139,105,20,0.4),inset_0_1px_2px_rgba(255,215,120,0.4)] drop-shadow-[0_1px_1px_rgba(255,215,120,0.3)] w-full max-w-[320px] hover:-translate-y-[2px] hover:shadow-[0_6px_25px_rgba(139,105,20,0.6),inset_0_1px_2px_rgba(255,215,120,0.5)] hover:from-[#a07a18] hover:via-[#d4a55e] hover:to-[#e8c88a] group">
-                                <div className="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-[rgba(255,255,255,0.2)] to-transparent animate-rpg-btn-shine z-[0]" />
-                                <span className="relative z-[1] flex items-center gap-2">🚀 Bắt Đầu Làm Bài Test</span>
+                        <div className="flex flex-col items-center gap-4 py-4 sm:py-6">
+                            <Link to="/game/quiz" className="relative inline-flex flex-col sm:flex-row items-center justify-center overflow-hidden rounded-xl font-extrabold text-[1.15rem] sm:text-[1.35rem] transition-all duration-300 px-8 py-5 sm:py-6 bg-gradient-to-br from-[#8b6914] via-[#b8863a] to-[#d4a55e] text-[#1a0e08] border-[4px] border-[#f5d68a] shadow-[0_6px_20px_rgba(139,105,20,0.6),inset_0_2px_4px_rgba(255,215,120,0.6)] drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] w-[90%] sm:w-full max-w-[420px] hover:-translate-y-[4px] hover:shadow-[0_10px_35px_rgba(139,105,20,0.8),inset_0_2px_4px_rgba(255,215,120,0.6)] hover:from-[#a07a18] hover:via-[#d4a55e] hover:to-[#e8c88a] hover:brightness-110 group tracking-wide uppercase">
+                                <div className="absolute top-0 -left-full w-[150%] h-full bg-gradient-to-r from-transparent via-[rgba(255,255,255,0.3)] to-transparent animate-rpg-btn-shine z-[0] skew-x-[-20deg]" />
+                                <span className="relative z-[1] flex items-center justify-center gap-3">
+                                    <span className="text-3xl filter drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)]">🚀</span> Bắt Đầu Làm Bài Test
+                                </span>
                             </Link>
-                            <p className="text-[#8b6914] text-[0.7rem] text-center">Hoàn toàn miễn phí • Không cần đăng ký</p>
+                            <p className="text-[#8b6914] text-[0.85rem] text-center font-bold drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
+                                Hoàn toàn miễn phí • Không cần đăng ký
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -118,6 +129,15 @@ const GameHomePage = () => {
                 <span>←</span>
                 <span className="hidden sm:block">Trang chủ</span>
             </Link>
+
+            {/* Audio Toggle Button */}
+            <button
+                onClick={toggleMute}
+                className="fixed top-3 right-3 sm:top-5 sm:right-5 z-[20] flex items-center justify-center w-10 h-10 bg-[rgba(45,24,16,0.85)] border-2 border-[#6b4a1e] rounded-xl text-[#d4a55e] text-lg font-extrabold transition-all duration-300 backdrop-blur-md hover:bg-[rgba(90,58,30,0.95)] hover:border-[#d4a55e] hover:text-[#f5d68a] shadow-[0_4px_10px_rgba(0,0,0,0.6)] group hover:-translate-y-[1px]"
+                title={isMuted ? "Bật nhạc" : "Tắt nhạc"}
+            >
+                {isMuted ? '🔇' : '🔊'}
+            </button>
         </div>
     );
 };

@@ -26,7 +26,43 @@ const QuizGamePage = () => {
     const [countdownNumber, setCountdownNumber] = useState(3);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [progressAnimating, setProgressAnimating] = useState(false);
+    const [isMuted, setIsMuted] = useState(false);
     const questionRef = useRef(null);
+    const audioRef = useRef(null);
+
+    // --- Audio setup ---
+    useEffect(() => {
+        // Assume user will place bgm.mp3 here
+        audioRef.current = new Audio('/survey/bgm.mp3');
+        audioRef.current.loop = true;
+        audioRef.current.volume = 0.4;
+
+        // Try autoplaying right away
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log("Autoplay prevented:", error);
+                setIsMuted(true); // UI reflects blocked state
+            });
+        }
+
+        return () => {
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.src = "";
+            }
+        };
+    }, []);
+
+    const toggleMute = () => {
+        if (!audioRef.current) return;
+        if (isMuted) {
+            audioRef.current.play().catch(e => console.error("Play failed", e));
+        } else {
+            audioRef.current.pause();
+        }
+        setIsMuted(!isMuted);
+    };
 
     // --- Fetch questions from backend ---
     const fetchQuestions = useCallback(async () => {
@@ -117,81 +153,121 @@ const QuizGamePage = () => {
 
     // --- RENDER ---
     return (
-        <div className="min-h-screen w-full bg-ocean-gradient flex items-center justify-center px-3 sm:px-6 py-4 sm:py-8 overflow-hidden">
-            <div className="relative max-w-2xl w-full">
+        <div className="relative min-h-[100dvh] w-screen bg-[#1a0e08] flex flex-col items-center justify-end overflow-hidden pb-8 font-['Be_Vietnam_Pro',serif]">
+            {/* Dark vignette overlay */}
+            <div className="fixed inset-0 w-full h-full bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.6)_100%)] pointer-events-none z-[1]" />
 
-                {/* ====== FLOATING DECORATIONS ====== */}
-                <div className="absolute -top-8 -left-8 w-20 h-20 bg-yellow-300/20 rounded-full animate-float blur-md hidden sm:block" />
-                <div className="absolute -top-4 -right-10 w-24 h-24 bg-pink-300/15 rounded-full animate-float blur-md hidden sm:block" style={{ animationDelay: '1s' }} />
-                <div className="absolute -bottom-6 left-10 w-16 h-16 bg-cyan-300/25 rounded-full animate-float blur-md hidden sm:block" style={{ animationDelay: '2s' }} />
+            {/* Floating particles/dust */}
+            <div className="fixed inset-0 w-full h-full pointer-events-none z-[2]">
+                {[...Array(12)].map((_, i) => (
+                    <div
+                        key={i}
+                        className="absolute w-[3px] h-[3px] bg-[#f5d68a] rounded-full shadow-[0_0_4px_#f5d68a] animate-rpg-dust-float"
+                        style={{
+                            left: `${Math.random() * 100}%`,
+                            animationDelay: `${Math.random() * 6}s`,
+                            animationDuration: `${4 + Math.random() * 4}s`,
+                            opacity: 0.3 + Math.random() * 0.4,
+                        }}
+                    />
+                ))}
+            </div>
+
+            {/* RPG Background containing lamps, seal, and table */}
+            <div
+                className="absolute bottom-0 inset-x-0 mx-auto w-[min(100vw,calc(100vh*2088/2048))] h-[min(100vh,calc(100vw*2048/2088))] bg-contain bg-bottom bg-no-repeat z-[2] transition-all duration-1000"
+                style={{ backgroundImage: `url("${'/survey/background.png'}")` }}
+            >
+                {/* Oil Lamp - Top Left */}
+                <div className="absolute top-[5%] left-[0%] w-[35%] min-w-[180px] max-w-[350px] z-10 flex flex-col items-center">
+                    <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[160%] aspect-square rounded-full bg-[radial-gradient(circle,rgba(255,180,50,0.25)_0%,rgba(255,140,20,0.1)_40%,transparent_70%)] animate-rpg-lamp-flicker z-[1] pointer-events-none" />
+                    <img src="/survey/oil-lamp.gif" alt="Oil Lamp" className="w-full h-auto brightness-110 saturate-[1.2] relative z-[2]" />
+                </div>
+
+                {/* Oil Lamp - Top Right */}
+                <div className="absolute top-[5%] right-[0%] w-[35%] min-w-[180px] max-w-[350px] z-10 flex flex-col items-center">
+                    <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[160%] aspect-square rounded-full bg-[radial-gradient(circle,rgba(255,180,50,0.25)_0%,rgba(255,140,20,0.1)_40%,transparent_70%)] animate-rpg-lamp-flicker z-[1] pointer-events-none" />
+                    <img src="/survey/oil-lamp.gif" alt="Oil Lamp" className="scale-x-[-1] w-full h-auto brightness-110 saturate-[1.2] relative z-[2]" />
+                </div>
+
+                {/* Seal Indie Character (behind table) */}
+                <div className="absolute z-[3] flex justify-center w-full bottom-[15%] sm:bottom-[18%] md:bottom-[20%] lg:bottom-[23%] xl:bottom-[26%]">
+                    <img src="/survey/seal-indie.png" alt="Seal Shopkeeper" className="w-[45%] sm:w-[38%] md:w-[32%] lg:w-[28%] max-w-[450px] h-auto drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)] origin-[50%_90%] animate-rpg-seal-idle" />
+                </div>
+
+                {/* Table (in front of seal) */}
+                <div className="absolute z-[4] flex flex-col items-center w-full bottom-[8%]">
+                    <img src="/survey/table.png" alt="Wooden Table" className="w-[55%] max-w-[700px] h-auto drop-shadow-[0_15px_40px_rgba(0,0,0,0.8)] relative z-[2]" />
+                </div>
+            </div>
+
+            {/* Content Container for UI */}
+            <div className={`w-full flex justify-center z-10 relative px-2 sm:px-4 transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] ${phase === 'loading' ? 'translate-y-[80px]' : 'translate-y-0'}`}>
 
                 {/* ====== LOADING PHASE ====== */}
                 {phase === 'loading' && (
-                    <div className="flex flex-col items-center gap-4 animate-quiz-fade-in">
-                        <div className="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin" />
-                        <p className="text-white font-medium text-lg">Đang tải câu hỏi...</p>
+                    <div className="flex flex-col items-center gap-6 animate-quiz-fade-in relative z-[6] mt-[-50px]">
+                        <div className="relative">
+                            <div className="w-20 h-20 border-4 border-[#8b6914]/30 border-t-[#f5d68a] rounded-full animate-spin shadow-[0_0_15px_rgba(245,214,138,0.4)]" />
+                            <div className="absolute inset-0 flex items-center justify-center text-3xl drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">⏳</div>
+                        </div>
+                        <div className="bg-gradient-to-r from-transparent via-[rgba(26,14,8,0.8)] to-transparent px-8 py-3 rounded-full border-t border-b border-[#6b4a1e]/50 backdrop-blur-[2px]">
+                            <p className="text-[#f5d68a] font-bold text-xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] tracking-wide">Đang lấy câu hỏi...</p>
+                        </div>
                     </div>
                 )}
 
                 {/* ====== COUNTDOWN PHASE ====== */}
                 {phase === 'countdown' && (
-                    <div className="flex flex-col items-center gap-6">
-                        <div className="relative">
+                    <div className="flex flex-col items-center gap-6 relative z-[6] pt-10">
+                        <div className="relative animate-bounce">
                             <div
                                 key={countdownNumber}
-                                className="text-9xl sm:text-[10rem] font-black text-white animate-quiz-countdown-pop"
-                                style={{ textShadow: '0 0 40px rgba(255,255,255,0.5)' }}
+                                className="text-8xl sm:text-[9rem] font-black text-[#f5d68a] animate-quiz-countdown-pop drop-shadow-[0_0_25px_rgba(245,214,138,1)]"
+                                style={{ WebkitTextStroke: '2px #6b4a1e' }}
                             >
                                 {countdownNumber === 0 ? '🚀' : countdownNumber}
                             </div>
-                            {/* Ripple rings */}
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-40 h-40 rounded-full border-4 border-white/20 animate-quiz-ripple" />
-                            </div>
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-40 h-40 rounded-full border-4 border-white/10 animate-quiz-ripple" style={{ animationDelay: '0.3s' }} />
-                            </div>
                         </div>
-                        <p className="text-white/80 text-lg font-medium animate-quiz-fade-in" style={{ animationDelay: '0.2s' }}>
-                            Chuẩn bị sẵn sàng...
-                        </p>
+                        <div className="bg-[rgba(26,14,8,0.7)] px-6 py-2 rounded-xl border border-[#8b6914] shadow-[0_4px_15px_rgba(0,0,0,0.6)] backdrop-blur-sm">
+                            <p className="text-[#d4a55e] text-xl font-bold animate-quiz-fade-in drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] tracking-[0.05em]">
+                                CHUẨN BỊ SẴN SÀNG...
+                            </p>
+                        </div>
                     </div>
                 )}
 
                 {/* ====== PLAYING PHASE ====== */}
                 {phase === 'playing' && currentQuestion && (
-                    <div className="relative">
-                        {/* Main card */}
-                        <div className="bg-white/95 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden">
-                            {/* Top bar with progress */}
-                            <div className="relative bg-gradient-to-r from-seablue-600 via-ocean-medium to-seablue-400 p-4 sm:p-5">
-                                {/* Back button */}
-                                <Link to="/game" className="absolute top-3 left-3 sm:top-4 sm:left-4 text-white/70 hover:text-white transition-colors text-sm flex items-center gap-1 z-10">
-                                    <span>←</span>
-                                    <span className="hidden sm:inline">Về trang game</span>
-                                </Link>
+                    <div className="relative z-[6] w-full max-w-2xl mt-[-50px]">
+                        {/* Main card - Wooden Border theme */}
+                        <div className="bg-gradient-to-b from-[#5a3a1e] via-[#3d2215] to-[#2d1810] border-[3px] border-[#8b6914] rounded-2xl shadow-[inset_0_2px_4px_rgba(255,200,100,0.1),0_-4px_20px_rgba(0,0,0,0.7),0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden relative">
+                            {/* Inner wooden highlight */}
+                            <div className="absolute inset-0 border border-[#ab8534]/50 rounded-[14px] pointer-events-none" />
 
-                                <div className="text-center pt-2">
-                                    <div className="flex items-center justify-center gap-2 text-white/90 text-xs sm:text-sm font-medium mb-3">
+                            {/* Top bar with progress */}
+                            <div className="relative bg-gradient-to-r from-[#2d1810] via-[#4d2f1a] to-[#2d1810] p-4 sm:p-5 border-b-[3px] border-[#1a0e08]">
+                                <div className="text-center">
+                                    <div className="flex items-center justify-center gap-2 text-[#e8c88a] font-bold text-xs sm:text-sm mb-3 drop-shadow-[0_2px_2px_rgba(0,0,0,1)] uppercase tracking-wide">
                                         <span>{currentQuestion.levelEmoji} Level {currentQuestion.level}</span>
-                                        <span className="text-white/50">•</span>
-                                        <span>Câu {currentIndex + 1}/{questions.length}</span>
+                                        <span className="text-[#8b6914]">✦</span>
+                                        <span className="text-[#f5d68a]">Câu {currentIndex + 1}/{questions.length}</span>
                                     </div>
 
-                                    {/* Progress bar */}
-                                    <div className="relative w-full h-2.5 bg-white/20 rounded-full overflow-hidden">
+                                    {/* Progress bar - RPG stylized */}
+                                    <div className="relative w-full h-3.5 bg-[#1a0e08] rounded-full overflow-hidden border-2 border-[#3d2215] shadow-[inset_0_3px_6px_rgba(0,0,0,0.8)]">
                                         <div
-                                            className={`h-full rounded-full transition-all duration-500 ease-out ${progressAnimating ? 'animate-progress-pulse' : ''
-                                                }`}
+                                            className={`h-full rounded-full transition-all duration-500 ease-out`}
                                             style={{
                                                 width: `${progress}%`,
-                                                background: 'linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6)',
+                                                background: 'linear-gradient(90deg, #8b6914, #d4a55e, #f5d68a)',
+                                                boxShadow: '0 0 12px rgba(245,214,138,0.6)',
                                             }}
                                         />
-                                        {/* Sparkle at progress tip */}
+                                        {/* Sparkle at tip */}
                                         <div
-                                            className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white/60 blur-sm transition-all duration-500"
-                                            style={{ left: `${Math.max(0, progress - 2)}%` }}
+                                            className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white/80 blur-[2px] transition-all duration-500 z-10"
+                                            style={{ left: `calc(${Math.max(0, progress)}% - 8px)` }}
                                         />
                                     </div>
                                 </div>
@@ -203,198 +279,189 @@ const QuizGamePage = () => {
                                 className={`p-5 sm:p-8 ${slideDirection}`}
                                 key={`q-${currentQuestion.id}`}
                             >
-                                {/* Question text */}
-                                <div className="mb-6 sm:mb-8">
-                                    <div className="inline-flex items-center gap-2 bg-seablue-50 rounded-full px-3 py-1 mb-3">
-                                        <span className="text-seablue-600 font-bold text-sm">Q{currentIndex + 1}</span>
-                                    </div>
-                                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 leading-relaxed">
+                                {/* Question text Box */}
+                                <div className="mb-5 sm:mb-8 bg-[rgba(26,14,8,0.5)] border-2 border-[#6b4a1e] p-5 sm:p-6 mb-5 rounded-xl shadow-[inset_0_4px_12px_rgba(0,0,0,0.6)] relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#8b6914] to-transparent opacity-50" />
+                                    <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#8b6914] to-transparent opacity-50" />
+                                    <h2 className="text-xl sm:text-[1.35rem] md:text-[1.5rem] font-extrabold text-[#f5d68a] leading-[1.6] drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)] text-center tracking-[0.01em]">
                                         {currentQuestion.question}
                                     </h2>
                                 </div>
 
                                 {/* Answer options */}
-                                <div className="space-y-3">
+                                <div className="space-y-3 sm:space-y-4">
                                     {currentQuestion.answers.map((answer, idx) => {
                                         const isSelected = selectedAnswer === answer.id;
-                                        const letterColors = [
-                                            'from-blue-500 to-cyan-500',
-                                            'from-purple-500 to-pink-500',
-                                            'from-amber-500 to-orange-500',
-                                            'from-emerald-500 to-teal-500',
-                                        ];
 
                                         return (
                                             <button
                                                 key={answer.id}
                                                 onClick={() => handleSelectAnswer(currentQuestion.id, answer.id)}
                                                 disabled={selectedAnswer !== null}
-                                                className={`animate-answer-option-in opacity-0 w-full text-left p-4 sm:p-5 rounded-xl border-2 transition-all duration-300 group relative overflow-hidden
-                          ${isSelected
-                                                        ? 'border-seablue-400 bg-seablue-50 shadow-lg scale-[1.02] ring-2 ring-seablue-300/50'
+                                                className={`animate-answer-option-in opacity-0 w-full text-left px-4 py-3 sm:py-5 sm:px-5 rounded-xl border-[2.5px] transition-all duration-300 group relative overflow-hidden flex items-center gap-3 sm:gap-5
+                                                    ${isSelected
+                                                        ? 'border-[#f5d68a] bg-gradient-to-r from-[#8b6914] to-[#ab8534] shadow-[0_0_20px_rgba(245,214,138,0.5)] scale-[1.03] z-10'
                                                         : selectedAnswer
-                                                            ? 'border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed'
-                                                            : 'border-gray-200 hover:border-seablue-300 hover:bg-seablue-50/50 hover:shadow-md hover:scale-[1.01] active:scale-[0.99]'
+                                                            ? 'border-[#3d2215] bg-[rgba(26,14,8,0.7)] opacity-40 cursor-not-allowed text-[#8b6914]'
+                                                            : 'bg-gradient-to-b from-[rgba(107,74,30,0.6)] to-[rgba(61,35,23,0.8)] border-[#6b4a1e] hover:border-[#d4a55e] hover:from-[rgba(107,74,30,0.8)] hover:to-[rgba(90,58,30,0.9)] hover:-translate-y-[3px] shadow-[0_6px_15px_rgba(0,0,0,0.6)] hover:shadow-[0_8px_25px_rgba(139,105,20,0.4)]'
                                                     }`}
                                                 style={{ animationDelay: `${idx * 0.08}s`, animationFillMode: 'forwards' }}
                                             >
-                                                {/* Hover shimmer */}
+                                                {/* Hover shine */}
                                                 {!selectedAnswer && (
-                                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                                                    <div className="absolute top-0 -left-full w-[150%] h-full bg-gradient-to-r from-transparent via-[rgba(245,214,138,0.15)] to-transparent group-hover:left-[100%] transition-all duration-[800ms] skew-x-[-20deg] z-[0]" />
                                                 )}
 
-                                                <div className="relative flex items-center gap-3 sm:gap-4">
-                                                    {/* Answer letter badge */}
-                                                    <div className={`flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br ${letterColors[idx % 4]} flex items-center justify-center text-white font-bold text-sm sm:text-base shadow-md transition-transform duration-300 ${isSelected ? 'scale-110 shadow-lg' : 'group-hover:scale-105'
-                                                        }`}>
-                                                        {answer.id}
-                                                    </div>
-
-                                                    {/* Answer text */}
-                                                    <span className={`text-sm sm:text-base font-medium transition-colors duration-200 ${isSelected ? 'text-seablue-700' : 'text-gray-700 group-hover:text-gray-900'
-                                                        }`}>
-                                                        {answer.text}
-                                                    </span>
-
-                                                    {/* Check mark for selected */}
-                                                    {isSelected && (
-                                                        <div className="ml-auto flex-shrink-0 w-7 h-7 rounded-full bg-seablue-500 flex items-center justify-center animate-check-pop">
-                                                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                                            </svg>
-                                                        </div>
-                                                    )}
+                                                {/* Choice Letter Block */}
+                                                <div className={`relative z-[1] flex-shrink-0 w-10 h-10 sm:w-[52px] sm:h-[52px] rounded-lg bg-gradient-to-br from-[#2d1810] to-[#1a0e08] border-2 flex items-center justify-center font-black text-lg sm:text-2xl shadow-[inset_0_2px_6px_rgba(0,0,0,0.8)] transition-all duration-300 ${isSelected ? 'text-[#1a0e08] bg-[#f5d68a] border-[#f5d68a] shadow-[0_0_15px_rgba(245,214,138,0.8)]' : 'text-[#d4a55e] border-[#8b6914] group-hover:text-[#f5d68a] group-hover:border-[#d4a55e]'}`}>
+                                                    {String.fromCharCode(65 + idx)}
                                                 </div>
+
+                                                <span className={`relative z-[1] text-[0.95rem] sm:text-[1.15rem] leading-[1.4] font-semibold transition-colors duration-200 ${isSelected ? 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]' : selectedAnswer ? 'text-[#a99066] drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]' : 'text-[#e8c88a] group-hover:text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]'}`}>
+                                                    {answer.text.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]|\uD83E[\uDE00-\uDEFF])/g, '').trim()}
+                                                </span>
+
+                                                {/* Check mark for selected */}
+                                                {isSelected && (
+                                                    <div className="ml-auto flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#1a0e08] border-2 border-[#f5d68a] flex items-center justify-center animate-check-pop shadow-[0_0_10px_rgba(245,214,138,0.5)]">
+                                                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#f5d68a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    </div>
+                                                )}
                                             </button>
                                         );
                                     })}
                                 </div>
                             </div>
-
-                            {/* Bottom decorative bar */}
-                            <div className="h-1.5 bg-gradient-to-r from-seablue-400 via-purple-400 to-pink-400" />
                         </div>
                     </div>
                 )}
 
                 {/* ====== SUBMITTING PHASE ====== */}
                 {phase === 'submitting' && (
-                    <div className="flex flex-col items-center gap-6 animate-quiz-fade-in">
+                    <div className="flex flex-col items-center gap-6 animate-quiz-fade-in relative z-[6] pt-10">
                         <div className="relative">
-                            <div className="w-20 h-20 border-4 border-white/30 border-t-white rounded-full animate-spin" />
-                            <div className="absolute inset-0 flex items-center justify-center text-3xl">🧠</div>
+                            <div className="w-24 h-24 border-4 border-[#8b6914]/30 border-t-[#f5d68a] rounded-full animate-spin shadow-[0_0_20px_rgba(245,214,138,0.3)]" />
+                            <div className="absolute inset-0 flex items-center justify-center text-4xl drop-shadow-[0_0_10px_rgba(245,214,138,0.5)]">🔮</div>
                         </div>
-                        <div className="text-center">
-                            <p className="text-white font-bold text-xl mb-2">Đang phân tích kết quả...</p>
-                            <p className="text-white/70 text-sm">AI đang "đọc vị" cách học của bạn 🔍</p>
+                        <div className="text-center bg-gradient-to-b from-[rgba(61,35,23,0.8)] to-[rgba(26,14,8,0.9)] px-8 py-5 rounded-2xl border-2 border-[#6b4a1e] shadow-[0_10px_30px_rgba(0,0,0,0.6)] backdrop-blur-sm">
+                            <p className="text-[#f5d68a] font-extrabold text-2xl mb-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-wide">Đang phân tích...</p>
+                            <p className="text-[#d4a55e] text-[0.95rem] font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">Cuộn giấy phép thuật đang ghi lại kết quả của bạn 📜</p>
                         </div>
                     </div>
                 )}
 
                 {/* ====== RESULT PHASE ====== */}
                 {phase === 'result' && result && (
-                    <div className="animate-result-reveal">
-                        {/* Confetti */}
+                    <div className="animate-result-reveal relative z-[6] w-full max-w-2xl mt-[-30px]">
+                        {/* Golden Confetti */}
                         <div className="absolute inset-0 overflow-hidden pointer-events-none z-50">
-                            {[...Array(30)].map((_, i) => (
-                                <ConfettiParticle key={i} delay={Math.random() * 1.5} left={Math.random() * 100} />
+                            {[...Array(40)].map((_, i) => (
+                                <div
+                                    key={i}
+                                    className="absolute w-2 h-3 opacity-0 animate-confetti-fall"
+                                    style={{
+                                        left: `${Math.random() * 100}%`,
+                                        top: '-20px',
+                                        backgroundColor: ['#f5d68a', '#d4a55e', '#8b6914', '#e8c88a'][Math.floor(Math.random() * 4)],
+                                        animationDelay: `${Math.random() * 2}s`,
+                                        animationDuration: `${2 + Math.random() * 3}s`,
+                                        transform: `rotate(${Math.random() * 360}deg)`,
+                                        boxShadow: '0 0 5px rgba(245,214,138,0.5)'
+                                    }}
+                                />
                             ))}
                         </div>
 
-                        <div className="bg-white/95 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden">
-                            {/* Result header */}
-                            <div className={`relative p-6 sm:p-10 text-center bg-gradient-to-br ${result.result.bgGradient} overflow-hidden`}>
-                                {/* Animated circles */}
-                                <div className="absolute top-4 left-4 w-20 h-20 bg-white/10 rounded-full animate-float" />
-                                <div className="absolute bottom-4 right-4 w-16 h-16 bg-white/10 rounded-full animate-float" style={{ animationDelay: '1s' }} />
+                        {/* Grand RPG Board */}
+                        <div className="bg-gradient-to-b from-[#5a3a1e] via-[#3d2215] to-[#2d1810] border-[3px] border-[#d4a55e] rounded-2xl shadow-[inset_0_2px_4px_rgba(255,200,100,0.2),0_-4px_25px_rgba(139,105,20,0.3),0_15px_50px_rgba(0,0,0,0.8)] overflow-hidden relative">
+                            {/* Inner wooden highlight */}
+                            <div className="absolute inset-0 border border-[#ab8534]/60 rounded-[14px] pointer-events-none" />
 
-                                <div className="relative z-10">
-                                    <div className="text-6xl sm:text-7xl mb-4 animate-emoji-result-bounce">{result.result.emoji}</div>
-                                    <div className="text-4xl mb-2">{result.result.color}</div>
-                                    <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-800 mb-2">{result.result.title}</h2>
-                                    <div className="flex items-center justify-center gap-2 mt-3">
-                                        <span className={`inline-flex items-center gap-1 px-4 py-1.5 rounded-full bg-gradient-to-r ${result.result.gradient} text-white font-bold text-sm shadow-lg`}>
-                                            <span>⭐</span>
-                                            <span>{result.totalScore}/{result.maxScore} điểm</span>
-                                        </span>
+                            {/* Result header */}
+                            <div className={`relative p-6 sm:p-10 text-center overflow-hidden border-b-[3px] border-[#1a0e08]`} style={{ background: 'linear-gradient(to bottom, rgba(139,105,20,0.25), transparent)' }}>
+                                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#f5d68a] to-transparent opacity-50" />
+                                <div className="relative z-10 w-full flex flex-col items-center">
+                                    <div className="text-6xl sm:text-8xl mb-4 animate-emoji-result-bounce drop-shadow-[0_10px_15px_rgba(0,0,0,0.6)] relative inline-block">
+                                        <div className="absolute inset-0 bg-yellow-400 blur-2xl opacity-20" />
+                                        {result.result.emoji}
+                                    </div>
+                                    <h2 className="text-[1.6rem] sm:text-[2.2rem] font-extrabold text-[#f5d68a] mb-2 drop-shadow-[0_4px_6px_rgba(0,0,0,0.9)] tracking-widest uppercase text-center leading-tight">{result.result.title}</h2>
+                                    <div className="text-[1.2rem] font-bold text-[#d4a55e] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mb-6 text-center">{result.result.color}</div>
+
+                                    <div className="flex items-center justify-center">
+                                        <div className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#f5d68a] bg-gradient-to-b from-[rgba(45,24,16,0.8)] to-[#1a0e08] shadow-[0_0_15px_rgba(245,214,138,0.3),inset_0_0_10px_rgba(139,105,20,0.5)]`}>
+                                            <span className="text-xl">🌟</span>
+                                            <span className="text-[#f5d68a] font-black text-lg py-1 tracking-wide">{result.totalScore}/{result.maxScore} ĐIỂM</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Result body */}
-                            <div className="p-5 sm:p-8">
+                            <div className="p-5 sm:p-10">
                                 {/* Description */}
-                                <div className="bg-gray-50 rounded-2xl p-5 sm:p-6 mb-5 border border-gray-100">
-                                    <p className="text-gray-700 text-base sm:text-lg leading-relaxed font-medium">
+                                <div className="bg-[rgba(26,14,8,0.5)] border-2 border-[#6b4a1e] rounded-xl p-5 sm:p-8 mb-6 shadow-[inset_0_4px_12px_rgba(0,0,0,0.6)] relative">
+                                    <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#8b6914] to-transparent opacity-60" />
+                                    <p className="text-[#e8c88a] text-[0.95rem] sm:text-[1.15rem] leading-[1.6] font-medium text-center drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)]">
                                         {result.result.description}
                                     </p>
                                 </div>
 
                                 {/* Advice */}
-                                <div className={`bg-gradient-to-br ${result.result.bgGradient} rounded-2xl p-5 sm:p-6 mb-6 border border-gray-100`}>
-                                    <div className="flex items-start gap-3">
-                                        <span className="text-2xl flex-shrink-0">💡</span>
+                                <div className={`bg-gradient-to-br from-[#2d1810] to-[#1a0e08] border-2 border-[#8b6914] rounded-xl p-5 sm:p-7 mb-8 shadow-[0_6px_15px_rgba(0,0,0,0.7)]`}>
+                                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
+                                        <span className="text-4xl sm:text-5xl flex-shrink-0 drop-shadow-[0_2px_4px_rgba(245,214,138,0.4)]">💡</span>
                                         <div>
-                                            <h3 className="font-bold text-gray-800 mb-1">Lời khuyên cho bạn</h3>
-                                            <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
+                                            <h3 className="font-extrabold text-[1.2rem] text-[#f5d68a] mb-2 drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)] uppercase tracking-wide">Lời khuyên dành cho bạn</h3>
+                                            <p className="text-[#d4a55e] text-[0.95rem] sm:text-[1.1rem] leading-[1.6] font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
                                                 {result.result.advice}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Stats */}
-                                <div className="grid grid-cols-3 gap-3 mb-6">
-                                    <div className="bg-blue-50 rounded-xl p-3 text-center border border-blue-100">
-                                        <div className="text-2xl mb-1">📝</div>
-                                        <div className="text-xs text-gray-500">Đã trả lời</div>
-                                        <div className="font-bold text-blue-600">{result.answeredCount}/{result.totalQuestions}</div>
-                                    </div>
-                                    <div className="bg-purple-50 rounded-xl p-3 text-center border border-purple-100">
-                                        <div className="text-2xl mb-1">🎯</div>
-                                        <div className="text-xs text-gray-500">Tổng điểm</div>
-                                        <div className="font-bold text-purple-600">{result.totalScore}</div>
-                                    </div>
-                                    <div className="bg-emerald-50 rounded-xl p-3 text-center border border-emerald-100">
-                                        <div className="text-2xl mb-1">📊</div>
-                                        <div className="text-xs text-gray-500">Phân loại</div>
-                                        <div className="font-bold text-emerald-600">{result.result.color}</div>
-                                    </div>
-                                </div>
-
                                 {/* Action buttons */}
-                                <div className="flex flex-col sm:flex-row gap-3">
+                                <div className="flex flex-col sm:flex-row gap-3 sm:gap-5">
                                     <button
                                         onClick={handleRestart}
-                                        className="flex-1 group relative px-6 py-4 rounded-xl bg-seablue-gradient text-white font-bold text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
+                                        className="flex-1 relative inline-flex flex-col sm:flex-row items-center justify-center overflow-hidden rounded-xl font-bold text-[1.05rem] transition-all duration-300 px-5 py-4 bg-gradient-to-br from-[#8b6914] via-[#b8863a] to-[#d4a55e] text-[#1a0e08] border-[3px] border-[#f5d68a] shadow-[0_6px_20px_rgba(139,105,20,0.5),inset_0_2px_4px_rgba(255,215,120,0.6)] hover:-translate-y-[3px] hover:shadow-[0_8px_30px_rgba(139,105,20,0.7),inset_0_2px_4px_rgba(255,215,120,0.6)] hover:brightness-110 group tracking-wide uppercase"
                                     >
-                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                                        <span className="relative flex items-center justify-center gap-2">
-                                            <span>🔄</span> Làm lại bài test
+                                        <div className="absolute top-0 -left-full w-[150%] h-full bg-gradient-to-r from-transparent via-[rgba(255,255,255,0.3)] to-transparent group-hover:left-[100%] transition-all duration-700 skew-x-[-20deg] z-[0]" />
+                                        <span className="relative z-[1] flex items-center justify-center gap-2.5">
+                                            <span className="text-xl">🔄</span> Thử lại lần nữa
                                         </span>
                                     </button>
                                     <Link
                                         to="/game"
-                                        className="flex-1 px-6 py-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-base text-center transition-all duration-300 border border-gray-200"
+                                        className="flex-1 relative inline-flex flex-col sm:flex-row items-center justify-center overflow-hidden rounded-xl font-bold text-[1.05rem] transition-all duration-300 px-5 py-4 bg-gradient-to-b from-[rgba(107,74,30,0.8)] to-[rgba(61,35,23,0.9)] text-[#e8c88a] border-[3px] border-[#6b4a1e] shadow-[0_6px_15px_rgba(0,0,0,0.6)] hover:border-[#d4a55e] hover:from-[rgba(139,105,20,0.7)] hover:to-[rgba(90,58,30,0.8)] hover:text-[#f5d68a] hover:-translate-y-[3px] hover:shadow-[0_8px_25px_rgba(0,0,0,0.7)] tracking-wide uppercase"
                                     >
-                                        <span className="flex items-center justify-center gap-2">
-                                            <span>🏠</span> Về trang game
+                                        <span className="flex items-center justify-center gap-2.5">
+                                            <span className="text-xl relative bottom-[1px]">🏠</span> Về Quầy Shop
                                         </span>
                                     </Link>
                                 </div>
                             </div>
-
-                            {/* Bottom bar */}
-                            <div className={`h-2 bg-gradient-to-r ${result.result.gradient}`} />
-                        </div>
-
-                        {/* Footer */}
-                        <div className="mt-6 text-center text-sm text-white/50">
-                            <p>🎓 SealEdu Game Zone – Học mà chơi, chơi mà học!</p>
                         </div>
                     </div>
                 )}
             </div>
+
+            {/* Back button */}
+            <Link to="/game" className="fixed top-3 left-3 sm:top-5 sm:left-5 z-[20] flex items-center gap-1.5 py-1.5 px-3 bg-[rgba(45,24,16,0.85)] border-2 border-[#6b4a1e] rounded-xl text-[#d4a55e] text-[0.85rem] font-extrabold transition-all duration-300 backdrop-blur-md hover:bg-[rgba(90,58,30,0.95)] hover:border-[#d4a55e] hover:text-[#f5d68a] shadow-[0_4px_10px_rgba(0,0,0,0.6)] uppercase tracking-wider group hover:-translate-y-[1px]">
+                <span className="group-hover:-translate-x-1 transition-transform">←</span>
+                <span className="hidden sm:block">Thoát</span>
+            </Link>
+
+            {/* Audio Toggle Button */}
+            <button
+                onClick={toggleMute}
+                className="fixed top-3 right-3 sm:top-5 sm:right-5 z-[20] flex items-center justify-center w-10 h-10 bg-[rgba(45,24,16,0.85)] border-2 border-[#6b4a1e] rounded-xl text-[#d4a55e] text-lg font-extrabold transition-all duration-300 backdrop-blur-md hover:bg-[rgba(90,58,30,0.95)] hover:border-[#d4a55e] hover:text-[#f5d68a] shadow-[0_4px_10px_rgba(0,0,0,0.6)] group hover:-translate-y-[1px]"
+                title={isMuted ? "Bật nhạc" : "Tắt nhạc"}
+            >
+                {isMuted ? '🔇' : '🔊'}
+            </button>
         </div>
     );
 };
