@@ -8,19 +8,22 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ChatPage from './pages/ChatPage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import GameHomePage from './pages/GameHomePage';
+import QuizGamePage from './pages/QuizGamePage';
 
 const AppContent = () => {
   const { token, user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   // Set navigate function for API client
   useEffect(() => {
     setNavigate(navigate);
   }, [navigate]);
-  
-  // Check if current page is chat page
+
+  // Check if current page is chat page or game page
   const isChatPage = location.pathname === '/chat';
+  const hideHeader = location.pathname.startsWith('/chat') || location.pathname.startsWith('/game');
 
   // Toggle chat-page class on body
   useEffect(() => {
@@ -29,7 +32,7 @@ const AppContent = () => {
     } else {
       document.body.classList.remove('chat-page');
     }
-    
+
     // Cleanup on unmount
     return () => {
       document.body.classList.remove('chat-page');
@@ -37,9 +40,9 @@ const AppContent = () => {
   }, [isChatPage]);
 
   return (
-    <div className={isChatPage ? "h-screen w-full" : "w-full"}>
-      {/* Show navigation bar only for non-chat pages */}
-      {!isChatPage && (
+    <div className={hideHeader ? "h-screen w-full" : "w-full"}>
+      {/* Show navigation bar only for non-chat/non-game pages */}
+      {!hideHeader && (
         <div className="w-full p-3 sm:p-4 bg-white border-b border-seablue-200 flex items-center justify-between shadow-sm">
           <Link to="/" className="text-lg sm:text-xl font-bold text-seablue-600 flex items-center gap-2">
             <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-6 h-6 sm:w-7 sm:h-7" />
@@ -49,6 +52,10 @@ const AppContent = () => {
           <div className="text-xs sm:text-sm flex items-center gap-2 sm:gap-4">
             {token ? (
               <>
+                <Link to="/game" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">
+                  <span className="text-sm">🎮</span>
+                  <span className="hidden sm:inline">Game</span>
+                </Link>
                 <Link to="/leaderboard" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">
                   <span className="text-sm">🏆</span>
                   <span className="hidden sm:inline">{t('leaderboard.title')}</span>
@@ -83,6 +90,8 @@ const AppContent = () => {
         <Route path="/register" element={token ? <Navigate to="/chat" replace /> : <RegisterPage />} />
         <Route path="/chat" element={token ? <ChatPage /> : <Navigate to="/login" replace />} />
         <Route path="/leaderboard" element={token ? <LeaderboardPage /> : <Navigate to="/login" replace />} />
+        <Route path="/game" element={<GameHomePage />} />
+        <Route path="/game/quiz" element={<QuizGamePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
