@@ -153,7 +153,7 @@ const QuizGamePage = () => {
 
     // --- RENDER ---
     return (
-        <div className="relative min-h-[100dvh] w-screen bg-[#1a0e08] flex flex-col items-center justify-end overflow-hidden pb-8 font-['Be_Vietnam_Pro',serif]">
+        <div className="relative min-h-[100dvh] w-screen bg-[#1a0e08] flex flex-col items-center justify-end overflow-hidden pb-3 sm:pb-8 font-['Be_Vietnam_Pro',serif]">
             {/* Dark vignette overlay */}
             <div className="fixed inset-0 w-full h-full bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.6)_100%)] pointer-events-none z-[1]" />
 
@@ -174,30 +174,31 @@ const QuizGamePage = () => {
             </div>
 
             {/* RPG Background containing lamps, seal, and table */}
+            {/* Desktop uses fixed aspect ratio calculated by calc(100vh*...), Mobile scales the background container to 100vw and anchors to TOP */}
             <div
-                className="absolute bottom-0 inset-x-0 mx-auto w-[min(100vw,calc(100vh*2088/2048))] h-[min(100vh,calc(100vw*2048/2088))] bg-contain bg-bottom bg-no-repeat z-[2] transition-all duration-1000"
+                className="absolute top-[2vh] sm:top-0 w-full h-[calc(100vw*2048/2088)] left-1/2 -translate-x-1/2 sm:top-auto sm:bottom-0 sm:w-[min(100vw,calc(100vh*2088/2048))] sm:h-[min(100vh,calc(100vw*2048/2088))] sm:left-auto sm:translate-x-0 sm:inset-x-0 sm:mx-auto bg-contain bg-top sm:bg-bottom bg-no-repeat z-[2] transition-all duration-1000"
                 style={{ backgroundImage: `url("${'/survey/background.png'}")` }}
             >
                 {/* Oil Lamp - Top Left */}
-                <div className="absolute top-[5%] left-[0%] w-[35%] min-w-[180px] max-w-[350px] z-10 flex flex-col items-center">
+                <div className="absolute top-[5%] left-[-8%] sm:left-[0%] w-[58%] sm:w-[35%] min-w-[160px] sm:min-w-[180px] max-w-[350px] z-10 flex flex-col items-center">
                     <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[160%] aspect-square rounded-full bg-[radial-gradient(circle,rgba(255,180,50,0.25)_0%,rgba(255,140,20,0.1)_40%,transparent_70%)] animate-rpg-lamp-flicker z-[1] pointer-events-none" />
                     <img src="/survey/oil-lamp.gif" alt="Oil Lamp" className="w-full h-auto brightness-110 saturate-[1.2] relative z-[2]" />
                 </div>
 
                 {/* Oil Lamp - Top Right */}
-                <div className="absolute top-[5%] right-[0%] w-[35%] min-w-[180px] max-w-[350px] z-10 flex flex-col items-center">
+                <div className="absolute top-[5%] right-[-8%] sm:right-[0%] w-[58%] sm:w-[35%] min-w-[160px] sm:min-w-[180px] max-w-[350px] z-10 flex flex-col items-center">
                     <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[160%] aspect-square rounded-full bg-[radial-gradient(circle,rgba(255,180,50,0.25)_0%,rgba(255,140,20,0.1)_40%,transparent_70%)] animate-rpg-lamp-flicker z-[1] pointer-events-none" />
                     <img src="/survey/oil-lamp.gif" alt="Oil Lamp" className="scale-x-[-1] w-full h-auto brightness-110 saturate-[1.2] relative z-[2]" />
                 </div>
 
                 {/* Seal Indie Character (behind table) */}
                 <div className="absolute z-[3] flex justify-center w-full bottom-[15%] sm:bottom-[18%] md:bottom-[20%] lg:bottom-[23%] xl:bottom-[26%]">
-                    <img src="/survey/seal-indie.png" alt="Seal Shopkeeper" className="w-[45%] sm:w-[38%] md:w-[32%] lg:w-[28%] max-w-[450px] h-auto drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)] origin-[50%_90%] animate-rpg-seal-idle" />
+                    <img src="/survey/seal-indie.png" alt="Seal Shopkeeper" className="w-[33%] sm:w-[28%] md:w-[28%] lg:w-[24%] max-w-[450px] h-auto drop-shadow-[0_8px_25px_rgba(0,0,0,0.5)] origin-[50%_90%] animate-rpg-seal-idle" />
                 </div>
 
                 {/* Table (in front of seal) */}
                 <div className="absolute z-[4] flex flex-col items-center w-full bottom-[8%]">
-                    <img src="/survey/table.png" alt="Wooden Table" className="w-[55%] max-w-[700px] h-auto drop-shadow-[0_15px_40px_rgba(0,0,0,0.8)] relative z-[2]" />
+                    <img src="/survey/table.png" alt="Wooden Table" className="w-[50%] sm:w-[55%] max-w-[700px] h-auto drop-shadow-[0_15px_40px_rgba(0,0,0,0.8)] relative z-[2]" />
                 </div>
             </div>
 
@@ -207,41 +208,32 @@ const QuizGamePage = () => {
                 {/* ====== LOADING PHASE ====== */}
                 {phase === 'loading' && (
                     <div className="flex flex-col items-center gap-6 animate-quiz-fade-in relative z-[6] mt-[-50px]">
-                        <div className="relative">
-                            <div className="w-20 h-20 border-4 border-[#8b6914]/30 border-t-[#f5d68a] rounded-full animate-spin shadow-[0_0_15px_rgba(245,214,138,0.4)]" />
-                            <div className="absolute inset-0 flex items-center justify-center text-3xl drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">⏳</div>
-                        </div>
-                        <div className="bg-gradient-to-r from-transparent via-[rgba(26,14,8,0.8)] to-transparent px-8 py-3 rounded-full border-t border-b border-[#6b4a1e]/50 backdrop-blur-[2px]">
-                            <p className="text-[#f5d68a] font-bold text-xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] tracking-wide">Đang lấy câu hỏi...</p>
+                        <div className="relative z-[6] w-full max-w-xl mt-[-30px] sm:mt-[-50px]">
+                            <div className="w-full bg-gradient-to-b from-[#5a3a1e] via-[#3d2215] to-[#2d1810] border-2 border-[#6b4a1e] rounded-xl p-8 flex flex-col items-center shadow-[inset_0_2px_4px_rgba(255,200,100,0.1),0_10px_30px_rgba(0,0,0,0.7)]">
+                                <h2 className="text-[#f5d68a] text-xl font-bold mb-4 animate-pulse">Đang chuẩn bị...</h2>
+                                <div className="w-full bg-[#1a0e08] h-4 rounded-full overflow-hidden border border-[#4a2e1b] p-0.5">
+                                    <div className="h-full bg-gradient-to-r from-[#8b6914] via-[#d4a55e] to-[#f5d68a] rounded-full w-1/3 animate-[rpg-bar-loading_1s_ease-in-out_infinite_alternate] shadow-[0_0_10px_rgba(212,165,94,0.5)]" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
-
                 {/* ====== COUNTDOWN PHASE ====== */}
                 {phase === 'countdown' && (
-                    <div className="flex flex-col items-center gap-6 relative z-[6] pt-10">
-                        <div className="relative animate-bounce">
-                            <div
-                                key={countdownNumber}
-                                className="text-8xl sm:text-[9rem] font-black text-[#f5d68a] animate-quiz-countdown-pop drop-shadow-[0_0_25px_rgba(245,214,138,1)]"
-                                style={{ WebkitTextStroke: '2px #6b4a1e' }}
-                            >
-                                {countdownNumber === 0 ? '🚀' : countdownNumber}
-                            </div>
-                        </div>
-                        <div className="bg-[rgba(26,14,8,0.7)] px-6 py-2 rounded-xl border border-[#8b6914] shadow-[0_4px_15px_rgba(0,0,0,0.6)] backdrop-blur-sm">
-                            <p className="text-[#d4a55e] text-xl font-bold animate-quiz-fade-in drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] tracking-[0.05em]">
-                                CHUẨN BỊ SẴN SÀNG...
-                            </p>
+                    <div className="relative z-[6] w-full max-w-md mt-[-80px] flex justify-center items-center">
+                        <div className="w-32 h-32 bg-gradient-to-br from-[#8b6914] via-[#5a3a1e] to-[#2d1810] rounded-full border-4 border-[#d4a55e] flex items-center justify-center shadow-[0_0_40px_rgba(212,165,94,0.4),inset_0_4px_10px_rgba(0,0,0,0.6)] animate-[rpg-pop-in_0.4s_cubic-bezier(0.175,0.885,0.32,1.275)_forwards]">
+                            <span className="text-[5rem] font-black text-[#f5d68a] drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] leading-none animate-[rpg-pulse-scale_1s_ease-in-out_infinite]">
+                                {countdownNumber}
+                            </span>
                         </div>
                     </div>
                 )}
 
                 {/* ====== PLAYING PHASE ====== */}
                 {phase === 'playing' && currentQuestion && (
-                    <div className="relative z-[6] w-full max-w-2xl mt-[-50px]">
+                    <div className="relative z-[6] w-full max-w-2xl mt-[-20px] sm:mt-[-50px] flex flex-col items-center">
                         {/* Main card - Wooden Border theme */}
-                        <div className="bg-gradient-to-b from-[#5a3a1e] via-[#3d2215] to-[#2d1810] border-[3px] border-[#8b6914] rounded-2xl shadow-[inset_0_2px_4px_rgba(255,200,100,0.1),0_-4px_20px_rgba(0,0,0,0.7),0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden relative">
+                        <div className="w-full bg-gradient-to-b from-[#5a3a1e] via-[#3d2215] to-[#2d1810] border-[3px] border-[#8b6914] rounded-2xl shadow-[inset_0_2px_4px_rgba(255,200,100,0.1),0_-4px_20px_rgba(0,0,0,0.7),0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden relative">
                             {/* Inner wooden highlight */}
                             <div className="absolute inset-0 border border-[#ab8534]/50 rounded-[14px] pointer-events-none" />
 
@@ -276,20 +268,20 @@ const QuizGamePage = () => {
                             {/* Question area */}
                             <div
                                 ref={questionRef}
-                                className={`p-5 sm:p-8 ${slideDirection}`}
+                                className={`p-4 sm:p-8 ${slideDirection}`}
                                 key={`q-${currentQuestion.id}`}
                             >
                                 {/* Question text Box */}
-                                <div className="mb-5 sm:mb-8 bg-[rgba(26,14,8,0.5)] border-2 border-[#6b4a1e] p-5 sm:p-6 mb-5 rounded-xl shadow-[inset_0_4px_12px_rgba(0,0,0,0.6)] relative overflow-hidden">
+                                <div className="mb-4 sm:mb-8 bg-[rgba(26,14,8,0.5)] border-2 border-[#6b4a1e] p-4 sm:p-6 rounded-xl shadow-[inset_0_4px_12px_rgba(0,0,0,0.6)] relative overflow-hidden">
                                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#8b6914] to-transparent opacity-50" />
                                     <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#8b6914] to-transparent opacity-50" />
-                                    <h2 className="text-xl sm:text-[1.35rem] md:text-[1.5rem] font-extrabold text-[#f5d68a] leading-[1.6] drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)] text-center tracking-[0.01em]">
+                                    <h2 className="text-[1.1rem] sm:text-[1.35rem] md:text-[1.5rem] font-extrabold text-[#f5d68a] leading-[1.5] drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)] text-center tracking-[0.01em]">
                                         {currentQuestion.question}
                                     </h2>
                                 </div>
 
                                 {/* Answer options */}
-                                <div className="space-y-3 sm:space-y-4">
+                                <div className="space-y-2.5 sm:space-y-4">
                                     {currentQuestion.answers.map((answer, idx) => {
                                         const isSelected = selectedAnswer === answer.id;
 
@@ -298,7 +290,7 @@ const QuizGamePage = () => {
                                                 key={answer.id}
                                                 onClick={() => handleSelectAnswer(currentQuestion.id, answer.id)}
                                                 disabled={selectedAnswer !== null}
-                                                className={`animate-answer-option-in opacity-0 w-full text-left px-4 py-3 sm:py-5 sm:px-5 rounded-xl border-[2.5px] transition-all duration-300 group relative overflow-hidden flex items-center gap-3 sm:gap-5
+                                                className={`animate-answer-option-in opacity-0 w-full text-left px-3 py-2.5 sm:py-5 sm:px-5 rounded-xl border-[2.5px] transition-all duration-300 group relative overflow-hidden flex items-center gap-3 sm:gap-5
                                                     ${isSelected
                                                         ? 'border-[#f5d68a] bg-gradient-to-r from-[#8b6914] to-[#ab8534] shadow-[0_0_20px_rgba(245,214,138,0.5)] scale-[1.03] z-10'
                                                         : selectedAnswer
@@ -345,7 +337,7 @@ const QuizGamePage = () => {
                             <div className="w-24 h-24 border-4 border-[#8b6914]/30 border-t-[#f5d68a] rounded-full animate-spin shadow-[0_0_20px_rgba(245,214,138,0.3)]" />
                             <div className="absolute inset-0 flex items-center justify-center text-4xl drop-shadow-[0_0_10px_rgba(245,214,138,0.5)]">🔮</div>
                         </div>
-                        <div className="text-center bg-gradient-to-b from-[rgba(61,35,23,0.8)] to-[rgba(26,14,8,0.9)] px-8 py-5 rounded-2xl border-2 border-[#6b4a1e] shadow-[0_10px_30px_rgba(0,0,0,0.6)] backdrop-blur-sm">
+                        <div className="w-full text-center bg-gradient-to-b from-[rgba(61,35,23,0.8)] to-[rgba(26,14,8,0.9)] px-8 py-5 rounded-2xl border-2 border-[#6b4a1e] shadow-[0_10px_30px_rgba(0,0,0,0.6)] backdrop-blur-sm">
                             <p className="text-[#f5d68a] font-extrabold text-2xl mb-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-wide">Đang phân tích...</p>
                             <p className="text-[#d4a55e] text-[0.95rem] font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">Cuộn giấy phép thuật đang ghi lại kết quả của bạn 📜</p>
                         </div>
@@ -375,47 +367,47 @@ const QuizGamePage = () => {
                         </div>
 
                         {/* Grand RPG Board */}
-                        <div className="bg-gradient-to-b from-[#5a3a1e] via-[#3d2215] to-[#2d1810] border-[3px] border-[#d4a55e] rounded-2xl shadow-[inset_0_2px_4px_rgba(255,200,100,0.2),0_-4px_25px_rgba(139,105,20,0.3),0_15px_50px_rgba(0,0,0,0.8)] overflow-hidden relative">
+                        <div className="w-full bg-gradient-to-b from-[#5a3a1e] via-[#3d2215] to-[#2d1810] border-[3px] border-[#d4a55e] rounded-2xl shadow-[inset_0_2px_4px_rgba(255,200,100,0.2),0_-4px_25px_rgba(139,105,20,0.3),0_15px_50px_rgba(0,0,0,0.8)] overflow-hidden relative">
                             {/* Inner wooden highlight */}
                             <div className="absolute inset-0 border border-[#ab8534]/60 rounded-[14px] pointer-events-none" />
 
                             {/* Result header */}
-                            <div className={`relative p-6 sm:p-10 text-center overflow-hidden border-b-[3px] border-[#1a0e08]`} style={{ background: 'linear-gradient(to bottom, rgba(139,105,20,0.25), transparent)' }}>
+                            <div className={`relative p-5 sm:p-10 text-center overflow-hidden border-b-[3px] border-[#1a0e08]`} style={{ background: 'linear-gradient(to bottom, rgba(139,105,20,0.25), transparent)' }}>
                                 <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#f5d68a] to-transparent opacity-50" />
                                 <div className="relative z-10 w-full flex flex-col items-center">
-                                    <div className="text-6xl sm:text-8xl mb-4 animate-emoji-result-bounce drop-shadow-[0_10px_15px_rgba(0,0,0,0.6)] relative inline-block">
+                                    <div className="text-5xl sm:text-8xl mb-3 animate-emoji-result-bounce drop-shadow-[0_10px_15px_rgba(0,0,0,0.6)] relative inline-block">
                                         <div className="absolute inset-0 bg-yellow-400 blur-2xl opacity-20" />
                                         {result.result.emoji}
                                     </div>
-                                    <h2 className="text-[1.6rem] sm:text-[2.2rem] font-extrabold text-[#f5d68a] mb-2 drop-shadow-[0_4px_6px_rgba(0,0,0,0.9)] tracking-widest uppercase text-center leading-tight">{result.result.title}</h2>
-                                    <div className="text-[1.2rem] font-bold text-[#d4a55e] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mb-6 text-center">{result.result.color}</div>
+                                    <h2 className="text-[1.2rem] sm:text-[2.2rem] font-extrabold text-[#f5d68a] mb-1 sm:mb-2 drop-shadow-[0_4px_6px_rgba(0,0,0,0.9)] tracking-widest uppercase text-center leading-tight">{result.result.title}</h2>
+                                    <div className="text-[1rem] sm:text-[1.2rem] font-bold text-[#d4a55e] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mb-4 sm:mb-6 text-center">{result.result.color}</div>
 
                                     <div className="flex items-center justify-center">
-                                        <div className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#f5d68a] bg-gradient-to-b from-[rgba(45,24,16,0.8)] to-[#1a0e08] shadow-[0_0_15px_rgba(245,214,138,0.3),inset_0_0_10px_rgba(139,105,20,0.5)]`}>
+                                        <div className={`inline-flex items-center gap-2 px-5 py-2 sm:px-6 sm:py-2.5 rounded-full border border-[#f5d68a] bg-gradient-to-b from-[rgba(45,24,16,0.8)] to-[#1a0e08] shadow-[0_0_15px_rgba(245,214,138,0.3),inset_0_0_10px_rgba(139,105,20,0.5)]`}>
                                             <span className="text-xl">🌟</span>
-                                            <span className="text-[#f5d68a] font-black text-lg py-1 tracking-wide">{result.totalScore}/{result.maxScore} ĐIỂM</span>
+                                            <span className="text-[#f5d68a] font-black text-[1rem] sm:text-lg py-1 tracking-wide">{result.totalScore}/{result.maxScore} ĐIỂM</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Result body */}
-                            <div className="p-5 sm:p-10">
+                            <div className="p-4 sm:p-10">
                                 {/* Description */}
-                                <div className="bg-[rgba(26,14,8,0.5)] border-2 border-[#6b4a1e] rounded-xl p-5 sm:p-8 mb-6 shadow-[inset_0_4px_12px_rgba(0,0,0,0.6)] relative">
+                                <div className="bg-[rgba(26,14,8,0.5)] border-2 border-[#6b4a1e] rounded-xl p-4 sm:p-8 mb-4 sm:mb-6 shadow-[inset_0_4px_12px_rgba(0,0,0,0.6)] relative">
                                     <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#8b6914] to-transparent opacity-60" />
-                                    <p className="text-[#e8c88a] text-[0.95rem] sm:text-[1.15rem] leading-[1.6] font-medium text-center drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)]">
+                                    <p className="text-[#e8c88a] text-[0.85rem] sm:text-[1.15rem] leading-[1.5] sm:leading-[1.6] font-medium text-center drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)]">
                                         {result.result.description}
                                     </p>
                                 </div>
 
                                 {/* Advice */}
-                                <div className={`bg-gradient-to-br from-[#2d1810] to-[#1a0e08] border-2 border-[#8b6914] rounded-xl p-5 sm:p-7 mb-8 shadow-[0_6px_15px_rgba(0,0,0,0.7)]`}>
-                                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
-                                        <span className="text-4xl sm:text-5xl flex-shrink-0 drop-shadow-[0_2px_4px_rgba(245,214,138,0.4)]">💡</span>
+                                <div className={`bg-gradient-to-br from-[#2d1810] to-[#1a0e08] border-2 border-[#8b6914] rounded-xl p-4 sm:p-7 mb-5 sm:mb-8 shadow-[0_6px_15px_rgba(0,0,0,0.7)]`}>
+                                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4 text-center sm:text-left">
+                                        <span className="text-3xl sm:text-5xl flex-shrink-0 drop-shadow-[0_2px_4px_rgba(245,214,138,0.4)]">💡</span>
                                         <div>
-                                            <h3 className="font-extrabold text-[1.2rem] text-[#f5d68a] mb-2 drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)] uppercase tracking-wide">Lời khuyên dành cho bạn</h3>
-                                            <p className="text-[#d4a55e] text-[0.95rem] sm:text-[1.1rem] leading-[1.6] font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                                            <h3 className="font-extrabold text-[1.1rem] text-[#f5d68a] mb-1 sm:mb-2 drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)] uppercase tracking-wide">Lời khuyên dành cho bạn</h3>
+                                            <p className="text-[#d4a55e] text-[0.85rem] sm:text-[1.1rem] leading-[1.5] sm:leading-[1.6] font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
                                                 {result.result.advice}
                                             </p>
                                         </div>
@@ -423,22 +415,22 @@ const QuizGamePage = () => {
                                 </div>
 
                                 {/* Action buttons */}
-                                <div className="flex flex-col sm:flex-row gap-3 sm:gap-5">
+                                <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-5">
                                     <button
                                         onClick={handleRestart}
-                                        className="flex-1 relative inline-flex flex-col sm:flex-row items-center justify-center overflow-hidden rounded-xl font-bold text-[1.05rem] transition-all duration-300 px-5 py-4 bg-gradient-to-br from-[#8b6914] via-[#b8863a] to-[#d4a55e] text-[#1a0e08] border-[3px] border-[#f5d68a] shadow-[0_6px_20px_rgba(139,105,20,0.5),inset_0_2px_4px_rgba(255,215,120,0.6)] hover:-translate-y-[3px] hover:shadow-[0_8px_30px_rgba(139,105,20,0.7),inset_0_2px_4px_rgba(255,215,120,0.6)] hover:brightness-110 group tracking-wide uppercase"
+                                        className="flex-1 relative inline-flex flex-col sm:flex-row items-center justify-center overflow-hidden rounded-xl font-bold text-[0.95rem] sm:text-[1.05rem] transition-all duration-300 px-4 py-3 sm:px-5 sm:py-4 bg-gradient-to-br from-[#8b6914] via-[#b8863a] to-[#d4a55e] text-[#1a0e08] border-[3px] border-[#f5d68a] shadow-[0_6px_20px_rgba(139,105,20,0.5),inset_0_2px_4px_rgba(255,215,120,0.6)] hover:-translate-y-[3px] hover:shadow-[0_8px_30px_rgba(139,105,20,0.7),inset_0_2px_4px_rgba(255,215,120,0.6)] hover:brightness-110 group tracking-wide uppercase"
                                     >
                                         <div className="absolute top-0 -left-full w-[150%] h-full bg-gradient-to-r from-transparent via-[rgba(255,255,255,0.3)] to-transparent group-hover:left-[100%] transition-all duration-700 skew-x-[-20deg] z-[0]" />
-                                        <span className="relative z-[1] flex items-center justify-center gap-2.5">
-                                            <span className="text-xl">🔄</span> Thử lại lần nữa
+                                        <span className="relative z-[1] flex items-center justify-center gap-2">
+                                            <span className="text-[1.1rem] sm:text-xl">🔄</span> Thử lại lần nữa
                                         </span>
                                     </button>
                                     <Link
                                         to="/game"
-                                        className="flex-1 relative inline-flex flex-col sm:flex-row items-center justify-center overflow-hidden rounded-xl font-bold text-[1.05rem] transition-all duration-300 px-5 py-4 bg-gradient-to-b from-[rgba(107,74,30,0.8)] to-[rgba(61,35,23,0.9)] text-[#e8c88a] border-[3px] border-[#6b4a1e] shadow-[0_6px_15px_rgba(0,0,0,0.6)] hover:border-[#d4a55e] hover:from-[rgba(139,105,20,0.7)] hover:to-[rgba(90,58,30,0.8)] hover:text-[#f5d68a] hover:-translate-y-[3px] hover:shadow-[0_8px_25px_rgba(0,0,0,0.7)] tracking-wide uppercase"
+                                        className="flex-1 relative inline-flex flex-col sm:flex-row items-center justify-center overflow-hidden rounded-xl font-bold text-[0.95rem] sm:text-[1.05rem] transition-all duration-300 px-4 py-3 sm:px-5 sm:py-4 bg-gradient-to-b from-[rgba(107,74,30,0.8)] to-[rgba(61,35,23,0.9)] text-[#e8c88a] border-[3px] border-[#6b4a1e] shadow-[0_6px_15px_rgba(0,0,0,0.6)] hover:border-[#d4a55e] hover:from-[rgba(139,105,20,0.7)] hover:to-[rgba(90,58,30,0.8)] hover:text-[#f5d68a] hover:-translate-y-[3px] hover:shadow-[0_8px_25px_rgba(0,0,0,0.7)] tracking-wide uppercase"
                                     >
-                                        <span className="flex items-center justify-center gap-2.5">
-                                            <span className="text-xl relative bottom-[1px]">🏠</span> Về Quầy Shop
+                                        <span className="flex items-center justify-center gap-2">
+                                            <span className="text-[1.1rem] sm:text-xl relative bottom-[1px]">🏠</span> Về Quầy Shop
                                         </span>
                                     </Link>
                                 </div>

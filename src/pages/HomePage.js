@@ -49,11 +49,8 @@ const HomePage = () => {
                 {t('home.start')}
               </Link>
             )}
-            <Link
-              to="/game"
-              className="w-full sm:w-auto px-6 py-3 sm:px-7 sm:py-4 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400 flex items-center justify-center gap-2"
-            >
-              <span>🎮</span> Chơi Game
+            <Link to="/game" className="w-full bg-gradient-to-r from-purple-500 to-orange-500 hover:from-purple-600 hover:to-orange-600 text-white font-bold py-4 rounded-xl shadow-[0_8px_15px_rgba(200,100,0,0.2)] hover:shadow-[0_12px_20px_rgba(200,100,0,0.3)] transition-all duration-300 transform hover:-translate-y-1 mt-3 flex items-center justify-center gap-2 text-lg">
+              <span>📝</span> Làm khảo sát
             </Link>
           </div>
         </div>
