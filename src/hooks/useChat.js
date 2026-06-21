@@ -4,6 +4,17 @@ import { getLanguage } from '../locales/i18n';
 import { useAuth } from '../context/AuthContext';
 import { apiClient, get, post } from '../utils/apiClient';
 
+const DEFAULT_INTERVENTION = {
+  active: false,
+  level: 'green',
+  type: null,
+  requiredAction: null,
+  options: [],
+  canRequestHint: true,
+  canRequestFullAnswer: false,
+  hintTier: 1,
+};
+
 export const useChat = (onCoinAnimation, onPointsAnimation) => {
   const { updateUserCoins } = useAuth();
   const [messages, setMessages] = useState([]);
@@ -17,8 +28,13 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
   const [showAnswerInput, setShowAnswerInput] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [intervention, setIntervention] = useState(DEFAULT_INTERVENTION);
   const messagesEndRef = useRef(null);
   const chatSettings = useRef({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
+
+  const syncIntervention = useCallback((nextIntervention, fallback = DEFAULT_INTERVENTION) => {
+    setIntervention(nextIntervention || fallback);
+  }, []);
 
   const createNewChat = useCallback((settings) => {
     const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -30,6 +46,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     chatSettings.current = settings;
     setHintCount(0);
     setShowAnswerInput(false);
+    setIntervention(DEFAULT_INTERVENTION);
   }, []);
 
   // Generate a unique session ID when component mounts
@@ -130,12 +147,10 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         setMessages(cleanMessages);
         
         const hintMessages = data.history.filter(msg => 
-          msg.role === 'user' && (
-            msg.parts[0].text.includes("Tôi cần thêm gợi ý") ||
-            msg.parts[0].text.includes("I'm stuck, I need another hint.")
-          )
+          msg.role === 'continue'
         );
         setHintCount(hintMessages.length);
+        syncIntervention(data.intervention);
         
         setShowAnswerInput(data.history.length > 0);
         
@@ -223,6 +238,8 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
             sender: 'bot',
             timestamp: new Date().toLocaleTimeString()
           };
+
+          syncIntervention(data.intervention);
           
           // Use functional update to check for duplicates with current state
           setMessages(prev => {
@@ -274,13 +291,13 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     }
   };
 
-  const continueChat = async () => {
+  const continueChat = async (gateResponse = null) => {
     if (isLoading) return;
     
     // First, add a visual "continue" message on the user side
     const continueMessage = {
       id: Date.now() + Math.random(),
-      text: 'Đang yêu cầu thêm gợi ý...',
+      text: gateResponse ? 'Đã gửi bước nhỏ, ThinkBridge đang xem tiếp...' : 'Đang yêu cầu thêm gợi ý...',
       sender: 'continue',
       timestamp: new Date().toLocaleTimeString(),
       type: 'continue'
@@ -293,6 +310,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       const response = await post('/chat/continue', {
         sessionId,
         language: getLanguage(),
+        gateResponse,
       });
       
       if (response.status === 429) {
@@ -307,6 +325,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         setMessages(prev => [...prev, quotaMessage]);
       } else if (response.ok) {
         const data = await response.json();
+        syncIntervention(data.intervention);
         const botMessage = {
           id: Date.now() + Math.random(),
           text: data.message,
@@ -321,7 +340,9 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         
         if (!isDuplicate) {
           setMessages(prev => [...prev, botMessage]);
-          setHintCount(prev => prev + 1);
+          if (!data.intervention?.active) {
+            setHintCount(prev => prev + 1);
+          }
         } else {
         }
       } else {
@@ -342,7 +363,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     }
   };
 
-  const getFullAnswer = async () => {
+  const getFullAnswer = async (gateResponse = null) => {
     if (isLoading) return;
     
     // First, add a visual "full answer" message on the user side
@@ -361,6 +382,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       const response = await post('/chat/full-answer', {
         sessionId,
         language: getLanguage(),
+        gateResponse,
       });
       
       if (response.status === 429) {
@@ -375,6 +397,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         setMessages(prev => [...prev, quotaMessage]);
       } else if (response.ok) {
         const data = await response.json();
+        syncIntervention(data.intervention);
         const botMessage = {
           id: Date.now() + Math.random(),
           text: data.message,
@@ -463,6 +486,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         setMessages(prev => [...prev, quotaMessage]);
       } else if (response.ok) {
         const data = await response.json();
+        syncIntervention(data.intervention);
         const botMessage = {
           id: Date.now() + Math.random(),
           text: data.message,
@@ -592,6 +616,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         setMessages(prev => [...prev, quotaMessage]);
       } else if (response.ok) {
         const data = await response.json();
+        syncIntervention(data.intervention);
         const botMessage = {
           id: Date.now() + Math.random(),
           text: data.message,
@@ -732,6 +757,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         const data = await response.json();
         
         if (data.message && typeof data.message === 'string') {
+          syncIntervention(data.intervention);
           const botMessage = {
             id: Date.now() + Math.random(),
             text: data.message,
@@ -801,6 +827,8 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     isInitialized,
     selectedImage,
     setSelectedImage,
+    intervention,
+    setIntervention,
     messagesEndRef,
     createNewChat,
     loadConversations,

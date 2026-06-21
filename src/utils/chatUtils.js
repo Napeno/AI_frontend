@@ -41,41 +41,144 @@ export const isSystemMessage = (text) => {
   return systemTexts.some(systemText => text.includes(systemText));
 };
 
+const escapeHtml = (value) => String(value)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;');
+
+const extractBracedContent = (text, startIndex) => {
+  if (text[startIndex] !== '{') {
+    return null;
+  }
+
+  let depth = 0;
+  for (let index = startIndex; index < text.length; index += 1) {
+    const char = text[index];
+
+    if (char === '{') {
+      depth += 1;
+    } else if (char === '}') {
+      depth -= 1;
+      if (depth === 0) {
+        return {
+          content: text.slice(startIndex + 1, index),
+          endIndex: index,
+        };
+      }
+    }
+  }
+
+  return null;
+};
+
+const replaceLatexCommandWithBraces = (text, command, renderer) => {
+  let result = '';
+  let cursor = 0;
+
+  while (cursor < text.length) {
+    const commandIndex = text.indexOf(command, cursor);
+    if (commandIndex === -1) {
+      result += text.slice(cursor);
+      break;
+    }
+
+    const braceStart = commandIndex + command.length;
+    const braced = extractBracedContent(text, braceStart);
+
+    if (!braced) {
+      result += text.slice(cursor, commandIndex + command.length);
+      cursor = commandIndex + command.length;
+      continue;
+    }
+
+    result += text.slice(cursor, commandIndex);
+    result += renderer(braced.content);
+    cursor = braced.endIndex + 1;
+  }
+
+  return result;
+};
+
+const renderLatex = (rawLatex) => {
+  let latex = escapeHtml(rawLatex)
+    .replace(/\\left/g, '')
+    .replace(/\\right/g, '')
+    .replace(/\\cdot/g, '·')
+    .replace(/\\times/g, '×')
+    .replace(/\\pm/g, '±')
+    .replace(/\\geq?/g, '≥')
+    .replace(/\\leq?/g, '≤')
+    .replace(/\\neq/g, '≠')
+    .replace(/\\frac/g, '\\frac')
+    .trim();
+
+  latex = replaceLatexCommandWithBraces(latex, '\\sqrt', (content) => {
+    const renderedContent = renderLatex(content);
+    return `<span class="math-root">√<span class="math-root-content">${renderedContent}</span></span>`;
+  });
+
+  latex = latex.replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, (_, numerator, denominator) => (
+    `<span class="math-fraction"><span>${renderLatex(numerator)}</span><span>${renderLatex(denominator)}</span></span>`
+  ));
+
+  latex = latex
+    .replace(/\^\{([^{}]+)\}/g, '<sup>$1</sup>')
+    .replace(/\^([A-Za-z0-9+-]+)/g, '<sup>$1</sup>')
+    .replace(/_\{([^{}]+)\}/g, '<sub>$1</sub>')
+    .replace(/_([A-Za-z0-9+-]+)/g, '<sub>$1</sub>')
+    .replace(/\\([A-Za-z]+)/g, '$1')
+    .replace(/\{/g, '(')
+    .replace(/\}/g, ')');
+
+  return latex;
+};
+
+const replaceMathSegments = (text) => {
+  const mathSegments = [];
+  const placeholderPrefix = '%%SEALEDUMATH';
+  const placeholderSuffix = '%%';
+  const withoutMath = text.replace(/\$\$([\s\S]+?)\$\$|\$([^$\n]+?)\$|\\\(([\s\S]+?)\\\)|\\\[([\s\S]+?)\\\]/g, (match, blockDollar, inlineDollar, parenMath, bracketMath) => {
+    const latex = blockDollar || inlineDollar || parenMath || bracketMath || '';
+    const isBlock = Boolean(blockDollar || bracketMath);
+    const className = isBlock ? 'math-formula math-display' : 'math-formula';
+    const renderedMath = `<span class="${className}">${renderLatex(latex)}</span>`;
+    const placeholder = `${placeholderPrefix}${mathSegments.length}${placeholderSuffix}`;
+    mathSegments.push(renderedMath);
+    return placeholder;
+  });
+
+  return { withoutMath, mathSegments, placeholderPrefix, placeholderSuffix };
+};
+
 // Helper function to format AI messages with proper formatting
 export const formatAIMessage = (text) => {
     if (typeof text !== 'string') {
         console.error('formatAIMessage received non-string input:', text);
         return String(text);
     }
-    
-    let formatted = text;
-    
-    // Replace LaTeX-style math with HTML math formatting
-    formatted = formatted.replace(/\$([^$]+)\$/g, '<span class="math-formula">$1</span>');
-    
+
+    const { withoutMath, mathSegments, placeholderPrefix, placeholderSuffix } = replaceMathSegments(text);
+    let formatted = escapeHtml(withoutMath);
+
     // Replace line breaks with <br> tags
     formatted = formatted.replace(/\n/g, '<br>');
-    
+
     // Replace bullet points with proper HTML
     formatted = formatted.replace(/^[-*]\s+/gm, '• ');
-    
+
     // Make text between ** bold
     formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    
+
     // Make text between * italic
     formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    
-    // Format mathematical expressions
-    formatted = formatted.replace(/(\w+)\^(\w+)/g, '<span class="math-sup">$1<sup>$2</sup></span>');
-    formatted = formatted.replace(/(\w+)_(\w+)/g, '<span class="math-sub">$1<sub>$2</sub></span>');
-    
-    // Format fractions like a/b
-    formatted = formatted.replace(/(\w+)\/(\w+)/g, '<span class="math-frac">$1/$2</span>');
-    
-    // Format parentheses with better spacing
-    formatted = formatted.replace(/\(/g, '<span class="math-paren">(</span>');
-    formatted = formatted.replace(/\)/g, '<span class="math-paren">)</span>');
-    
+
+    mathSegments.forEach((mathHtml, index) => {
+      const placeholder = `${placeholderPrefix}${index}${placeholderSuffix}`;
+      formatted = formatted.replace(placeholder, mathHtml);
+    });
+
     return formatted;
 };
 

@@ -8,7 +8,7 @@ const BackgroundSelector = ({ onBackgroundChange, currentBackground }) => {
   useEffect(() => {
     // Load all background images with proper names and regions
     const backgroundList = [
-      { id: 'default', name: 'Mặc định', region: 'SealEdu', path: '/background/default.jpeg' },
+      { id: 'default', name: 'Mặc định', region: 'ThinkBridge', path: '/background/default.jpeg' },
       { id: 1, name: 'Đại dương xanh', region: 'Biển Đông', path: '/background/bg_1.jpeg' },
       { id: 2, name: 'Rạn san hô', region: 'Nha Trang', path: '/background/bg_2.jpeg' },
       { id: 3, name: 'Bãi biển nhiệt đới', region: 'Phú Quốc', path: '/background/bg_3.jpeg' },
@@ -75,7 +75,7 @@ const BackgroundSelector = ({ onBackgroundChange, currentBackground }) => {
                 <div className="text-center">
                   <div className="text-3xl mb-2">🦭</div>
 <div className="text-sm font-medium text-gray-800 dark:text-gray-200">{t('background.default')}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">SealEdu Theme</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">ThinkBridge Theme</div>
                 </div>
               </div> */}
 

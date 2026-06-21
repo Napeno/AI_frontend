@@ -8,6 +8,7 @@ const ChatActions = ({
   isLoading,
   isCoolingDown,
   cooldownRemaining,
+  intervention,
   showActions = true  // New prop to control visibility
 }) => {
   // Don't show actions if explicitly disabled
@@ -23,6 +24,10 @@ const ChatActions = ({
   const actionTitle = isCoolingDown
     ? t('chat.cooldown.tooltip', { seconds: cooldownRemaining })
     : undefined;
+  const canRequestHint = !intervention?.active && intervention?.canRequestHint !== false && hintCount < 4;
+  const canRequestFullAnswer = !intervention?.active && (
+    intervention?.canRequestFullAnswer === true || hintCount >= 4
+  );
 
   return (
     <div className="space-y-2 sm:space-y-3">
@@ -37,7 +42,7 @@ const ChatActions = ({
       )}
       
       {/* Continue button - show only if hint count < 4 */}
-      {hintCount < 4 && (
+      {canRequestHint && (
         <button 
           onClick={continueChat} 
           disabled={actionDisabled}
@@ -49,7 +54,7 @@ const ChatActions = ({
       )}
       
       {/* Full answer button - show only if hint count >= 4 */}
-      {hintCount >= 4 && (
+      {canRequestFullAnswer && (
         <button 
           onClick={getFullAnswer} 
           disabled={actionDisabled}

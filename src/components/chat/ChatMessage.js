@@ -106,7 +106,7 @@ function ChatMessage({ message, formatAIMessage, userAvatar }) {
       {/* Add avatar for AI messages */}
       {!isUser && (
         <div className="seal-avatar mr-1.5 sm:mr-3 flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8">
-          <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-4 h-4 sm:w-6 sm:h-6" />
+          <img src="/image/sealedu-logo.png" alt="ThinkBridge Logo" className="w-4 h-4 sm:w-6 sm:h-6" />
         </div>
       )}
       <div className={containerClasses}>

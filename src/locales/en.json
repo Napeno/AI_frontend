@@ -117,6 +117,15 @@
     "duplicateMessage": "You have already answered this question correctly with the same answer.",
     "duplicateWarning": "You have already given this correct answer before. Are you sure you want to submit it again?"
   },
+  "interventionGate": {
+    "title": "Try one small step first",
+    "fullAnswerTitle": "Let us hold the full answer for a moment",
+    "description": "Answer the small question or write what you are thinking. It does not have to be perfect.",
+    "quizDescription": "Choose the answer to this small check to unlock the next hint.",
+    "placeholder": "For example: what information you know, which formula you might use, or your first attempted step...",
+    "submit": "Send small step",
+    "submitting": "Sending..."
+  },
   "settings": {
     "language": "Language",
     "theme": "Theme",
@@ -133,7 +142,7 @@
   },
   "leaderboard": {
     "title": "Leaderboard",
-    "subtitle": "Top performers in the SealEdu community",
+    "subtitle": "Top performers in the ThinkBridge community",
     "yourPosition": "Your Position",
     "topRankings": "Top Rankings",
     "coinsEarned": "coins earned",
@@ -184,11 +193,11 @@
   "userProfile": {
     "settings": "Settings",
     "logout": "Log out",
-    "buyNow": "SealEdu Shop"
+    "buyNow": "ThinkBridge Shop"
   },
   "home": {
     "home": "Home",
-    "title": "Welcome to <strong>SealEdu</strong>",
+    "title": "Welcome to <strong>ThinkBridge</strong>",
     "subtitle": "Your AI learning companion",
     "description": "Practice, get hints, and check your answers. Learn by doing with your friendly seal guide!",
     "login": "Login",
@@ -205,7 +214,7 @@
       "step3Desc": "Check your work",
       "step3Text": "Submit your attempt and get feedback and suggestions to improve."
     },
-    "footer": "🌊 Built for learners. Be curious. Experiment. Improve daily with SealEdu!"
+    "footer": "🌊 Built for learners. Be curious. Experiment. Improve daily with ThinkBridge!"
   },
   "settings": {
     "tabs": {
@@ -225,8 +234,8 @@
     }
   },
   "auth": {
-    "welcomeBack": "Welcome back to SealEdu!",
-    "join": "Join SealEdu",
+    "welcomeBack": "Welcome back to ThinkBridge!",
+    "join": "Join ThinkBridge",
     "signInContinue": "Sign in to continue learning with us!",
     "startJourney": "Start your learning journey with us!",
     "name": "Name",
@@ -236,7 +245,7 @@
     "pleaseWait": "Please wait...",
     "login": "Login",
     "register": "Register",
-    "newToSealEdu": "New to SealEdu? Create account",
+    "newToSealEdu": "New to ThinkBridge? Create account",
     "alreadyHaveAccount": "Already have an account? Login",
     "forgotPassword": "Forgot password?",
     "tip": "🌊 Tip: Use your school email for faster account recovery and better learning recommendations!"

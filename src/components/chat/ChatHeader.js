@@ -25,7 +25,7 @@ const ChatHeader = ({
         </button>
         <div className="flex-1 min-w-0">
           <h1 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-1.5 sm:gap-2 truncate">
-            <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 flex-shrink-0" />
+            <img src="/image/sealedu-logo.png" alt="ThinkBridge Logo" className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 flex-shrink-0" />
             <span className="truncate">{currentConversationTitle}</span>
           </h1>
           <p className="text-xs sm:text-sm text-seablue-600 dark:text-gray-400 hidden sm:block">{t('chat.subtitle')}</p>
