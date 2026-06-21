@@ -117,6 +117,15 @@
     "duplicateMessage": "Bạn đã trả lời đúng câu này trước đó với cùng đáp án.",
     "duplicateWarning": "Bạn đã trả lời đúng với câu trả lời này trước đó. Bạn có chắc muốn gửi lại không?"
   },
+  "interventionGate": {
+    "title": "Thử một bước nhỏ trước nhé",
+    "fullAnswerTitle": "Mình giữ đáp án đầy đủ lại một chút",
+    "description": "Em trả lời câu hỏi nhỏ hoặc viết điều em đang nghĩ. Không cần đúng hoàn toàn.",
+    "quizDescription": "Em chọn đáp án cho câu hỏi nhỏ này để mở gợi ý tiếp theo nhé.",
+    "placeholder": "Ví dụ: Em biết dữ kiện nào, em định dùng công thức nào, hoặc em thử viết bước đầu...",
+    "submit": "Gửi bước nhỏ",
+    "submitting": "Đang gửi..."
+  },
   "levels": {
     "elementary": "Cấp 1",
     "middle": "Cấp 2",
@@ -141,7 +150,7 @@
   "userProfile": {
     "settings": "Cài đặt",
     "logout": "Đăng xuất",
-    "buyNow": "Cửa hàng SealEdu"
+    "buyNow": "Cửa hàng ThinkBridge"
   },
   "errors": {
     "sessionIdRequired": "Cần có sessionId",
@@ -153,7 +162,7 @@
   },
   "leaderboard": {
     "title": "Bảng Xếp Hạng",
-    "subtitle": "Những người học xuất sắc nhất trong cộng đồng SealEdu",
+    "subtitle": "Những người học xuất sắc nhất trong cộng đồng ThinkBridge",
     "yourPosition": "Vị Trí Của Bạn",
     "topRankings": "Xếp Hạng Hàng Đầu",
     "coinsEarned": "xu đã kiếm được",
@@ -182,7 +191,7 @@
   },
   "home": {
     "home": "Trang chủ",
-    "title": "Chào mừng đến với <strong>SealEdu</strong>",
+    "title": "Chào mừng đến với <strong>ThinkBridge</strong>",
     "subtitle": "Trợ lý học tập bằng AI của bạn",
     "description": "Luyện tập, nhận gợi ý và kiểm tra đáp án. Học bằng thực hành cùng bạn hải cẩu thân thiện!",
     "login": "Đăng nhập",
@@ -199,7 +208,7 @@
       "step3Desc": "Kiểm tra bài làm",
       "step3Text": "Gửi câu trả lời của bạn để nhận phản hồi và gợi ý cải thiện."
     },
-    "footer": "🌊 Dành cho người học. Hãy tò mò. Thử nghiệm. Tiến bộ mỗi ngày cùng SealEdu!"
+    "footer": "🌊 Dành cho người học. Hãy tò mò. Thử nghiệm. Tiến bộ mỗi ngày cùng ThinkBridge!"
   },
   "settings": {
     "tabs": {
@@ -219,8 +228,8 @@
     }
   },
   "auth": {
-    "welcomeBack": "Chào mừng trở lại với SealEdu!",
-    "join": "Tham gia SealEdu",
+    "welcomeBack": "Chào mừng trở lại với ThinkBridge!",
+    "join": "Tham gia ThinkBridge",
     "signInContinue": "Đăng nhập để tiếp tục học cùng bạn hải cẩu nhé!",
     "startJourney": "Bắt đầu hành trình học tập của bạn cùng chúng tớ!",
     "name": "Tên",
@@ -230,7 +239,7 @@
     "pleaseWait": "Vui lòng chờ...",
     "login": "Đăng nhập",
     "register": "Đăng ký",
-    "newToSealEdu": "Chưa có tài khoản SealEdu? Tạo tài khoản",
+    "newToSealEdu": "Chưa có tài khoản ThinkBridge? Tạo tài khoản",
     "alreadyHaveAccount": "Đã có tài khoản? Đăng nhập",
     "forgotPassword": "Quên mật khẩu?",
     "tip": "🌊 Mẹo: Sử dụng email trường học để khôi phục tài khoản nhanh hơn và nhận đề xuất học tập tốt hơn!"

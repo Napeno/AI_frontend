@@ -51,7 +51,7 @@
   }
 }
 
-/* Custom scrollbar styles with SealEdu sea theme */
+/* Custom scrollbar styles with ThinkBridge sea theme */
 .scrollbar-thin {
   scrollbar-width: thin;
   scrollbar-color: #7eeadd #f0fdfc;
@@ -174,7 +174,7 @@
   @apply mb-1;
 }
 
-/* SealEdu specific styles */
+/* ThinkBridge specific styles */
 .seal-avatar {
   @apply w-8 h-8 rounded-full bg-seablue-gradient flex items-center justify-center text-white font-bold text-sm shadow-lg;
 }
@@ -183,7 +183,7 @@
   @apply w-8 h-8 rounded-full bg-gradient-to-br from-ocean-light to-ocean-medium flex items-center justify-center text-white font-bold text-sm shadow-lg;
 }
 
-/* SealEdu animations */
+/* ThinkBridge animations */
 .seal-animation {
   @apply w-16 h-16;
   transition: opacity 0.3s ease, transform 0.3s ease;

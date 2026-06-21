@@ -12,6 +12,7 @@ import ChatMessage from '../components/chat/ChatMessage';
 import ChatInput from '../components/chat/ChatInput';
 import UserAnswerInput from '../components/chat/UserAnswerInput';
 import ChatActions from '../components/chat/ChatActions';
+import InterventionGate from '../components/chat/InterventionGate';
 // import SealAnimation from '../components/SealAnimation';
 
 const CHAT_COOLDOWN_SECONDS = 10;
@@ -24,7 +25,7 @@ const ChatPage = () => {
   const [currentBackground, setCurrentBackground] = useState({
     id: 'default',
     name: 'Mặc định',
-    region: 'SealEdu',
+    region: 'ThinkBridge',
     path: '/background/default.jpeg'
   }); // Set default background
   const [pointsAnimationTrigger, setPointsAnimationTrigger] = useState(null);
@@ -67,6 +68,7 @@ const ChatPage = () => {
     showAnswerInput,
     selectedImage,
     setSelectedImage,
+    intervention,
     messagesEndRef,
     createNewChat,
     loadConversations,
@@ -218,6 +220,15 @@ const ChatPage = () => {
     }
   }, [continueChat, isCoolingDown, isLoading, startCooldown]);
 
+  const handleGateSubmit = useCallback(async (gateResponse) => {
+    if (isLoading) return;
+    if (intervention?.type === 'full_answer_gate') {
+      await getFullAnswer(gateResponse);
+      return;
+    }
+    await continueChat(gateResponse);
+  }, [continueChat, getFullAnswer, intervention?.type, isLoading]);
+
   const handleGetFullAnswer = useCallback(async () => {
     if (isLoading || isCoolingDown) return;
 
@@ -332,7 +343,7 @@ const ChatPage = () => {
             {isLoading && (
               <div className="flex justify-start mb-5">
                 <div className="seal-avatar mr-3">
-                  <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-6 h-6" />
+                  <img src="/image/sealedu-logo.png" alt="ThinkBridge Logo" className="w-6 h-6" />
                 </div>
                 <div className="max-w-[70%] px-4 py-3 rounded-2xl bg-white dark:bg-gray-700 border border-seablue-200 dark:border-gray-600 rounded-bl-md shadow-md">
                   <div className="flex items-center space-x-1">
@@ -378,6 +389,12 @@ const ChatPage = () => {
                   messages={messages}
                 />
               )}
+
+              <InterventionGate
+                intervention={intervention}
+                isLoading={isLoading}
+                onSubmit={handleGateSubmit}
+              />
               
               {/* Action buttons */}
               <ChatActions
@@ -387,6 +404,7 @@ const ChatPage = () => {
                 isLoading={isLoading}
                 isCoolingDown={isCoolingDown}
                 cooldownRemaining={cooldownRemaining}
+                intervention={intervention}
                 showActions={messages.length > 0}
               />
             </div>
@@ -394,7 +412,7 @@ const ChatPage = () => {
         </div>
       </div>
 
-      {/* SealEdu Animation */}
+      {/* ThinkBridge Animation */}
       {/* <SealAnimation 
         trigger={sealAnimationTrigger}
         onComplete={() => setSealAnimationTrigger(null)}

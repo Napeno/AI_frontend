@@ -46,7 +46,7 @@ const AuthForm = ({ initialMode = 'login' }) => {
     <div className="min-h-screen w-full bg-ocean-gradient flex items-center justify-center px-4 py-6 sm:p-6 safari-transform-fix">
       <form onSubmit={onSubmit} className="w-full max-w-md bg-white/90 dark:bg-gray-800/90 backdrop-blur rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8">
         <div className="text-center mb-6 sm:mb-8">
-          <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3" />
+          <img src="/image/sealedu-logo.png" alt="ThinkBridge Logo" className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3" />
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-200">
             {mode === 'login' ? t('auth.welcomeBack') : t('auth.join')}
           </h1>

@@ -45,8 +45,8 @@ const AppContent = () => {
       {!hideHeader && (
         <div className="w-full p-3 sm:p-4 bg-white border-b border-seablue-200 flex items-center justify-between shadow-sm">
           <Link to="/" className="text-lg sm:text-xl font-bold text-seablue-600 flex items-center gap-2">
-            <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-6 h-6 sm:w-7 sm:h-7" />
-            <span className="hidden xs:inline">SealEdu</span>
+            <img src="/image/sealedu-logo.png" alt="ThinkBridge Logo" className="w-6 h-6 sm:w-7 sm:h-7" />
+            <span className="hidden xs:inline">ThinkBridge</span>
             <span className="xs:hidden">SE</span>
           </Link>
           <div className="text-xs sm:text-sm flex items-center gap-2 sm:gap-4">

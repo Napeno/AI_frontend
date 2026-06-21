@@ -54,7 +54,7 @@
   }
 }
 
-/* Custom scrollbar styles with SealEdu sea theme */
+/* Custom scrollbar styles with ThinkBridge sea theme */
 .scrollbar-thin {
   scrollbar-width: thin;
   scrollbar-color: #7eeadd #f0fdfc;
@@ -130,8 +130,17 @@
 
 /* Math formula styling */
 .math-formula {
-  @apply bg-blue-50 px-2 py-1 rounded-md font-mono text-blue-800 border border-blue-200;
-  font-family: 'Courier New', monospace;
+  @apply inline-flex items-center align-middle bg-blue-50 px-1.5 py-0.5 rounded-md text-blue-900 border border-blue-200;
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+.math-display {
+  @apply my-2 px-3 py-2;
+  display: inline-flex;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .math-sup {
@@ -155,11 +164,33 @@
 }
 
 .math-frac {
-  @apply bg-gray-100 px-1 py-0.5 rounded text-sm font-mono;
+  @apply bg-gray-100 px-1 py-0.5 rounded text-sm;
 }
 
 .math-paren {
   @apply text-purple-600 font-semibold;
+}
+
+.math-root {
+  @apply inline-flex items-start align-middle;
+}
+
+.math-root-content {
+  @apply inline-block px-1 ml-0.5 border-t-2 border-blue-800;
+  line-height: 1.25;
+}
+
+.math-fraction {
+  @apply inline-flex flex-col items-center align-middle mx-1;
+  line-height: 1;
+}
+
+.math-fraction span:first-child {
+  @apply border-b border-blue-800 px-1 pb-0.5;
+}
+
+.math-fraction span:last-child {
+  @apply px-1 pt-0.5;
 }
 
 /* Chat message styling improvements */
@@ -183,7 +214,7 @@
   @apply mb-1;
 }
 
-/* SealEdu specific styles */
+/* ThinkBridge specific styles */
 .seal-avatar {
   @apply w-8 h-8 rounded-full bg-seablue-gradient flex items-center justify-center text-white font-bold text-sm shadow-lg;
 }
@@ -192,7 +223,7 @@
   @apply w-8 h-8 rounded-full bg-gradient-to-br from-ocean-light to-ocean-medium flex items-center justify-center text-white font-bold text-sm shadow-lg;
 }
 
-/* SealEdu animations */
+/* ThinkBridge animations */
 
 .seal-animation.show {
   opacity: 1;

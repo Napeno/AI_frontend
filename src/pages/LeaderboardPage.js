@@ -305,7 +305,7 @@ setError(t('leaderboard.loadingError'));
 
         {leaderboardData.length === 0 && !loading && (
           <div className="text-center py-12">
-            <img src="/image/sealedu-logo.png" alt="SealEdu Logo" className="w-16 h-16 mx-auto mb-4" />
+            <img src="/image/sealedu-logo.png" alt="ThinkBridge Logo" className="w-16 h-16 mx-auto mb-4" />
             <p className="text-gray-500 dark:text-gray-400 text-lg mb-2">Chưa có dữ liệu xếp hạng</p>
             <p className="text-sm text-gray-400 dark:text-gray-500">Hãy bắt đầu trò chuyện và kiếm điểm để xuất hiện trên bảng xếp hạng!</p>
           </div>

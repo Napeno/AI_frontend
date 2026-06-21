@@ -15,7 +15,7 @@ module.exports = {
     },
     extend: {
       colors: {
-        // SealEdu brand colors
+        // ThinkBridge brand colors
         seablue: {
           50: '#f0fdfc',
           100: '#ccfbf7',
