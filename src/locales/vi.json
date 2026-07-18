@@ -120,11 +120,17 @@
   "interventionGate": {
     "title": "Thử một bước nhỏ trước nhé",
     "fullAnswerTitle": "Mình giữ đáp án đầy đủ lại một chút",
+    "supportTitle": "Mình giúp đúng chỗ nhé",
     "description": "Em trả lời câu hỏi nhỏ hoặc viết điều em đang nghĩ. Không cần đúng hoàn toàn.",
+    "supportDescription": "Em đang kẹt ở đâu? Chọn một mục để nhận gợi ý phù hợp, hoặc dùng nút bên dưới để xin gợi ý chung.",
+    "choiceGateDescription": "Chọn chỗ đang kẹt trước, rồi mình cùng xử lý một bước nhỏ nhé.",
     "quizDescription": "Em chọn đáp án cho câu hỏi nhỏ này để mở gợi ý tiếp theo nhé.",
     "placeholder": "Ví dụ: Em biết dữ kiện nào, em định dùng công thức nào, hoặc em thử viết bước đầu...",
     "submit": "Gửi bước nhỏ",
-    "submitting": "Đang gửi..."
+    "submitting": "Đang gửi...",
+    "progressBlocker": "Đã xác định chỗ kẹt",
+    "progressAttempt": "Đã thử một bước",
+    "progressRevision": "Đã xem lại"
   },
   "levels": {
     "elementary": "Cấp 1",

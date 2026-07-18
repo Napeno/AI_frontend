@@ -150,7 +150,16 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
           msg.role === 'continue'
         );
         setHintCount(hintMessages.length);
-        syncIntervention(data.intervention);
+        const interventionResponse = await post('/chat/intervention', {
+          sessionId,
+          language: getLanguage(),
+        });
+        if (interventionResponse.ok) {
+          const interventionData = await interventionResponse.json();
+          syncIntervention(interventionData.intervention);
+        } else {
+          syncIntervention(data.intervention);
+        }
         
         setShowAnswerInput(data.history.length > 0);
         
@@ -297,7 +306,11 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     // First, add a visual "continue" message on the user side
     const continueMessage = {
       id: Date.now() + Math.random(),
-      text: gateResponse ? 'Đã gửi bước nhỏ, ThinkBridge đang xem tiếp...' : 'Đang yêu cầu thêm gợi ý...',
+      text: gateResponse?.type === 'blocker_choice'
+        ? 'Đã cho ThinkBridge biết chỗ đang kẹt...'
+        : gateResponse
+          ? 'Đã gửi bước nhỏ, ThinkBridge đang xem tiếp...'
+          : 'Đang yêu cầu thêm gợi ý...',
       sender: 'continue',
       timestamp: new Date().toLocaleTimeString(),
       type: 'continue'

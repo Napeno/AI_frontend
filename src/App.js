@@ -10,6 +10,7 @@ import ChatPage from './pages/ChatPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import GameHomePage from './pages/GameHomePage';
 import QuizGamePage from './pages/QuizGamePage';
+import PracticePage from './pages/PracticePage';
 
 const AppContent = () => {
   const { token, user, logout } = useAuth();
@@ -90,6 +91,7 @@ const AppContent = () => {
         <Route path="/register" element={token ? <Navigate to="/chat" replace /> : <RegisterPage />} />
         <Route path="/chat" element={token ? <ChatPage /> : <Navigate to="/login" replace />} />
         <Route path="/leaderboard" element={token ? <LeaderboardPage /> : <Navigate to="/login" replace />} />
+        <Route path="/practice" element={token ? <PracticePage /> : <Navigate to="/login" replace />} />
         <Route path="/game" element={<GameHomePage />} />
         <Route path="/game/quiz" element={<QuizGamePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
