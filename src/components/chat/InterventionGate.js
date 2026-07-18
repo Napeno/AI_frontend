@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import t from '../../locales/i18n';
 import { formatAIMessage } from '../../utils/chatUtils';
 
 const InterventionGate = ({ intervention, isLoading, onSubmit }) => {
   const [selectedOption, setSelectedOption] = useState('');
   const [reflection, setReflection] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
   const isActive = intervention?.active;
   const isChoiceGate = intervention?.requiredAction === 'choose_blocker';
   const blockerOptions = Array.isArray(intervention?.options) ? intervention.options : [];
   const showBlockerChoices = blockerOptions.length > 0 && (
     isChoiceGate || (!isActive && intervention?.canRequestHint)
   );
+
+  useEffect(() => {
+    setIsExpanded(isActive);
+  }, [isActive, intervention?.type]);
 
   if (!isActive && !showBlockerChoices) {
     return null;
@@ -57,10 +62,31 @@ const InterventionGate = ({ intervention, isLoading, onSubmit }) => {
           </svg>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm sm:text-base font-semibold text-cyan-950 dark:text-cyan-100">{title}</p>
-          <p className="mt-1 text-xs sm:text-sm text-cyan-800 dark:text-cyan-200">{description}</p>
+          {isActive ? (
+            <>
+              <p className="text-sm sm:text-base font-semibold text-cyan-950 dark:text-cyan-100">{title}</p>
+              <p className="mt-1 text-xs sm:text-sm text-cyan-800 dark:text-cyan-200">{description}</p>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setIsExpanded(expanded => !expanded)}
+              className="flex w-full items-center justify-between gap-3 text-left"
+              aria-expanded={isExpanded}
+            >
+              <span>
+                <span className="block text-sm sm:text-base font-semibold text-cyan-950 dark:text-cyan-100">{title}</span>
+                <span className="mt-0.5 block text-xs text-cyan-700 dark:text-cyan-300">Chọn chỗ đang kẹt (tùy chọn)</span>
+              </span>
+              <svg className={`h-5 w-5 flex-shrink-0 text-cyan-700 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 9-7 7-7-7" />
+              </svg>
+            </button>
+          )}
 
-          <div className="mt-3 grid grid-cols-3 gap-2">
+          {(isActive || isExpanded) && <div className="mt-3">
+            {!isActive && <p className="text-xs sm:text-sm text-cyan-800 dark:text-cyan-200">{description}</p>}
+            <div className="mt-3 grid grid-cols-3 gap-2">
             {progressSteps.map((step, index) => (
               <div key={step.label} className={`rounded-lg px-2 py-1.5 text-center text-xs ${
                 step.complete
@@ -142,6 +168,7 @@ const InterventionGate = ({ intervention, isLoading, onSubmit }) => {
               </div>
             </>
           )}
+          </div>}
         </div>
       </div>
     </div>
