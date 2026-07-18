@@ -39,8 +39,16 @@ const ChatHeader = ({
             currentBackground={currentBackground}
           />
         </div>
-        <Link 
-          to="/leaderboard" 
+        <Link
+          to="/practice"
+          className="px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-all duration-200 font-medium flex items-center gap-1"
+          title="Ôn tập"
+        >
+          <span className="text-sm">📘</span>
+          <span className="hidden lg:inline">Ôn tập</span>
+        </Link>
+        <Link
+          to="/leaderboard"
           className="px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-md transition-all duration-200 font-medium flex items-center gap-1"
           title="View Leaderboard"
         >
@@ -63,4 +71,4 @@ const ChatHeader = ({
   );
 };
 
-export default ChatHeader; 
+export default ChatHeader;

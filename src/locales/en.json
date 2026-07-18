@@ -120,11 +120,17 @@
   "interventionGate": {
     "title": "Try one small step first",
     "fullAnswerTitle": "Let us hold the full answer for a moment",
+    "supportTitle": "Let us help in the right place",
     "description": "Answer the small question or write what you are thinking. It does not have to be perfect.",
+    "supportDescription": "Where are you stuck? Choose one option for a fitting hint, or use the button below for a general hint.",
+    "choiceGateDescription": "Choose where you are stuck first, then we will handle one small step together.",
     "quizDescription": "Choose the answer to this small check to unlock the next hint.",
     "placeholder": "For example: what information you know, which formula you might use, or your first attempted step...",
     "submit": "Send small step",
-    "submitting": "Sending..."
+    "submitting": "Sending...",
+    "progressBlocker": "Identified the blocker",
+    "progressAttempt": "Tried one step",
+    "progressRevision": "Reviewed feedback"
   },
   "settings": {
     "language": "Language",

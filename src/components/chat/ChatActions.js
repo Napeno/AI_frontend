@@ -24,10 +24,8 @@ const ChatActions = ({
   const actionTitle = isCoolingDown
     ? t('chat.cooldown.tooltip', { seconds: cooldownRemaining })
     : undefined;
-  const canRequestHint = !intervention?.active && intervention?.canRequestHint !== false && hintCount < 4;
-  const canRequestFullAnswer = !intervention?.active && (
-    intervention?.canRequestFullAnswer === true || hintCount >= 4
-  );
+  const canRequestHint = !intervention?.active && intervention?.canRequestHint !== false;
+  const canRequestFullAnswer = !intervention?.active && intervention?.canRequestFullAnswer === true;
 
   return (
     <div className="space-y-2 sm:space-y-3">
