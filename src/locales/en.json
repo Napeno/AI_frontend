@@ -130,7 +130,7 @@
     "submitting": "Sending...",
     "progressBlocker": "Identified the blocker",
     "progressAttempt": "Tried one step",
-    "progressRevision": "Reviewed feedback"
+    "progressRevision": "Tried again after feedback"
   },
   "settings": {
     "language": "Language",

@@ -130,7 +130,7 @@
     "submitting": "Đang gửi...",
     "progressBlocker": "Đã xác định chỗ kẹt",
     "progressAttempt": "Đã thử một bước",
-    "progressRevision": "Đã xem lại"
+    "progressRevision": "Đã thử lại sau phản hồi"
   },
   "levels": {
     "elementary": "Cấp 1",
