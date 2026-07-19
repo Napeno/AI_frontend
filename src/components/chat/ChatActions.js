@@ -26,6 +26,9 @@ const ChatActions = ({
     : undefined;
   const canRequestHint = !intervention?.active && intervention?.canRequestHint !== false;
   const canRequestFullAnswer = !intervention?.active && intervention?.canRequestFullAnswer === true;
+  const fullAnswerRequirements = intervention?.fullAnswerRequirements;
+  const showFullAnswer = !intervention?.active && fullAnswerRequirements?.hintsUsed >= fullAnswerRequirements?.hintsRequired;
+  const fullAnswerLocked = showFullAnswer && !canRequestFullAnswer;
 
   return (
     <div className="space-y-2 sm:space-y-3">
@@ -51,16 +54,22 @@ const ChatActions = ({
         </button>
       )}
       
-      {/* Full answer button - show only if hint count >= 4 */}
-      {canRequestFullAnswer && (
-        <button 
-          onClick={getFullAnswer} 
-          disabled={actionDisabled}
-          title={actionTitle}
-          className="w-full py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl sm:rounded-full hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none text-sm sm:text-base touch-target"
-        >
-          {isLoading ? t('chat.actions.preparing') : fullAnswerLabel}
-        </button>
+      {showFullAnswer && (
+        <>
+          <button
+            onClick={getFullAnswer}
+            disabled={actionDisabled || fullAnswerLocked}
+            title={fullAnswerLocked ? t('chat.actions.fullAnswerLocked') : actionTitle}
+            className="w-full py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl sm:rounded-full hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none text-sm sm:text-base touch-target"
+          >
+            {isLoading ? t('chat.actions.preparing') : fullAnswerLabel}
+          </button>
+          {fullAnswerLocked && (
+            <p className="px-2 text-center text-xs sm:text-sm text-blue-700 dark:text-blue-300">
+              {t('chat.actions.fullAnswerLocked')}
+            </p>
+          )}
+        </>
       )}
 
       {isCoolingDown && (
