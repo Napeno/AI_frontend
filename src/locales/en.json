@@ -79,7 +79,8 @@
       "preparing": "Preparing... 📚",
       "checking": "Checking...",
       "needMoreHints": "💡 I need more hints!",
-      "fullAnswer": "📖 I'll give you the full answer!"
+      "fullAnswer": "📖 I'll give you the full answer!",
+      "fullAnswerLocked": "All hints are ready. Submit one working step in the answer check to unlock the full solution."
     }
   },
   "sidebar": {

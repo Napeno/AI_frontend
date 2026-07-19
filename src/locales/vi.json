@@ -79,7 +79,8 @@
       "preparing": "Đang chuẩn bị... 📚",
       "checking": "Đang kiểm tra...",
       "needMoreHints": "💡 Tớ cần thêm gợi ý!",
-      "fullAnswer": "📖 Tớ sẽ trả lời đầy đủ cho bạn!"
+      "fullAnswer": "📖 Tớ sẽ trả lời đầy đủ cho bạn!",
+      "fullAnswerLocked": "Đã nhận đủ gợi ý. Hãy gửi một bước em đã làm ở ô kiểm tra câu trả lời để mở lời giải."
     }
   },
   "sidebar": {

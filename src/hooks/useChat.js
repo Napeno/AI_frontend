@@ -12,6 +12,11 @@ const DEFAULT_INTERVENTION = {
   options: [],
   canRequestHint: true,
   canRequestFullAnswer: false,
+  fullAnswerRequirements: {
+    hintsUsed: 0,
+    hintsRequired: 4,
+    hasMeaningfulAttempt: false,
+  },
   hintTier: 1,
 };
 
