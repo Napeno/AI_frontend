@@ -72,13 +72,16 @@ const UserAnswerInput = ({
   const activeQuestion = questions.find(question => question.id === problemContext?.activeQuestionId);
   const suggestedQuestion = questions.find(question => question.id === problemContext?.suggestedQuestionId);
   const questionToShow = activeQuestion || suggestedQuestion;
+  const questionName = questionToShow?.id === 'main'
+    ? ''
+    : `${t('problemContext.question')} ${questionToShow?.id} — `;
 
   return (
     <div className="mb-2 sm:mb-3 p-2.5 sm:p-3 bg-blue-50 rounded-lg border border-blue-200 dark:bg-blue-900/50 dark:border-blue-700/60">
       {questionToShow && (
         <div className="mb-3 rounded-md border border-blue-200 bg-white/80 p-2 dark:border-blue-700 dark:bg-gray-800/70">
           <p className="text-xs font-semibold text-blue-800 dark:text-blue-200">
-            {activeQuestion ? 'Đang chấm' : 'Chọn câu cần chấm'}: Câu {questionToShow.id} — {questionToShow.sourceExpression || questionToShow.prompt}
+            {t('problemContext.title')}: {questionName}{questionToShow.sourceExpression || questionToShow.prompt}
           </p>
           {questions.length > 1 && (
             <div className="mt-2 flex flex-wrap gap-1.5">
@@ -90,12 +93,14 @@ const UserAnswerInput = ({
                   disabled={isLoading}
                   className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${question.id === problemContext?.activeQuestionId ? 'bg-blue-600 text-white' : question.id === problemContext?.suggestedQuestionId ? 'border border-blue-400 bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-100' : 'border border-blue-200 bg-white text-blue-700 dark:border-blue-700 dark:bg-gray-800 dark:text-blue-200'}`}
                 >
-                  Câu {question.id}
+                  {t('problemContext.question')} {question.id}
                 </button>
               ))}
             </div>
           )}
-          {!activeQuestion && <p className="mt-1 text-xs text-blue-600 dark:text-blue-300">Gợi ý: chọn Câu {suggestedQuestion?.id} hoặc đổi sang câu em đang làm.</p>}
+          <p className="mt-1 text-xs text-blue-600 dark:text-blue-300">
+            {activeQuestion ? t('problemContext.autoSelected') : t('problemContext.selectHint', { question: suggestedQuestion?.id })}
+          </p>
         </div>
       )}
       <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-200 mb-1 sm:mb-2 font-medium">

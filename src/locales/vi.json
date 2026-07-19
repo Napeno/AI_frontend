@@ -118,6 +118,12 @@
     "duplicateMessage": "Bạn đã trả lời đúng câu này trước đó với cùng đáp án.",
     "duplicateWarning": "Bạn đã trả lời đúng với câu trả lời này trước đó. Bạn có chắc muốn gửi lại không?"
   },
+  "problemContext": {
+    "title": "Đề bài câu hỏi",
+    "question": "Câu",
+    "autoSelected": "Hệ thống đã chọn câu này. Em có thể đổi sang câu khác bên dưới.",
+    "selectHint": "Hệ thống gợi ý Câu {{question}}. Em có thể chọn câu khác bên dưới."
+  },
   "interventionGate": {
     "title": "Thử một bước nhỏ trước nhé",
     "fullAnswerTitle": "Mình giữ đáp án đầy đủ lại một chút",
