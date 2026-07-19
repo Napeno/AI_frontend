@@ -118,6 +118,12 @@
     "duplicateMessage": "You have already answered this question correctly with the same answer.",
     "duplicateWarning": "You have already given this correct answer before. Are you sure you want to submit it again?"
   },
+  "problemContext": {
+    "title": "Problem question",
+    "question": "Question",
+    "autoSelected": "The system selected this question. You can change it below.",
+    "selectHint": "The system suggests Question {{question}}. You can choose another one below."
+  },
   "interventionGate": {
     "title": "Try one small step first",
     "fullAnswerTitle": "Let us hold the full answer for a moment",

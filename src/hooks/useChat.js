@@ -274,14 +274,14 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
             return [...prev, botMessage];
           });
 
-          // If this was the first message, update title and reload conversations to update sidebar
+          // Give a new conversation its title immediately, then reconcile the sidebar with the server.
           if (isFirstMessage) {
             const newTitle = userMessage.length > 50 
               ? userMessage.substring(0, 50) + '...' 
               : userMessage;
             setCurrentConversationTitle(newTitle);
-            loadConversations();
           }
+          await loadConversations();
         } else {
           console.error('Invalid message format:', data);
           const errorMessage = {
@@ -732,6 +732,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
 
   const sendImageMessage = async (imageFile, textMessage = '') => {
     if (!imageFile || isLoading) return;
+    const isFirstMessage = messages.length === 0;
     
     setIsLoading(true);
     
@@ -805,6 +806,10 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
             }
             return [...prev, botMessage];
           });
+          if (isFirstMessage) {
+            setCurrentConversationTitle(textMessage.trim() || (getLanguage() === 'vi' ? 'Bài tập trong ảnh' : 'Problem from image'));
+          }
+          await loadConversations();
         } else {
           console.error('Invalid message format:', data);
           const errorMessage = {
