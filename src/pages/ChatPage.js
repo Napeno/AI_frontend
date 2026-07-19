@@ -69,6 +69,8 @@ const ChatPage = () => {
     selectedImage,
     setSelectedImage,
     intervention,
+    problemContext,
+    setActiveQuestion,
     messagesEndRef,
     createNewChat,
     loadConversations,
@@ -387,6 +389,8 @@ const ChatPage = () => {
                   isLoading={isLoading}
                   handleAnswerKeyPress={handleAnswerKeyPress}
                   messages={messages}
+                  problemContext={problemContext}
+                  setActiveQuestion={setActiveQuestion}
                 />
               )}
 

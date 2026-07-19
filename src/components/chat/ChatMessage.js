@@ -87,6 +87,7 @@ function ChatMessage({ message, formatAIMessage, userAvatar }) {
 
   const isCorrect = message.isCorrect === true;
   const isIncorrect = message.isCorrect === false;
+  const isUncertain = message.evaluationStatus === 'uncertain';
 
   let containerClasses = "max-w-[75%] sm:max-w-[80%] px-3 py-3 sm:px-5 sm:py-4 rounded-2xl shadow-md";
   if (isUser) {
@@ -97,6 +98,8 @@ function ChatMessage({ message, formatAIMessage, userAvatar }) {
     containerClasses += " bg-green-50 border border-green-300 rounded-bl-md dark:bg-green-900/50 dark:border-green-700";
   } else if (isIncorrect) {
     containerClasses += " bg-red-50 border border-red-300 rounded-bl-md dark:bg-red-900/50 dark:border-red-700";
+  } else if (isUncertain) {
+    containerClasses += " bg-blue-50 border border-blue-300 rounded-bl-md dark:bg-blue-900/40 dark:border-blue-700";
   } else {
     containerClasses += " bg-white border border-seablue-200 rounded-bl-md dark:bg-gray-700 dark:border-gray-600";
   }
@@ -124,6 +127,12 @@ function ChatMessage({ message, formatAIMessage, userAvatar }) {
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
             <span className="text-xs sm:text-sm lg:text-base">Câu trả lời chính xác!</span>
+          </div>
+        )}
+        {isUncertain && (
+          <div className="flex items-center mb-2 font-bold text-blue-700 dark:text-blue-300">
+            <span className="mr-1.5 text-base">💬</span>
+            <span className="text-xs sm:text-sm lg:text-base">Cần làm rõ</span>
           </div>
         )}
 
