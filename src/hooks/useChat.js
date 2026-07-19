@@ -34,6 +34,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [intervention, setIntervention] = useState(DEFAULT_INTERVENTION);
+  const [problemContext, setProblemContext] = useState(null);
   const messagesEndRef = useRef(null);
   const chatSettings = useRef({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
 
@@ -52,6 +53,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     setHintCount(0);
     setShowAnswerInput(false);
     setIntervention(DEFAULT_INTERVENTION);
+    setProblemContext(null);
   }, []);
 
   // Generate a unique session ID when component mounts
@@ -144,12 +146,14 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
               type: msg.role === 'continue' ? 'continue' : msg.role === 'full-answer' ? 'full-answer' : msg.role === 'check-answer' ? 'check-answer' : undefined,
               userAnswer: msg.userAnswer || undefined,  // Include user answer if it exists
               isCorrect: msg.isCorrect,
+              evaluationStatus: msg.evaluationStatus,
               imageUrl: msg.parts[0].image?.url || undefined // Include image URL if it exists
             };
           });
         
         const cleanMessages = removeDuplicateMessages(conversationMessages);
         setMessages(cleanMessages);
+        setProblemContext(data.problemContext || null);
         
         const hintMessages = data.history.filter(msg => 
           msg.role === 'continue'
@@ -252,6 +256,8 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
             sender: 'bot',
             timestamp: new Date().toLocaleTimeString()
           };
+
+          setProblemContext(data.problemContext || null);
 
           syncIntervention(data.intervention);
           
@@ -510,8 +516,10 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
           text: data.message,
           sender: 'bot',
           timestamp: new Date().toLocaleTimeString(),
-          isCorrect: data.isCorrect
+          isCorrect: data.isCorrect,
+          evaluationStatus: data.evaluation?.status
         };
+        setProblemContext(data.problemContext || null);
 
         // Update user coins and points if awarded
         if (data.coinsAwarded && data.totalCoins !== undefined) {
@@ -640,8 +648,10 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
           text: data.message,
           sender: 'bot',
           timestamp: new Date().toLocaleTimeString(),
-          isCorrect: data.isCorrect
+          isCorrect: data.isCorrect,
+          evaluationStatus: data.evaluation?.status
         };
+        setProblemContext(data.problemContext || null);
         
         // Update user coins and points if awarded
         if (data.coinsAwarded && data.totalCoins !== undefined) {
@@ -782,6 +792,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
             sender: 'bot',
             timestamp: new Date().toLocaleTimeString()
           };
+          setProblemContext(data.problemContext || null);
           
           setMessages(prev => {
             const lastMessage = prev[prev.length - 1];
@@ -823,6 +834,19 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     }
   };
 
+  const setActiveQuestion = async (questionId) => {
+    if (isLoading || !sessionId) return;
+    try {
+      const response = await post('/chat/problem-context', { sessionId, questionId });
+      if (response.ok) {
+        const data = await response.json();
+        setProblemContext(data.problemContext || null);
+      }
+    } catch (error) {
+      console.error('Error selecting problem question:', error);
+    }
+  };
+
   return {
     messages,
     setMessages,
@@ -847,6 +871,8 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     setSelectedImage,
     intervention,
     setIntervention,
+    problemContext,
+    setActiveQuestion,
     messagesEndRef,
     createNewChat,
     loadConversations,
