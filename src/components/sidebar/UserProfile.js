@@ -59,6 +59,12 @@ const UserProfile = ({ coinAnimationTrigger, pointsAnimationTrigger }) => {
         >
           🏆 {t('leaderboard.title')}
         </Link>
+        <Link
+          to="/practice"
+          className="mt-2 w-full block rounded-lg bg-cyan-600 px-3 py-3 text-center text-base font-bold text-white shadow-sm transition-all duration-300 hover:scale-105 hover:bg-cyan-700 hover:shadow-lg"
+        >
+          📘 Ôn tập 2 phút
+        </Link>
       </div>
 
       {/* Coin Display & Shop Button */}
@@ -130,4 +136,4 @@ const UserProfile = ({ coinAnimationTrigger, pointsAnimationTrigger }) => {
   );
 };
 
-export default UserProfile; 
+export default UserProfile;

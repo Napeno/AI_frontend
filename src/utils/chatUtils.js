@@ -119,6 +119,8 @@ const renderLatex = (rawLatex) => {
     return `<span class="math-root">√<span class="math-root-content">${renderedContent}</span></span>`;
   });
 
+  latex = replaceLatexCommandWithBraces(latex, '\\text', content => content);
+
   latex = latex.replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, (_, numerator, denominator) => (
     `<span class="math-fraction"><span>${renderLatex(numerator)}</span><span>${renderLatex(denominator)}</span></span>`
   ));
