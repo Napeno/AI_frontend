@@ -14,9 +14,10 @@ import PracticePage from './pages/PracticePage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 
 const AppContent = () => {
-  const { token, user, logout } = useAuth();
+  const { token, user, authReady, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const isAdmin = user?.role === 'admin';
 
   // Set navigate function for API client
   useEffect(() => {
@@ -41,6 +42,10 @@ const AppContent = () => {
     };
   }, [isChatPage]);
 
+  if (!authReady) {
+    return <div className="flex min-h-screen items-center justify-center bg-seablue-50 text-seablue-700">Đang tải tài khoản...</div>;
+  }
+
   return (
     <div className={hideHeader ? "h-screen w-full" : "w-full"}>
       {/* Show navigation bar only for non-chat/non-game pages */}
@@ -54,6 +59,7 @@ const AppContent = () => {
           <div className="text-xs sm:text-sm flex items-center gap-2 sm:gap-4">
             {token ? (
               <>
+                {isAdmin ? <Link to="/" className="text-seablue-600 hover:text-seablue-700 font-medium px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">📊 Dashboard giáo viên</Link> : <>
                 <Link to="/game" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">
                   <span className="text-sm">🎮</span>
                   <span className="hidden sm:inline">Game</span>
@@ -66,7 +72,7 @@ const AppContent = () => {
                   <img src="/image/sealedu-logo.png" alt="Chat Logo" className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span className="hidden sm:inline">Chat</span>
                 </Link>
-                {user?.role === 'admin' && <Link to="/admin" className="text-seablue-600 hover:text-seablue-700 font-medium px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">Giáo viên</Link>}
+                </>}
                 <div className="hidden md:flex items-center gap-2">
                   <span className="text-gray-700 text-xs">{user?.username}</span>
                   <button onClick={logout} className="text-seablue-600 hover:text-seablue-700 font-medium px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">Logout</button>
@@ -88,15 +94,15 @@ const AppContent = () => {
       )}
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={token ? <Navigate to="/chat" replace /> : <LoginPage />} />
-        <Route path="/register" element={token ? <Navigate to="/chat" replace /> : <RegisterPage />} />
-        <Route path="/chat" element={token ? <ChatPage /> : <Navigate to="/login" replace />} />
-        <Route path="/leaderboard" element={token ? <LeaderboardPage /> : <Navigate to="/login" replace />} />
-        <Route path="/practice" element={token ? <PracticePage /> : <Navigate to="/login" replace />} />
-        <Route path="/admin" element={token && user?.role === 'admin' ? <AdminDashboardPage /> : <Navigate to="/chat" replace />} />
-        <Route path="/game" element={<GameHomePage />} />
-        <Route path="/game/quiz" element={<QuizGamePage />} />
+        <Route path="/" element={isAdmin ? <AdminDashboardPage /> : <HomePage />} />
+        <Route path="/login" element={token ? <Navigate to={isAdmin ? "/" : "/chat"} replace /> : <LoginPage />} />
+        <Route path="/register" element={token ? <Navigate to={isAdmin ? "/" : "/chat"} replace /> : <RegisterPage />} />
+        <Route path="/chat" element={token ? (isAdmin ? <Navigate to="/" replace /> : <ChatPage />) : <Navigate to="/login" replace />} />
+        <Route path="/leaderboard" element={token ? (isAdmin ? <Navigate to="/" replace /> : <LeaderboardPage />) : <Navigate to="/login" replace />} />
+        <Route path="/practice" element={token ? (isAdmin ? <Navigate to="/" replace /> : <PracticePage />) : <Navigate to="/login" replace />} />
+        <Route path="/admin" element={token && isAdmin ? <Navigate to="/" replace /> : <Navigate to="/chat" replace />} />
+        <Route path="/game" element={isAdmin ? <Navigate to="/" replace /> : <GameHomePage />} />
+        <Route path="/game/quiz" element={isAdmin ? <Navigate to="/" replace /> : <QuizGamePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
