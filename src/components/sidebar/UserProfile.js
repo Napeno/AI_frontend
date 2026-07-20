@@ -65,6 +65,7 @@ const UserProfile = ({ coinAnimationTrigger, pointsAnimationTrigger }) => {
         >
           📘 Ôn tập 2 phút
         </Link>
+        {user?.role === 'admin' && <Link to="/admin" className="mt-2 block w-full rounded-lg bg-seablue-700 px-3 py-3 text-center text-base font-bold text-white shadow-sm transition-all hover:bg-seablue-800">📊 Dashboard giáo viên</Link>}
       </div>
 
       {/* Coin Display & Shop Button */}

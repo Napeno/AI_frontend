@@ -33,6 +33,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
   const [showAnswerInput, setShowAnswerInput] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [supportMode, setSupportMode] = useState(null);
   const [intervention, setIntervention] = useState(DEFAULT_INTERVENTION);
   const [problemContext, setProblemContext] = useState(null);
   const messagesEndRef = useRef(null);
@@ -40,6 +41,11 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
 
   const syncIntervention = useCallback((nextIntervention, fallback = DEFAULT_INTERVENTION) => {
     setIntervention(nextIntervention || fallback);
+  }, []);
+
+  const clearSupportMode = useCallback(() => {
+    setSupportMode(null);
+    setUserAnswer('');
   }, []);
 
   const createNewChat = useCallback((settings) => {
@@ -54,6 +60,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     setShowAnswerInput(false);
     setIntervention(DEFAULT_INTERVENTION);
     setProblemContext(null);
+    setSupportMode(null);
   }, []);
 
   // Generate a unique session ID when component mounts
@@ -154,6 +161,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         const cleanMessages = removeDuplicateMessages(conversationMessages);
         setMessages(cleanMessages);
         setProblemContext(data.problemContext || null);
+        setSupportMode(null);
         
         const hintMessages = data.history.filter(msg => 
           msg.role === 'continue'
@@ -211,6 +219,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     const userMessage = inputMessage.trim();
     const isFirstMessage = messages.length === 0; // Check if this is the first message
     setInputMessage('');
+    setSupportMode(null);
     setIsLoading(true);
     
     const newUserMessage = {
@@ -313,21 +322,26 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
 
   const continueChat = async (gateResponse = null) => {
     if (isLoading) return;
-    
-    // First, add a visual "continue" message on the user side
-    const continueMessage = {
-      id: Date.now() + Math.random(),
-      text: gateResponse?.type === 'blocker_choice'
-        ? 'Đã cho ThinkBridge biết chỗ đang kẹt...'
-        : gateResponse
-          ? 'Đã gửi bước nhỏ, ThinkBridge đang xem tiếp...'
-          : 'Đang yêu cầu thêm gợi ý...',
-      sender: 'continue',
-      timestamp: new Date().toLocaleTimeString(),
-      type: 'continue'
-    };
-    
-    setMessages(prev => [...prev, continueMessage]);
+    const isSupportChoice = gateResponse?.type === 'support_choice';
+
+    if (isSupportChoice) {
+      setSupportMode(gateResponse.value === 'calculation' ? 'calculation' : null);
+    }
+
+    if (!isSupportChoice) {
+      setMessages(prev => [...prev, {
+        id: Date.now() + Math.random(),
+        text: gateResponse?.type === 'blocker_choice'
+          ? 'Đã cho ThinkBridge biết chỗ đang kẹt...'
+          : gateResponse
+            ? 'Đã gửi bước nhỏ, ThinkBridge đang xem tiếp...'
+            : 'Đang yêu cầu thêm gợi ý...',
+        sender: 'continue',
+        timestamp: new Date().toLocaleTimeString(),
+        type: 'continue'
+      }]);
+    }
+
     setIsLoading(true);
     
     try {
@@ -364,7 +378,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         
         if (!isDuplicate) {
           setMessages(prev => [...prev, botMessage]);
-          if (!data.intervention?.active) {
+          if (!isSupportChoice && !data.intervention?.active) {
             setHintCount(prev => prev + 1);
           }
         } else {
@@ -460,6 +474,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     if (isLoading) return;
 
     setIsLoading(true);
+    setSupportMode(null);
     const userSubmittedAnswer = textAnswer.trim();
     setUserAnswer('');
 
@@ -600,6 +615,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     if (isLoading || !userAnswer.trim()) return;
 
     setIsLoading(true);
+    setSupportMode(null);
     const userSubmittedAnswer = userAnswer.trim();
     setUserAnswer('');
 
@@ -733,6 +749,10 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
   const sendImageMessage = async (imageFile, textMessage = '') => {
     if (!imageFile || isLoading) return;
     const isFirstMessage = messages.length === 0;
+    const isStudentWork = supportMode === 'calculation';
+    const imageMessage = textMessage.trim() || (isStudentWork
+      ? (getLanguage() === 'vi' ? 'Đây là bước làm em muốn kiểm tra lỗi.' : 'This is the working step I want checked.')
+      : (getLanguage() === 'vi' ? 'Trả lời đáp án bên trong hình ảnh' : 'Answer the question shown in the image'));
     
     setIsLoading(true);
     
@@ -744,15 +764,17 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     formData.append('educationLevel', chatSettings.current.educationLevel);
     formData.append('subjectArea', chatSettings.current.subjectArea);
     
-    // Add text message if provided
-    if (textMessage.trim()) {
-      formData.append('message', textMessage.trim());
+    if (textMessage.trim() || isStudentWork) {
+      formData.append('message', imageMessage);
+    }
+    if (isStudentWork) {
+      formData.append('imagePurpose', 'student_work');
     }
     
     // Add user message to UI immediately
     const userMessage = {
       id: Date.now() + Math.random(),
-      text: textMessage.trim() || (getLanguage() === 'vi' ? 'Trả lời đáp án bên trong hình ảnh' : 'Answer the question shown in the image'),
+      text: imageMessage,
       sender: 'user',
       timestamp: new Date().toLocaleTimeString(),
       imageUrl: URL.createObjectURL(imageFile) // For immediate preview
@@ -761,6 +783,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
     setSelectedImage(null);
+    setSupportMode(null);
     
     if (messages.length === 0) {
       setShowAnswerInput(true);
@@ -822,13 +845,14 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
           setMessages(prev => [...prev, errorMessage]);
         }
       } else {
-        throw new Error('Failed to send image message');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Không thể gửi ảnh (mã ${response.status}).`);
       }
     } catch (error) {
       console.error('Error sending image message:', error);
       const errorMessage = {
         id: Date.now() + Math.random(),
-        text: 'Có lỗi xảy ra khi gửi hình ảnh. Vui lòng thử lại!',
+        text: error.message || 'Có lỗi xảy ra khi gửi hình ảnh. Vui lòng thử lại!',
         sender: 'bot',
         timestamp: new Date().toLocaleTimeString(),
         isError: true
@@ -874,6 +898,8 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     isInitialized,
     selectedImage,
     setSelectedImage,
+    supportMode,
+    clearSupportMode,
     intervention,
     setIntervention,
     problemContext,

@@ -11,6 +11,12 @@ const UserAnswerInput = ({
   messages = [],
   problemContext,
   setActiveQuestion,
+  title = t('userAnswer.title'),
+  description = t('userAnswer.description'),
+  placeholder = t('userAnswer.placeholder'),
+  buttonLabel = t('userAnswer.checkButton'),
+  showProblemContext = true,
+  onBack,
 }) => {
   const fileInputRef = useRef(null);
   const [selectedAnswerImage, setSelectedAnswerImage] = React.useState(null);
@@ -78,7 +84,7 @@ const UserAnswerInput = ({
 
   return (
     <div className="mb-2 sm:mb-3 p-2.5 sm:p-3 bg-blue-50 rounded-lg border border-blue-200 dark:bg-blue-900/50 dark:border-blue-700/60">
-      {questionToShow && (
+      {showProblemContext && questionToShow && (
         <div className="mb-3 rounded-md border border-blue-200 bg-white/80 p-2 dark:border-blue-700 dark:bg-gray-800/70">
           <p className="text-xs font-semibold text-blue-800 dark:text-blue-200">
             {t('problemContext.title')}: {questionName}{questionToShow.sourceExpression || questionToShow.prompt}
@@ -103,11 +109,16 @@ const UserAnswerInput = ({
           </p>
         </div>
       )}
-      <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-200 mb-1 sm:mb-2 font-medium">
-        {t('userAnswer.title')}
-      </p>
+      <div className="mb-1 flex items-center justify-between gap-2 sm:mb-2">
+        <p className="text-xs text-blue-800 dark:text-blue-200 sm:text-sm font-medium">{title}</p>
+        {onBack && (
+          <button type="button" onClick={onBack} disabled={isLoading} className="rounded-md px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60 dark:text-blue-200 dark:hover:bg-blue-800">
+            ← {t('common.back')}
+          </button>
+        )}
+      </div>
       <p className="text-xs text-blue-600 dark:text-blue-300 mb-2">
-        {t('userAnswer.description')}
+        {description}
       </p>
       
       {/* Duplicate Answer Warning */}
@@ -154,7 +165,7 @@ const UserAnswerInput = ({
             value={userAnswer}
             onChange={(e) => setUserAnswer(e.target.value)}
             onKeyPress={handleAnswerKeyPress}
-            placeholder={selectedAnswerImage ? t('userAnswer.placeholderWithImage') || "Nhập câu trả lời của bạn (có kèm hình ảnh)" : t('userAnswer.placeholder')}
+            placeholder={selectedAnswerImage ? t('userAnswer.placeholderWithImage') || "Nhập câu trả lời của bạn (có kèm hình ảnh)" : placeholder}
             disabled={isLoading}
             rows="1"
             className="w-full px-3 py-2 pr-10 sm:px-4 sm:py-3 sm:pr-12 border-2 border-blue-200 rounded-lg text-sm resize-none outline-none focus:border-blue-500 transition-colors disabled:bg-blue-100 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-blue-700 dark:text-gray-200 dark:focus:border-blue-500 dark:disabled:bg-gray-700"
@@ -191,7 +202,7 @@ const UserAnswerInput = ({
           data-coin-source="true"
         >
           {isLoading ? t('userAnswer.checking') : (
-            hasDuplicateAnswer ? (t('userAnswer.resubmit') || 'Gửi lại') : t('userAnswer.checkButton')
+            hasDuplicateAnswer ? (t('userAnswer.resubmit') || 'Gửi lại') : buttonLabel
           )}
         </button>
       </div>

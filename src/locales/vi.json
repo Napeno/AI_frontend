@@ -8,7 +8,8 @@
     "loading": "Đang tải...",
     "error": "Lỗi",
     "success": "Thành công",
-    "remove": "Xóa"
+    "remove": "Xóa",
+    "back": "Quay lại"
   },
   "newChatModal": {
     "title": "Bắt đầu cuộc trò chuyện mới",
@@ -26,6 +27,7 @@
     "input": {
       "placeholder": "Nhập câu hỏi của bạn ở đây...",
       "placeholderWithImage": "Thêm text hoặc để trống để sử dụng câu hỏi mặc định",
+      "workPlaceholder": "Gửi bước làm hoặc ảnh em muốn kiểm tra lỗi...",
       "answerPlaceholder": "Nhập câu trả lời của bạn ở đây...",
       "checkAnswerButton": "Kiểm tra câu trả lời ✨",
       "continueButton": "💡 Tớ cần thêm gợi ý!",
@@ -118,6 +120,12 @@
     "duplicateMessage": "Bạn đã trả lời đúng câu này trước đó với cùng đáp án.",
     "duplicateWarning": "Bạn đã trả lời đúng với câu trả lời này trước đó. Bạn có chắc muốn gửi lại không?"
   },
+  "errorCheck": {
+    "title": "🔎 Kiểm tra lỗi sai ở bước này",
+    "description": "Viết hoặc gửi ảnh một bước em đang nghi ngờ, mình sẽ giúp tìm lỗi nhé.",
+    "placeholder": "Ví dụ: Em biến đổi từ dòng này sang dòng kia như thế nào...",
+    "button": "Kiểm tra bước làm ✨"
+  },
   "problemContext": {
     "title": "Đề bài câu hỏi",
     "question": "Câu",
@@ -127,9 +135,9 @@
   "interventionGate": {
     "title": "Thử một bước nhỏ trước nhé",
     "fullAnswerTitle": "Mình giữ đáp án đầy đủ lại một chút",
-    "supportTitle": "Mình giúp đúng chỗ nhé",
+    "supportTitle": "Em cần hỗ trợ gì tiếp?",
     "description": "Em trả lời câu hỏi nhỏ hoặc viết điều em đang nghĩ. Không cần đúng hoàn toàn.",
-    "supportDescription": "Em đang kẹt ở đâu? Chọn một mục để nhận gợi ý phù hợp, hoặc dùng nút bên dưới để xin gợi ý chung.",
+    "supportDescription": "Chọn một mục để nhận đúng kiểu hỗ trợ em cần.",
     "choiceGateDescription": "Chọn chỗ đang kẹt trước, rồi mình cùng xử lý một bước nhỏ nhé.",
     "quizDescription": "Em chọn đáp án cho câu hỏi nhỏ này để mở gợi ý tiếp theo nhé.",
     "placeholder": "Ví dụ: Em biết dữ kiện nào, em định dùng công thức nào, hoặc em thử viết bước đầu...",

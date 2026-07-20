@@ -8,7 +8,8 @@
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",
-    "remove": "Remove"
+    "remove": "Remove",
+    "back": "Back"
   },
   "newChatModal": {
     "title": "Start a New Chat",
@@ -26,6 +27,7 @@
     "input": {
       "placeholder": "Type your question here...",
       "placeholderWithImage": "Add text or leave empty to use default question",
+      "workPlaceholder": "Send the working step or image you want checked...",
       "continueButton": "💡 I need more hints!",
       "fullAnswerButton": "📖 I'll give you the full answer!",
       "checkAnswerButton": "Check My Answer ✨",
@@ -118,6 +120,12 @@
     "duplicateMessage": "You have already answered this question correctly with the same answer.",
     "duplicateWarning": "You have already given this correct answer before. Are you sure you want to submit it again?"
   },
+  "errorCheck": {
+    "title": "🔎 Check this working step",
+    "description": "Write or send an image of the step you doubt and I will help find the mistake.",
+    "placeholder": "For example: How I changed this line into the next one...",
+    "button": "Check this step ✨"
+  },
   "problemContext": {
     "title": "Problem question",
     "question": "Question",
@@ -127,9 +135,9 @@
   "interventionGate": {
     "title": "Try one small step first",
     "fullAnswerTitle": "Let us hold the full answer for a moment",
-    "supportTitle": "Let us help in the right place",
+    "supportTitle": "What help do you need next?",
     "description": "Answer the small question or write what you are thinking. It does not have to be perfect.",
-    "supportDescription": "Where are you stuck? Choose one option for a fitting hint, or use the button below for a general hint.",
+    "supportDescription": "Choose the kind of help that fits what you need.",
     "choiceGateDescription": "Choose where you are stuck first, then we will handle one small step together.",
     "quizDescription": "Choose the answer to this small check to unlock the next hint.",
     "placeholder": "For example: what information you know, which formula you might use, or your first attempted step...",

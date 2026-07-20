@@ -11,6 +11,7 @@ import LeaderboardPage from './pages/LeaderboardPage';
 import GameHomePage from './pages/GameHomePage';
 import QuizGamePage from './pages/QuizGamePage';
 import PracticePage from './pages/PracticePage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
 
 const AppContent = () => {
   const { token, user, logout } = useAuth();
@@ -65,6 +66,7 @@ const AppContent = () => {
                   <img src="/image/sealedu-logo.png" alt="Chat Logo" className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span className="hidden sm:inline">Chat</span>
                 </Link>
+                {user?.role === 'admin' && <Link to="/admin" className="text-seablue-600 hover:text-seablue-700 font-medium px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">Giáo viên</Link>}
                 <div className="hidden md:flex items-center gap-2">
                   <span className="text-gray-700 text-xs">{user?.username}</span>
                   <button onClick={logout} className="text-seablue-600 hover:text-seablue-700 font-medium px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">Logout</button>
@@ -92,6 +94,7 @@ const AppContent = () => {
         <Route path="/chat" element={token ? <ChatPage /> : <Navigate to="/login" replace />} />
         <Route path="/leaderboard" element={token ? <LeaderboardPage /> : <Navigate to="/login" replace />} />
         <Route path="/practice" element={token ? <PracticePage /> : <Navigate to="/login" replace />} />
+        <Route path="/admin" element={token && user?.role === 'admin' ? <AdminDashboardPage /> : <Navigate to="/chat" replace />} />
         <Route path="/game" element={<GameHomePage />} />
         <Route path="/game/quiz" element={<QuizGamePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
