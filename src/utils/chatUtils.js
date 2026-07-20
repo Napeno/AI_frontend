@@ -141,15 +141,20 @@ const replaceMathSegments = (text) => {
   const mathSegments = [];
   const placeholderPrefix = '%%SEALEDUMATH';
   const placeholderSuffix = '%%';
-  const withoutMath = text.replace(/\$\$([\s\S]+?)\$\$|\$([^$\n]+?)\$|\\\(([\s\S]+?)\\\)|\\\[([\s\S]+?)\\\]/g, (match, blockDollar, inlineDollar, parenMath, bracketMath) => {
-    const latex = blockDollar || inlineDollar || parenMath || bracketMath || '';
-    const isBlock = Boolean(blockDollar || bracketMath);
+  const addMathSegment = (latex, isBlock = false) => {
     const className = isBlock ? 'math-formula math-display' : 'math-formula';
     const renderedMath = `<span class="${className}">${renderLatex(latex)}</span>`;
     const placeholder = `${placeholderPrefix}${mathSegments.length}${placeholderSuffix}`;
     mathSegments.push(renderedMath);
     return placeholder;
+  };
+  const delimitedMath = text.replace(/\$\$([\s\S]+?)\$\$|\$([^$\n]+?)\$|\\\(([\s\S]+?)\\\)|\\\[([\s\S]+?)\\\]/g, (match, blockDollar, inlineDollar, parenMath, bracketMath) => {
+    const latex = blockDollar || inlineDollar || parenMath || bracketMath || '';
+    const isBlock = Boolean(blockDollar || bracketMath);
+    return addMathSegment(latex, isBlock);
   });
+
+  const withoutMath = delimitedMath.replace(/\\frac\{[^{}]+\}\{[^{}]+\}|\\sqrt\{[^{}]+\}/g, match => addMathSegment(match));
 
   return { withoutMath, mathSegments, placeholderPrefix, placeholderSuffix };
 };
@@ -175,6 +180,13 @@ export const formatAIMessage = (text) => {
 
     // Make text between * italic
     formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+    // Older practice content sometimes stores x^2 directly instead of \(x^2\).
+    formatted = formatted
+      .replace(/([A-Za-z0-9)])\^\{([^{}]+)\}/g, '$1<sup>$2</sup>')
+      .replace(/([A-Za-z0-9)])\^([A-Za-z0-9+-]+)/g, '$1<sup>$2</sup>')
+      .replace(/([A-Za-z0-9)])_\{([^{}]+)\}/g, '$1<sub>$2</sub>')
+      .replace(/([A-Za-z0-9)])_([A-Za-z0-9+-]+)/g, '$1<sub>$2</sub>');
 
     mathSegments.forEach((mathHtml, index) => {
       const placeholder = `${placeholderPrefix}${index}${placeholderSuffix}`;

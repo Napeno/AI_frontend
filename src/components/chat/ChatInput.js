@@ -11,6 +11,7 @@ const ChatInput = ({
   handleKeyPress,
   selectedImage,
   setSelectedImage,
+  supportMode,
 }) => {
   const fileInputRef = useRef(null);
 
@@ -45,6 +46,11 @@ const ChatInput = ({
   const buttonLabelMobile = isCoolingDown
     ? `${cooldownRemaining}s`
     : '📤';
+  const placeholder = supportMode === 'calculation'
+    ? t('chat.input.workPlaceholder')
+    : selectedImage
+      ? t('chat.input.placeholderWithImage')
+      : t('chat.input.placeholder');
 
   return (
     <div className="mb-2 sm:mb-3">
@@ -82,7 +88,7 @@ const ChatInput = ({
               // Mobile keyboard handling is done at page level
               // Just ensure the input stays visible without aggressive scrolling
             }}
-            placeholder={selectedImage ? t('chat.input.placeholderWithImage') : t('chat.input.placeholder')}
+            placeholder={placeholder}
             disabled={isLoading}
             rows="1"
             className="w-full px-3 py-2 pr-10 sm:px-4 sm:py-3 sm:pr-12 border-2 border-gray-200 rounded-2xl sm:rounded-full text-sm resize-none outline-none focus:border-indigo-500 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:border-indigo-500 dark:disabled:bg-gray-700"

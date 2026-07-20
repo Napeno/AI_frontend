@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useChat } from '../hooks/useChat';
 import { formatAIMessage } from '../utils/chatUtils';
+import t from '../locales/i18n';
 import { useAuth } from '../context/AuthContext';
 import { AVATAR_EMOJIS } from '../utils/avatarUtils';
 
@@ -21,7 +22,6 @@ const ChatPage = () => {
   const { user } = useAuth();
   const [keyboardOffset, setKeyboardOffset] = useState(0);
   const [coinAnimationTrigger, setCoinAnimationTrigger] = useState(null);
-  const [sealAnimationTrigger, setSealAnimationTrigger] = useState(null);
   const [currentBackground, setCurrentBackground] = useState({
     id: 'default',
     name: 'Mặc định',
@@ -39,10 +39,6 @@ const ChatPage = () => {
   const handlePointsAnimation = (animationData) => {
     setPointsAnimationTrigger(animationData);
   };
-
-  // const handleSealAnimation = (type, data = {}) => {
-  //   setSealAnimationTrigger({ type, ...data, timestamp: Date.now() });
-  // };
 
   const handleBackgroundChange = (background) => {
     setCurrentBackground(background);
@@ -65,9 +61,10 @@ const ChatPage = () => {
     conversations,
     currentConversationTitle,
     hintCount,
-    showAnswerInput,
     selectedImage,
     setSelectedImage,
+    supportMode,
+    clearSupportMode,
     intervention,
     problemContext,
     setActiveQuestion,
@@ -157,15 +154,6 @@ const ChatPage = () => {
     };
   }, []);
 
-  // Trigger animation based on answer check results
-  useEffect(() => {
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage && lastMessage.sender === 'check-answer') {
-      const isCorrect = lastMessage.isCorrect;
-      // handleSealAnimation('check-answer', { isCorrect });
-    }
-  }, [messages]);
-
   const startCooldown = useCallback(() => {
     setCooldownRemaining(CHAT_COOLDOWN_SECONDS);
   }, []);
@@ -204,24 +192,6 @@ const ChatPage = () => {
     }
   };
 
-  const handleAnswerKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      checkUserAnswer();
-    }
-  };
-
-  const handleContinueChat = useCallback(async () => {
-    if (isLoading || isCoolingDown) return;
-
-    try {
-      await continueChat();
-      // handleSealAnimation('hint');
-    } finally {
-      startCooldown();
-    }
-  }, [continueChat, isCoolingDown, isLoading, startCooldown]);
-
   const handleGateSubmit = useCallback(async (gateResponse) => {
     if (isLoading) return;
     if (intervention?.type === 'full_answer_gate') {
@@ -231,21 +201,32 @@ const ChatPage = () => {
     await continueChat(gateResponse);
   }, [continueChat, getFullAnswer, intervention?.type, isLoading]);
 
+  const handleContinueChat = useCallback(async () => {
+    if (isLoading || isCoolingDown) return;
+
+    try {
+      await continueChat();
+    } finally {
+      startCooldown();
+    }
+  }, [continueChat, isCoolingDown, isLoading, startCooldown]);
+
+  const handleAnswerKeyPress = (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      checkUserAnswer();
+    }
+  };
+
   const handleGetFullAnswer = useCallback(async () => {
     if (isLoading || isCoolingDown) return;
 
     try {
       await getFullAnswer();
-      // handleSealAnimation('full-answer');
     } finally {
       startCooldown();
     }
   }, [getFullAnswer, isCoolingDown, isLoading, startCooldown]);
-
-  const handleCheckAnswer = () => {
-    checkUserAnswer();
-    // Animation will be triggered based on the result in useEffect
-  };
 
   const handleStartChat = (settings) => {
     createNewChat(settings);
@@ -367,60 +348,67 @@ const ChatPage = () => {
               style={{ paddingBottom: keyboardOffset ? `${keyboardOffset + 8}px` : undefined }}
             >
               {/* Main chat input */}
-              <ChatInput
-                inputMessage={inputMessage}
-                setInputMessage={setInputMessage}
-                isLoading={isLoading}
-                isCoolingDown={isCoolingDown}
-                cooldownRemaining={cooldownRemaining}
-                onSend={handleSendMessage}
-                handleKeyPress={handleKeyPress}
-                selectedImage={selectedImage}
-                setSelectedImage={setSelectedImage}
-              />
-              
-              {/* User answer input when enabled */}
-              {showAnswerInput && (
+              {supportMode !== 'calculation' && (
+                <ChatInput
+                  inputMessage={inputMessage}
+                  setInputMessage={setInputMessage}
+                  isLoading={isLoading}
+                  isCoolingDown={isCoolingDown}
+                  cooldownRemaining={cooldownRemaining}
+                  onSend={handleSendMessage}
+                  handleKeyPress={handleKeyPress}
+                  selectedImage={selectedImage}
+                  setSelectedImage={setSelectedImage}
+                  supportMode={supportMode}
+                />
+              )}
+
+              {supportMode === 'calculation' && (
                 <UserAnswerInput
                   userAnswer={userAnswer}
                   setUserAnswer={setUserAnswer}
-                  checkUserAnswer={handleCheckAnswer}
+                  checkUserAnswer={checkUserAnswer}
                   checkUserAnswerWithImage={checkUserAnswerWithImage}
                   isLoading={isLoading}
                   handleAnswerKeyPress={handleAnswerKeyPress}
                   messages={messages}
                   problemContext={problemContext}
                   setActiveQuestion={setActiveQuestion}
+                  title={t('errorCheck.title')}
+                  description={t('errorCheck.description')}
+                  placeholder={t('errorCheck.placeholder')}
+                  buttonLabel={t('errorCheck.button')}
+                  showProblemContext={false}
+                  onBack={clearSupportMode}
                 />
               )}
 
-              <InterventionGate
-                intervention={intervention}
-                isLoading={isLoading}
-                onSubmit={handleGateSubmit}
-              />
-              
-              {/* Action buttons */}
-              <ChatActions
-                hintCount={hintCount}
-                continueChat={handleContinueChat}
-                getFullAnswer={handleGetFullAnswer}
-                isLoading={isLoading}
-                isCoolingDown={isCoolingDown}
-                cooldownRemaining={cooldownRemaining}
-                intervention={intervention}
-                showActions={messages.length > 0}
-              />
+              {supportMode !== 'calculation' && messages.some(message => message.sender === 'bot') && (
+                <InterventionGate
+                  intervention={intervention}
+                  isLoading={isLoading}
+                  onSubmit={handleGateSubmit}
+                />
+              )}
+
+              {supportMode !== 'calculation' && (
+                <ChatActions
+                  hintCount={hintCount}
+                  continueChat={handleContinueChat}
+                  getFullAnswer={handleGetFullAnswer}
+                  isLoading={isLoading}
+                  isCoolingDown={isCoolingDown}
+                  cooldownRemaining={cooldownRemaining}
+                  intervention={intervention}
+                  showActions={messages.length > 0}
+                  showHint={true}
+                />
+              )}
             </div>
           )}
         </div>
       </div>
 
-      {/* ThinkBridge Animation */}
-      {/* <SealAnimation 
-        trigger={sealAnimationTrigger}
-        onComplete={() => setSealAnimationTrigger(null)}
-      /> */}
     </div>
   );
 };
