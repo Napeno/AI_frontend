@@ -6,16 +6,39 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
+  const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('auth');
-    if (stored) {
+    const restoreSession = async () => {
+      const stored = localStorage.getItem('auth');
+      if (!stored) return setAuthReady(true);
       try {
         const parsed = JSON.parse(stored);
-        if (parsed.token) setToken(parsed.token);
-        if (parsed.user) setUser(parsed.user);
-      } catch {}
-    }
+        if (!parsed.token) return setAuthReady(true);
+        setToken(parsed.token);
+        setUser(parsed.user || null);
+
+        const baseUrl = process.env.REACT_APP_API_BASE_URL || '/api';
+        const response = await fetch(`${baseUrl}/auth/me`, {
+          headers: { Authorization: `Bearer ${parsed.token}` },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          const refreshed = { token: parsed.token, user: data.user };
+          setUser(data.user);
+          localStorage.setItem('auth', JSON.stringify(refreshed));
+        } else if (response.status === 401) {
+          setToken(null);
+          setUser(null);
+          localStorage.removeItem('auth');
+        }
+      } catch {
+        // Keep the cached session if the network is temporarily unavailable.
+      } finally {
+        setAuthReady(true);
+      }
+    };
+    restoreSession();
   }, []);
 
   const login = (data) => {
@@ -71,7 +94,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout, updateUserCoins, updateUserAvatar }}>
+    <AuthContext.Provider value={{ token, user, authReady, login, logout, updateUserCoins, updateUserAvatar }}>
       {children}
     </AuthContext.Provider>
   );
