@@ -47,7 +47,9 @@ test('paginates saved items and sends an attempt as an interaction', async () =>
   render(<MemoryRouter><PracticePage /></MemoryRouter>);
 
   await screen.findByText('Tính một biểu thức mới.');
-  fireEvent.change(screen.getByPlaceholderText('Viết bước em muốn thử...'), { target: { value: 'Em tính 3 + 4' } });
+  expect(screen.getByRole('button', { name: /Gợi ý thêm/i })).toBeDisabled();
+  expect(screen.queryByText('Làm từng phép tính.')).not.toBeInTheDocument();
+  fireEvent.change(screen.getByPlaceholderText('Viết bước làm hoặc cách nghĩ của em...'), { target: { value: 'Em tính 3 + 4' } });
   fireEvent.click(screen.getByRole('button', { name: 'Gửi' }));
 
   await waitFor(() => expect(post).toHaveBeenCalledWith('/practice/items/item-1/attempt', expect.objectContaining({

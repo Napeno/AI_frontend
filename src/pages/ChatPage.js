@@ -16,7 +16,7 @@ import ChatActions from '../components/chat/ChatActions';
 import InterventionGate from '../components/chat/InterventionGate';
 // import SealAnimation from '../components/SealAnimation';
 
-const CHAT_COOLDOWN_SECONDS = 10;
+const CHAT_COOLDOWN_SECONDS = 3;
 
 const ChatPage = () => {
   const { user } = useAuth();
