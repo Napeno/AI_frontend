@@ -45,6 +45,7 @@ const PracticePage = () => {
 
   const language = getLanguage();
   const turns = activeItem?.practice?.turns || [];
+  const hasAttempted = turns.some(turn => turn.role === 'student' && turn.action === 'attempt');
 
   const loadPractice = useCallback(async () => {
     setIsLoading(true);
@@ -192,7 +193,6 @@ const PracticePage = () => {
                           <div className="max-w-[85%] rounded-2xl rounded-bl-md border border-cyan-200 bg-white px-4 py-3 text-sm text-slate-800 shadow-sm dark:border-cyan-800 dark:bg-gray-800 dark:text-slate-100 sm:text-base">
                             <p className="mb-2 text-xs font-semibold text-cyan-700 dark:text-cyan-300">Bài tương tự để mình luyện lại</p>
                             <div className="chat-message" dangerouslySetInnerHTML={{ __html: formatAIMessage(activeItem.practice.prompt) }} />
-                            {activeItem.practice?.hint && <div className="mt-3 rounded-lg bg-cyan-50 px-3 py-2 text-sm text-cyan-900 dark:bg-cyan-950/50 dark:text-cyan-100" dangerouslySetInnerHTML={{ __html: formatAIMessage(`💡 ${activeItem.practice.hint}`) }} />}
                           </div>
                         </div>
                       )}
@@ -202,8 +202,8 @@ const PracticePage = () => {
                           {turn.role === 'assistant' && <div className="seal-avatar mt-1 shrink-0"><img src="/image/sealedu-logo.png" alt="ThinkBridge" className="h-5 w-5" /></div>}
                           <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow-sm sm:text-base ${turn.role === 'student' ? 'rounded-br-md bg-gradient-to-r from-cyan-600 to-blue-600 text-white' : 'rounded-bl-md border border-cyan-200 bg-white text-slate-800 dark:border-cyan-800 dark:bg-gray-800 dark:text-slate-100'}`}>
                             <div className={turn.role === 'assistant' ? 'chat-message' : 'whitespace-pre-wrap'} dangerouslySetInnerHTML={{ __html: formatAIMessage(turn.content) }} />
-                            {turn.hint && <div className="mt-3 rounded-lg bg-cyan-50 px-3 py-2 text-sm text-cyan-900 dark:bg-cyan-950/50 dark:text-cyan-100" dangerouslySetInnerHTML={{ __html: formatAIMessage(`💡 ${turn.hint}`) }} />}
-                            {turn.nextQuestion && <div className="mt-3 font-medium" dangerouslySetInnerHTML={{ __html: formatAIMessage(turn.nextQuestion) }} />}
+                            {turn.hint && turn.action === 'hint' && <div className="mt-3 rounded-lg bg-cyan-50 px-3 py-2 text-sm text-cyan-900 dark:bg-cyan-950/50 dark:text-cyan-100" dangerouslySetInnerHTML={{ __html: formatAIMessage(`💡 ${turn.hint}`) }} />}
+                            {turn.nextQuestion && <div className="mt-3 border-t border-cyan-100 pt-3 font-medium text-cyan-900 dark:border-cyan-800 dark:text-cyan-100" dangerouslySetInnerHTML={{ __html: formatAIMessage(`Bước tiếp theo: ${turn.nextQuestion}`) }} />}
                           </div>
                         </div>
                       ))}
@@ -214,11 +214,12 @@ const PracticePage = () => {
                     <div className="shrink-0 border-t border-slate-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
                       {requestError && <p className="mb-2 rounded-lg bg-red-50 p-2 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-200">{requestError}</p>}
                       <div className="flex gap-2">
-                        <textarea value={answer} onChange={(event) => setAnswer(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendInteraction('attempt'); } }} rows="1" maxLength="1200" placeholder="Viết bước em muốn thử..." disabled={isSubmitting} className="min-h-11 flex-1 resize-none rounded-2xl border-2 border-cyan-200 bg-white px-4 py-2 text-sm outline-none focus:border-cyan-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-cyan-800 dark:bg-gray-800 dark:text-white" />
+                        <textarea value={answer} onChange={(event) => setAnswer(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendInteraction('attempt'); } }} rows="1" maxLength="1200" placeholder="Viết bước làm hoặc cách nghĩ của em..." disabled={isSubmitting} className="min-h-11 flex-1 resize-none rounded-2xl border-2 border-cyan-200 bg-white px-4 py-2 text-sm outline-none focus:border-cyan-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-cyan-800 dark:bg-gray-800 dark:text-white" />
                         <button type="button" onClick={() => sendInteraction('attempt')} disabled={!answer.trim() || isSubmitting} className="rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-600 px-4 text-sm font-semibold text-white hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60">Gửi</button>
                       </div>
                       <div className="mt-2 flex flex-wrap gap-2">
-                        <button type="button" onClick={() => sendInteraction('hint')} disabled={isSubmitting} className="rounded-full border border-cyan-300 px-3 py-1.5 text-xs font-semibold text-cyan-800 hover:bg-cyan-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-cyan-800 dark:text-cyan-200 dark:hover:bg-cyan-950/40">💡 Gợi ý thêm</button>
+                        <button type="button" onClick={() => sendInteraction('hint')} disabled={!hasAttempted || isSubmitting} title={hasAttempted ? 'Nhận một gợi ý dựa trên bước em đã thử' : 'Hãy gửi một bước làm trước'} className="rounded-full border border-cyan-300 px-3 py-1.5 text-xs font-semibold text-cyan-800 hover:bg-cyan-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-cyan-800 dark:text-cyan-200 dark:hover:bg-cyan-950/40">💡 Gợi ý thêm</button>
+                        {!hasAttempted && <span className="self-center text-xs text-slate-500 dark:text-slate-400">Hãy thử một bước trước để nhận gợi ý đúng chỗ.</span>}
                         <button type="button" onClick={() => sendInteraction('solution')} disabled={!activeItem.canShowSolution || isSubmitting} title={activeItem.canShowSolution ? 'Xem lời giải cho bài ôn này' : 'Cần 2 lượt làm sai có ý nghĩa để mở lời giải mẫu'} className="rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-slate-300 dark:hover:bg-gray-800">📖 Lời giải mẫu</button>
                         {!activeItem.canShowSolution && <span className="self-center text-xs text-slate-500 dark:text-slate-400">Mở sau 2 lượt sai có ý nghĩa.</span>}
                       </div>
