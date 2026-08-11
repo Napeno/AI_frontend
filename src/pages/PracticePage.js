@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { del, get, post } from '../utils/apiClient';
 import { getLanguage } from '../locales/i18n';
 import { formatAIMessage } from '../utils/chatUtils';
+import { useAuth } from '../context/AuthContext';
 
 const PAGE_SIZE = 6;
 
@@ -31,6 +32,8 @@ const SUBJECT_LABELS = {
 const subjectLabel = (subject) => SUBJECT_LABELS[subject] || subject || 'Chưa phân môn';
 
 const PracticePage = () => {
+  const auth = useAuth();
+  const updateUserChestnuts = auth?.updateUserChestnuts;
   const [items, setItems] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, totalItems: 0 });
@@ -124,6 +127,7 @@ const PracticePage = () => {
         return;
       }
       updateItem(data.item);
+      if (data.chestnutsAwarded && data.totalChestnuts !== null) updateUserChestnuts?.(data.totalChestnuts);
       if (action === 'attempt') setAnswer('');
     } catch (error) {
       console.error('Error submitting practice interaction:', error);

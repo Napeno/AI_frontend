@@ -23,7 +23,7 @@ const DEFAULT_INTERVENTION = {
 };
 
 export const useChat = (onCoinAnimation, onPointsAnimation) => {
-  const { updateUserCoins } = useAuth();
+  const { updateUserChestnuts } = useAuth();
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [userAnswer, setUserAnswer] = useState('');
@@ -538,9 +538,9 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         };
         setProblemContext(data.problemContext || null);
 
-        // Update user coins and points if awarded
-        if (data.coinsAwarded && data.totalCoins !== undefined) {
-          updateUserCoins(data.totalCoins, data.totalPoints);
+        // Update user chestnuts and points if awarded
+        if (data.chestnutsAwarded && data.totalChestnuts !== undefined) {
+          updateUserChestnuts(data.totalChestnuts, data.totalPoints);
           let sourceElement = null;
           // Trigger coin animation
           if (onCoinAnimation) {
@@ -548,7 +548,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
                                  document.querySelector('button[type="submit"]') ||
                                  document.querySelector('.check-answer-button');
             onCoinAnimation({
-              amount: data.coinsAwarded,
+              amount: data.chestnutsAwarded,
               sourceElement: sourceElement
             });
           }
@@ -567,10 +567,10 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
           // Add a system message for coin award
           const coinMessage = {
             id: Date.now() + Math.random() + 2,
-            text: `🎉 Bạn đã nhận được ${data.coinsAwarded} xu! Tổng số xu của bạn: ${data.totalCoins} 🎉`,
+            text: `🎉 Bạn đã nhận được ${data.chestnutsAwarded} hạt dẻ! Tổng số hạt dẻ: ${data.totalChestnuts} 🎉`,
             sender: 'system',
             timestamp: new Date().toLocaleTimeString(),
-            type: 'coin-award'
+            type: 'chestnut-award'
           };
           setMessages(prev => [...prev, coinMessage]);
 
@@ -671,9 +671,9 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         };
         setProblemContext(data.problemContext || null);
         
-        // Update user coins and points if awarded
-        if (data.coinsAwarded && data.totalCoins !== undefined) {
-          updateUserCoins(data.totalCoins, data.totalPoints);
+        // Update user chestnuts and points if awarded
+        if (data.chestnutsAwarded && data.totalChestnuts !== undefined) {
+          updateUserChestnuts(data.totalChestnuts, data.totalPoints);
           let sourceElement = null;
           // Trigger coin animation
           if (onCoinAnimation) {
@@ -682,7 +682,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
                                  document.querySelector('button[type="submit"]') ||
                                  document.querySelector('.check-answer-button');
             onCoinAnimation({
-              amount: data.coinsAwarded,
+              amount: data.chestnutsAwarded,
               sourceElement: sourceElement
             });
           }
@@ -701,10 +701,10 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
           // Add a system message for coin award
           const coinMessage = {
             id: Date.now() + Math.random() + 2, // Ensure unique ID
-            text: `🎉 Bạn đã nhận được ${data.coinsAwarded} xu! Tổng số xu của bạn: ${data.totalCoins} 🎉`,
+            text: `🎉 Bạn đã nhận được ${data.chestnutsAwarded} hạt dẻ! Tổng số hạt dẻ: ${data.totalChestnuts} 🎉`,
             sender: 'system',
             timestamp: new Date().toLocaleTimeString(),
-            type: 'coin-award'
+            type: 'chestnut-award'
           };
           setMessages(prev => [...prev, coinMessage]);
           

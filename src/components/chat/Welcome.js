@@ -1,74 +1,14 @@
-import React, { useState } from 'react';
-import t from '../../locales/i18n';
-import { ALL_AVAILABLE_SUBJECTS, getSubjectArea } from '../../utils/subjectMapping';
+import React from 'react';
 
-const Welcome = ({ onStart }) => {
-  const [educationLevel, setEducationLevel] = useState('middle');
-  const [subject, setSubject] = useState('mathematics'); // Chọn trực tiếp môn học
-
-  const handleStart = () => {
-    // Tự động xác định lĩnh vực từ môn học được chọn
-    const subjectArea = getSubjectArea(subject);
-    onStart({ 
-      educationLevel, 
-      subjectArea, 
-      course: subject 
-    });
-  };
-
-  return (
-    <div className="text-center text-gray-600 dark:text-gray-400 flex flex-col items-center justify-center h-full relative">
-      {/* Background overlay for better text visibility */}
-      <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg"></div>
-      
-      {/* Content with higher z-index */}
-      <div className="relative z-10 p-8">
-        <div className="mb-6">
-          <img src="/image/seal-new-chat.png" alt="seal" className="w-40 h-54 flex items-center justify-center mx-auto mb-4 animate-float" />
-        </div>
-        <p className="text-lg mb-2 font-bold text-gray-900 dark:text-gray-200">{t('newChatModal.title')}</p>
-        <p className="text-base mb-4 text-gray-700 dark:text-gray-300">{t('newChatModal.description')}</p>
-        
-        <div className="w-full max-w-md mx-auto space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('sidebar.educationLevel')}</label>
-          <select 
-            value={educationLevel} 
-            onChange={(e) => setEducationLevel(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-          >
-            <option value="elementary">{t('levels.elementary')}</option>
-            <option value="middle">{t('levels.middle')}</option>
-            <option value="high">{t('levels.high')}</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Môn học</label>
-          <select 
-            value={subject} 
-            onChange={(e) => setSubject(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-          >
-            {ALL_AVAILABLE_SUBJECTS.map(subjectId => (
-              <option key={subjectId} value={subjectId}>
-                {t(`courses.${subjectId === 'foreign_language' ? 'foreignLanguage' : subjectId}`)}
-              </option>
-            ))}
-          </select>
-        </div>
-        </div>
-
-        <div className="mt-6">
-          <button 
-            onClick={handleStart}
-            className="bg-indigo-600 text-white rounded-lg px-6 py-3 font-medium hover:bg-indigo-700"
-          >
-            {t('newChatModal.start')}
-          </button>
-        </div>
-      </div>
+const Welcome = ({ children }) => (
+  <div className="flex h-full flex-col items-center justify-center px-4 text-center">
+    <div className="w-full max-w-3xl -translate-y-8">
+      <img src="/image/sealedu-logo.png" alt="" className="mx-auto mb-4 h-12 w-12" />
+      <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100 sm:text-2xl">Hôm nay bạn muốn học gì?</h1>
+      <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Đặt câu hỏi hoặc gửi ảnh bài tập để ThinkBridge cùng bạn bắt đầu.</p>
+      <div className="mt-6">{children}</div>
     </div>
-  );
-};
+  </div>
+);
 
-export default Welcome; 
+export default Welcome;

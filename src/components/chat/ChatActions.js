@@ -58,7 +58,7 @@ const ChatActions = ({
         <>
           <button
             onClick={getFullAnswer}
-            disabled={actionDisabled || fullAnswerLocked}
+            disabled={actionDisabled}
             title={fullAnswerLocked ? t('chat.actions.fullAnswerLocked') : actionTitle}
             className="w-full py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl sm:rounded-full hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none text-sm sm:text-base touch-target"
           >

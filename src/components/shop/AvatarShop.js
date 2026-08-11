@@ -117,7 +117,7 @@ const AvatarShop = ({ isOpen, onClose }) => {
     legendary: { name: 'Huyền thoại', color: 'indigo' },
   };
 
-  const userCoins = user?.coins || 0;
+  const userCoins = user?.chestnuts || 0;
   const ownedAvatars = user?.ownedAvatars || ['default'];
 
   const handlePurchaseAvatar = async (avatarId) => {
@@ -125,7 +125,7 @@ const AvatarShop = ({ isOpen, onClose }) => {
     if (!avatar || ownedAvatars.includes(avatarId)) return;
 
     if (userCoins < avatar.price) {
-      alert('Không đủ xu để mua avatar này!');
+      alert('Không đủ hạt dẻ để mua avatar này!');
       return;
     }
 
@@ -179,7 +179,7 @@ const AvatarShop = ({ isOpen, onClose }) => {
                 Cửa hàng Avatar
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                Sở hữu: {userCoins} xu
+                Sở hữu: {userCoins} hạt dẻ
               </p>
             </div>
           </div>

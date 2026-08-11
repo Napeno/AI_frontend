@@ -4,11 +4,11 @@ import { useAuth } from '../../context/AuthContext';
 const CoinDisplay = ({ onCoinAnimation, coinAnimationTrigger }) => {
   const { user } = useAuth();
   const [animatingCoins, setAnimatingCoins] = useState([]);
-  const [displayCoins, setDisplayCoins] = useState(user?.coins || 0);
+  const [displayCoins, setDisplayCoins] = useState(user?.chestnuts || 0);
 
   useEffect(() => {
-    setDisplayCoins(user?.coins || 0);
-  }, [user?.coins]);
+    setDisplayCoins(user?.chestnuts || 0);
+  }, [user?.chestnuts]);
 
   useEffect(() => {
     if (coinAnimationTrigger && coinAnimationTrigger.amount > 0) {
@@ -70,7 +70,7 @@ const CoinDisplay = ({ onCoinAnimation, coinAnimationTrigger }) => {
         className="flex items-center gap-2 px-3 py-2 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-500 dark:from-yellow-500 dark:to-yellow-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
       >
         <div className="relative">
-         <img src="/image/coin.png" alt="coin" className="w-6 h-6" />
+         <span role="img" aria-label="hạt dẻ" className="text-xl">🌰</span>
         </div>
         <span className="font-bold text-yellow-100 text-sm drop-shadow-sm min-w-[2rem] text-center">
           {displayCoins.toLocaleString()}
@@ -93,7 +93,7 @@ const CoinDisplay = ({ onCoinAnimation, coinAnimationTrigger }) => {
           }}
         >
           <div className="animate-spin">
-            <img src="/image/coin.png" alt="coin" className="w-6 h-6" />
+            <span role="img" aria-label="hạt dẻ" className="text-xl">🌰</span>
           </div>
         </div>
       ))}
