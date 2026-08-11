@@ -24,14 +24,14 @@ const educationLabels = {
   unclassified: 'Chưa phân loại'
 };
 const riskLabels = {
-  green: 'Thấp',
-  yellow: 'Cần theo dõi',
-  red: 'Cao'
+  low: 'Thấp',
+  watch: 'Cần theo dõi',
+  high: 'Cao'
 };
 const riskColors = {
-  green: '#10b981',
-  yellow: '#f59e0b',
-  red: '#ef4444'
+  low: '#10b981',
+  watch: '#f59e0b',
+  high: '#ef4444'
 };
 const formatDate = value => value ? new Date(value).toLocaleString('vi-VN') : 'Chưa có';
 const queryFor = (filters, extra = {}) => {
@@ -46,7 +46,7 @@ const queryFor = (filters, extra = {}) => {
 };
 const RiskBadge = ({
   level
-}) => <span className={`rounded-full px-2 py-1 text-xs font-semibold ${level === 'red' ? 'bg-red-100 text-red-800' : level === 'yellow' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>{riskLabels[level] || 'Chưa rõ'}</span>;
+}) => <span className={`rounded-full px-2 py-1 text-xs font-semibold ${level === 'high' ? 'bg-red-100 text-red-800' : level === 'watch' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>{riskLabels[level] || 'Chưa rõ'}</span>;
 const SourceBadge = ({
   source
 }) => <span className={`text-xs ${source === 'demo' ? 'text-amber-700' : source === 'real' ? 'text-seablue-700' : 'text-gray-500'}`}>{source === 'demo' ? 'Mô phỏng' : source === 'real' ? 'Dữ liệu thật' : 'Mốc mặc định'}</span>;
@@ -68,13 +68,13 @@ const DonutChart = ({
   distribution
 }) => {
   const total = Object.values(distribution || {}).reduce((sum, value) => sum + value, 0) || 1;
-  const high = distribution?.red || 0;
-  const watch = distribution?.yellow || 0;
-  const low = distribution?.green || 0;
+  const high = distribution?.high || 0;
+  const watch = distribution?.watch || 0;
+  const low = distribution?.low || 0;
   let offset = 0;
   return <div className="space-y-5"><div className="flex flex-col items-center gap-4 sm:flex-row"><svg viewBox="0 0 120 120" className="h-40 w-40 -rotate-90" role="img" aria-label="Phân bố mức rủi ro">
     <circle cx="60" cy="60" r="46" fill="none" stroke="#e5e7eb" strokeWidth="18" />
-    {['red', 'yellow', 'green'].map(level => {
+    {['high', 'watch', 'low'].map(level => {
           const value = distribution?.[level] || 0;
           const length = value / total * 289;
           const segment = <circle key={level} cx="60" cy="60" r="46" fill="none" stroke={riskColors[level]} strokeWidth="18" strokeDasharray={`${length} ${289 - length}`} strokeDashoffset={-offset} />;
@@ -82,12 +82,12 @@ const DonutChart = ({
           return segment;
         })}
     <text x="60" y="56" textAnchor="middle" transform="rotate(90 60 60)" className="fill-gray-700 text-lg font-bold">{total}</text><text x="60" y="72" textAnchor="middle" transform="rotate(90 60 60)" className="fill-gray-500 text-[9px]">học sinh</text>
-  </svg><div className="w-full space-y-3">{['red', 'yellow', 'green'].map(level => <div key={level} className="flex items-center justify-between text-sm"><span className="flex items-center gap-2"><i className="h-3 w-3 rounded-full" style={{
+  </svg><div className="w-full space-y-3">{['high', 'watch', 'low'].map(level => <div key={level} className="flex items-center justify-between text-sm"><span className="flex items-center gap-2"><i className="h-3 w-3 rounded-full" style={{
               backgroundColor: riskColors[level]
             }} />{riskLabels[level]}</span><strong>{distribution?.[level] || 0} · {Math.round((distribution?.[level] || 0) * 100 / total)}%</strong></div>)}</div></div><div className="grid gap-4 border-t pt-4 sm:grid-cols-2"><div><h3 className="text-sm font-semibold">Ưu tiên can thiệp</h3><PieChart items={[{
           label: 'Cao',
           value: high,
-          color: riskColors.red
+          color: riskColors.high
         }, {
           label: 'Chưa khẩn cấp',
           value: watch + low,
@@ -99,7 +99,7 @@ const DonutChart = ({
         }, {
           label: 'Thấp',
           value: low,
-          color: riskColors.green
+          color: riskColors.low
         }]} /></div></div></div>;
 };
 const PieChart = ({
@@ -140,8 +140,8 @@ const StackedRiskBars = ({
 }) => {
   if (!rows.length) return <p className="py-8 text-center text-sm text-gray-500">Chưa có dữ liệu trong bộ lọc này.</p>;
   return <div className="mt-4 space-y-4">{rows.map(row => {
-      const total = row.red + row.yellow + row.green || 1;
-      return <div key={row.label}><div className="mb-1 flex justify-between text-sm"><span>{labelsByKey[row.label] || row.label}</span><strong>{total}</strong></div><div className="flex h-5 overflow-hidden rounded bg-gray-100">{['red', 'yellow', 'green'].map(level => row[level] ? <div key={level} title={`${riskLabels[level]}: ${row[level]}`} style={{
+      const total = row.high + row.watch + row.low || 1;
+      return <div key={row.label}><div className="mb-1 flex justify-between text-sm"><span>{labelsByKey[row.label] || row.label}</span><strong>{total}</strong></div><div className="flex h-5 overflow-hidden rounded bg-gray-100">{['high', 'watch', 'low'].map(level => row[level] ? <div key={level} title={`${riskLabels[level]}: ${row[level]}`} style={{
             width: `${row[level] * 100 / total}%`,
             backgroundColor: riskColors[level]
           }} /> : null)}</div></div>;

@@ -1,416 +1,148 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useChat } from '../hooks/useChat';
 import { formatAIMessage } from '../utils/chatUtils';
 import t from '../locales/i18n';
 import { useAuth } from '../context/AuthContext';
 import { AVATAR_EMOJIS } from '../utils/avatarUtils';
-
-// Components
+import ChatRail from '../components/sidebar/ChatRail';
 import Sidebar from '../components/sidebar/Sidebar';
 import ChatHeader from '../components/chat/ChatHeader';
 import Welcome from '../components/chat/Welcome';
+import NewChatModal from '../components/chat/NewChatModal';
 import ChatMessage from '../components/chat/ChatMessage';
 import ChatInput from '../components/chat/ChatInput';
 import UserAnswerInput from '../components/chat/UserAnswerInput';
 import ChatActions from '../components/chat/ChatActions';
 import InterventionGate from '../components/chat/InterventionGate';
-// import SealAnimation from '../components/SealAnimation';
 
 const CHAT_COOLDOWN_SECONDS = 3;
+const DEFAULT_CHAT_SETTINGS = { educationLevel: 'middle', subjectArea: 'natural_sciences', course: 'mathematics' };
 
 const ChatPage = () => {
   const { user } = useAuth();
   const [keyboardOffset, setKeyboardOffset] = useState(0);
   const [coinAnimationTrigger, setCoinAnimationTrigger] = useState(null);
-  const [currentBackground, setCurrentBackground] = useState({
-    id: 'default',
-    name: 'Mặc định',
-    region: 'ThinkBridge',
-    path: '/background/default.jpeg'
-  }); // Set default background
   const [pointsAnimationTrigger, setPointsAnimationTrigger] = useState(null);
-  
-  const userAvatar = AVATAR_EMOJIS[user?.avatar || 'default'] || '👤';
-
-  const handleCoinAnimation = (animationData) => {
-    setCoinAnimationTrigger(animationData);
-  };
-
-  const handlePointsAnimation = (animationData) => {
-    setPointsAnimationTrigger(animationData);
-  };
-
-  const handleBackgroundChange = (background) => {
-    setCurrentBackground(background);
-    // Store in localStorage for persistence
-    if (background) {
-      localStorage.setItem('chatBackground', JSON.stringify(background));
-    } else {
-      localStorage.removeItem('chatBackground');
-    }
-  };
-
-  const {
-    messages,
-    inputMessage,
-    setInputMessage,
-    userAnswer,
-    setUserAnswer,
-    sessionId,
-    isLoading,
-    conversations,
-    currentConversationTitle,
-    hintCount,
-    selectedImage,
-    setSelectedImage,
-    supportMode,
-    clearSupportMode,
-    intervention,
-    problemContext,
-    setActiveQuestion,
-    messagesEndRef,
-    createNewChat,
-    loadConversations,
-    loadConversation,
-    deleteConversation,
-    sendMessage,
-    sendImageMessage,
-    continueChat,
-    getFullAnswer,
-    checkUserAnswer,
-    checkUserAnswerWithImage,
-} = useChat(handleCoinAnimation, handlePointsAnimation);
-
-  const [showSidebar, setShowSidebar] = useState(window.innerWidth >= 768);
-  const [settingsSelected, setSettingsSelected] = useState(false);
+  const [currentBackground, setCurrentBackground] = useState(null);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isChatSettingsOpen, setIsChatSettingsOpen] = useState(false);
+  const [settingsSelected, setSettingsSelected] = useState(true);
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const userAvatar = AVATAR_EMOJIS[user?.avatar || 'default'] || '👤';
   const isCoolingDown = cooldownRemaining > 0;
 
-  useEffect(() => {
-    loadConversations();
-  }, [loadConversations]);
+  const {
+    messages, inputMessage, setInputMessage, userAnswer, setUserAnswer, sessionId, isLoading, conversations,
+    currentConversationTitle, hintCount, selectedImage, setSelectedImage, supportMode, clearSupportMode,
+    intervention, problemContext, setActiveQuestion, messagesEndRef, createNewChat, loadConversations,
+    loadConversation, deleteConversation, sendMessage, sendImageMessage, continueChat, getFullAnswer,
+    checkUserAnswer, checkUserAnswerWithImage,
+  } = useChat(setCoinAnimationTrigger, setPointsAnimationTrigger);
 
-  // Load background from localStorage on mount
+  useEffect(() => { loadConversations(); }, [loadConversations]);
+
   useEffect(() => {
-    const savedBackground = localStorage.getItem('chatBackground');
-    if (savedBackground) {
+    const saved = localStorage.getItem('chatBackground');
+    if (saved) {
       try {
-        setCurrentBackground(JSON.parse(savedBackground));
-      } catch (error) {
-        console.error('Error parsing saved background:', error);
-        localStorage.removeItem('chatBackground');
-        // Keep the default background if parsing fails
-      }
+        const background = JSON.parse(saved);
+        if (background?.id !== 'default') setCurrentBackground(background);
+      } catch { localStorage.removeItem('chatBackground'); }
     }
-    // If no saved background, keep the default background that's already set
   }, []);
 
   useEffect(() => {
-    if (messages.length > 0) {
-      setSettingsSelected(true);
-    }
-  }, [messages]);
+    if (!isHistoryOpen) return undefined;
+    const closeOnEscape = event => { if (event.key === 'Escape') setIsHistoryOpen(false); };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [isHistoryOpen]);
 
   useEffect(() => {
-    if (!cooldownRemaining) return;
-
-    const intervalId = setInterval(() => {
-      setCooldownRemaining(prev => (prev > 1 ? prev - 1 : 0));
-    }, 1000);
-
+    if (!cooldownRemaining) return undefined;
+    const intervalId = setInterval(() => setCooldownRemaining(value => (value > 1 ? value - 1 : 0)), 1000);
     return () => clearInterval(intervalId);
   }, [cooldownRemaining]);
 
   useEffect(() => {
-    if (messages.length === 0) {
-      setCooldownRemaining(0);
-    }
-  }, [messages]);
-
-  // Stable mobile keyboard handling using VisualViewport
-  useEffect(() => {
-    const vv = window.visualViewport;
-    if (!vv) return;
-    
-    const updateOffset = () => {
-      // Only apply on mobile screens
-      if (window.innerWidth < 768) {
-        const keyboardHeight = Math.max(0, window.innerHeight - vv.height);
-        setKeyboardOffset(keyboardHeight);
-      } else {
-        setKeyboardOffset(0);
-      }
-    };
-    
+    const viewport = window.visualViewport;
+    if (!viewport) return undefined;
+    const updateOffset = () => setKeyboardOffset(window.innerWidth < 768 ? Math.max(0, window.innerHeight - viewport.height) : 0);
     updateOffset();
-    vv.addEventListener('resize', updateOffset);
-    window.addEventListener('orientationchange', () => {
-      setTimeout(updateOffset, 100); // Delay to allow orientation change
-    });
-    
-    return () => {
-      vv.removeEventListener('resize', updateOffset);
-      window.removeEventListener('orientationchange', updateOffset);
-    };
+    viewport.addEventListener('resize', updateOffset);
+    return () => viewport.removeEventListener('resize', updateOffset);
   }, []);
 
-  const startCooldown = useCallback(() => {
-    setCooldownRemaining(CHAT_COOLDOWN_SECONDS);
-  }, []);
+  const handleBackgroundChange = background => {
+    setCurrentBackground(background);
+    if (background) localStorage.setItem('chatBackground', JSON.stringify(background));
+    else localStorage.removeItem('chatBackground');
+  };
 
+  const startCooldown = useCallback(() => setCooldownRemaining(CHAT_COOLDOWN_SECONDS), []);
   const handleSendMessage = useCallback(async () => {
-    if (isLoading || isCoolingDown) return;
-
-    const hasImageAttached = Boolean(selectedImage);
-    const hasText = inputMessage.trim().length > 0;
-
-    if (!hasImageAttached && !hasText) {
-      return;
-    }
-
-    try {
-      if (hasImageAttached) {
-        await sendImageMessage(selectedImage, inputMessage);
-      } else {
-        await sendMessage();
-      }
-    } finally {
-      startCooldown();
-    }
+    if (isLoading || isCoolingDown || (!selectedImage && !inputMessage.trim())) return;
+    try { selectedImage ? await sendImageMessage(selectedImage, inputMessage) : await sendMessage(); }
+    finally { startCooldown(); }
   }, [inputMessage, isCoolingDown, isLoading, selectedImage, sendImageMessage, sendMessage, startCooldown]);
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-
-      if (isCoolingDown) {
-        return;
-      }
-
-      handleSendMessage();
-      // handleSealAnimation('new-question');
-    }
+  const handleKeyPress = event => {
+    if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); handleSendMessage(); }
   };
-
-  const handleGateSubmit = useCallback(async (gateResponse) => {
-    if (isLoading) return;
-    if (intervention?.type === 'full_answer_gate') {
-      await getFullAnswer(gateResponse);
-      return;
-    }
-    await continueChat(gateResponse);
+  const handleGateSubmit = useCallback(async response => {
+    if (!isLoading) await (intervention?.type === 'full_answer_gate' ? getFullAnswer(response) : continueChat(response));
   }, [continueChat, getFullAnswer, intervention?.type, isLoading]);
-
   const handleContinueChat = useCallback(async () => {
     if (isLoading || isCoolingDown) return;
-
-    try {
-      await continueChat();
-    } finally {
-      startCooldown();
-    }
+    try { await continueChat(); } finally { startCooldown(); }
   }, [continueChat, isCoolingDown, isLoading, startCooldown]);
-
-  const handleAnswerKeyPress = (event) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      checkUserAnswer();
-    }
-  };
-
-  const handleGetFullAnswer = useCallback(async () => {
+  const handleFullAnswer = useCallback(async () => {
     if (isLoading || isCoolingDown) return;
-
-    try {
-      await getFullAnswer();
-    } finally {
-      startCooldown();
-    }
+    try { await getFullAnswer(); } finally { startCooldown(); }
   }, [getFullAnswer, isCoolingDown, isLoading, startCooldown]);
-
-  const handleStartChat = (settings) => {
+  const handleNewChat = useCallback(() => {
+    createNewChat(DEFAULT_CHAT_SETTINGS);
+    setSettingsSelected(true);
+    setIsHistoryOpen(false);
+  }, [createNewChat]);
+  const handleConfiguredChat = settings => {
     createNewChat(settings);
     setSettingsSelected(true);
+    setIsChatSettingsOpen(false);
+    setIsHistoryOpen(false);
   };
+  const isEmptyChat = settingsSelected && messages.length === 0;
+  const input = <ChatInput inputMessage={inputMessage} setInputMessage={setInputMessage} isLoading={isLoading} isCoolingDown={isCoolingDown} cooldownRemaining={cooldownRemaining} onSend={handleSendMessage} handleKeyPress={handleKeyPress} selectedImage={selectedImage} setSelectedImage={setSelectedImage} supportMode={supportMode} />;
 
-  const handleNewChatClick = () => {
-    setSettingsSelected(false);
-    createNewChat({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
-  }
-
-  return (
-    <div className="h-screen bg-seablue-50 dark:bg-gray-900 flex overflow-hidden relative safari-transform-fix">
-      
-      {/* Sidebar */}
-      {/* Desktop sidebar (push layout) */}
-      <div className={`${showSidebar ? 'w-80 sm:w-72 md:w-80' : 'w-0'} md:w-80 transition-[width] duration-300 ease-out overflow-hidden h-full flex-shrink-0 hidden md:block`}>
-        <Sidebar
-          showSidebar={true}
-          conversations={conversations}
-          sessionId={sessionId}
-          createNewChat={handleNewChatClick}
-          loadConversation={loadConversation}
-          deleteConversation={deleteConversation}
-          coinAnimationTrigger={coinAnimationTrigger}
-          pointsAnimationTrigger={pointsAnimationTrigger}
-        />
-      </div>
-
-      {/* Mobile sidebar (overlay with white background and close button) */}
-      <div className={`md:hidden fixed inset-0 z-50 transition-opacity duration-300 ${showSidebar ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-        <div className={`w-full h-full bg-white dark:bg-gray-900 transform transition-transform duration-300 ease-out ${showSidebar ? 'translate-x-0' : '-translate-x-full'} flex flex-col`}>
-          <div className="p-3 sm:p-4 border-b border-seablue-200 dark:border-gray-700 flex items-center justify-between">
-            <div className="text-sm font-semibold text-gray-800 dark:text-gray-200">Menu</div>
-            <button
-              onClick={() => setShowSidebar(false)}
-              className="p-2 text-gray-600 dark:text-gray-300 hover:bg-seablue-50 dark:hover:bg-gray-800 rounded-lg"
-              aria-label="Close sidebar"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          <div className="flex-1 overflow-y-auto">
-            <Sidebar
-              showSidebar={true}
-              conversations={conversations}
-              sessionId={sessionId}
-              createNewChat={handleNewChatClick}
-              loadConversation={loadConversation}
-              deleteConversation={deleteConversation}
-              coinAnimationTrigger={coinAnimationTrigger}
-              pointsAnimationTrigger={pointsAnimationTrigger}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Header */}
-        <ChatHeader
-          showSidebar={showSidebar}
-          setShowSidebar={setShowSidebar}
-          currentConversationTitle={currentConversationTitle}
-          onBackgroundChange={handleBackgroundChange}
-          currentBackground={currentBackground}
-        />
-
-        {/* Chat Container - Fixed height with internal scroll */}
-        <div 
-          className="flex-1 chat-background dark:bg-gray-800 flex flex-col min-h-0"
-          style={currentBackground ? {
-            backgroundImage: `url(${currentBackground.path})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-          } : {}}
-          data-bg-image={currentBackground ? 'true' : undefined}
-        >
-          {/* Messages - Scrollable area */}
-          <div className="flex-1 p-3 sm:p-4 lg:p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-700 scrollable-content">
-            {!settingsSelected && messages.length === 0 ? (
-              <Welcome onStart={handleStartChat} />
-            ) : (
-              messages.map((message) => (
-                <ChatMessage
-                  key={message.id}
-                  message={message}
-                  formatAIMessage={formatAIMessage}
-                  userAvatar={userAvatar}
-                />
-              ))
-            )}
-            
-            {isLoading && (
-              <div className="flex justify-start mb-5">
-                <div className="seal-avatar mr-3">
-                  <img src="/image/sealedu-logo.png" alt="ThinkBridge Logo" className="w-6 h-6" />
-                </div>
-                <div className="max-w-[70%] px-4 py-3 rounded-2xl bg-white dark:bg-gray-700 border border-seablue-200 dark:border-gray-600 rounded-bl-md shadow-md">
-                  <div className="flex items-center space-x-1">
-                    <span className="w-2 h-2 bg-seablue-500 rounded-full animate-typing"></span>
-                    <span className="w-2 h-2 bg-seablue-500 rounded-full animate-typing" style={{animationDelay: '-0.32s'}}></span>
-                    <span className="w-2 h-2 bg-seablue-500 rounded-full animate-typing" style={{animationDelay: '-0.16s'}}></span>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            <div ref={messagesEndRef} />
-          </div>
-          
-          {/* Input - Fixed at bottom */}
-          {settingsSelected && (
-            <div 
-              className="flex-shrink-0 p-2 sm:p-4 lg:p-6 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 max-h-[50vh] overflow-y-auto sm:max-h-none input-container" 
-              style={{ paddingBottom: keyboardOffset ? `${keyboardOffset + 8}px` : undefined }}
-            >
-              {/* Main chat input */}
-              {supportMode !== 'calculation' && (
-                <ChatInput
-                  inputMessage={inputMessage}
-                  setInputMessage={setInputMessage}
-                  isLoading={isLoading}
-                  isCoolingDown={isCoolingDown}
-                  cooldownRemaining={cooldownRemaining}
-                  onSend={handleSendMessage}
-                  handleKeyPress={handleKeyPress}
-                  selectedImage={selectedImage}
-                  setSelectedImage={setSelectedImage}
-                  supportMode={supportMode}
-                />
-              )}
-
-              {supportMode === 'calculation' && (
-                <UserAnswerInput
-                  userAnswer={userAnswer}
-                  setUserAnswer={setUserAnswer}
-                  checkUserAnswer={checkUserAnswer}
-                  checkUserAnswerWithImage={checkUserAnswerWithImage}
-                  isLoading={isLoading}
-                  handleAnswerKeyPress={handleAnswerKeyPress}
-                  messages={messages}
-                  problemContext={problemContext}
-                  setActiveQuestion={setActiveQuestion}
-                  title={t('errorCheck.title')}
-                  description={t('errorCheck.description')}
-                  placeholder={t('errorCheck.placeholder')}
-                  buttonLabel={t('errorCheck.button')}
-                  showProblemContext={false}
-                  onBack={clearSupportMode}
-                />
-              )}
-
-              {supportMode !== 'calculation' && messages.some(message => message.sender === 'bot') && (
-                <InterventionGate
-                  intervention={intervention}
-                  isLoading={isLoading}
-                  onSubmit={handleGateSubmit}
-                />
-              )}
-
-              {supportMode !== 'calculation' && (
-                <ChatActions
-                  hintCount={hintCount}
-                  continueChat={handleContinueChat}
-                  getFullAnswer={handleGetFullAnswer}
-                  isLoading={isLoading}
-                  isCoolingDown={isCoolingDown}
-                  cooldownRemaining={cooldownRemaining}
-                  intervention={intervention}
-                  showActions={messages.length > 0}
-                  showHint={true}
-                />
-              )}
+  return <div className="flex h-[100dvh] overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+    <ChatRail onNewChat={handleNewChat} onOpenHistory={() => setIsHistoryOpen(true)} coinAnimationTrigger={coinAnimationTrigger} pointsAnimationTrigger={pointsAnimationTrigger} onBackgroundChange={handleBackgroundChange} currentBackground={currentBackground} />
+    {isHistoryOpen && <div className="fixed inset-0 z-50 md:left-14" role="dialog" aria-modal="true" aria-label="Lịch sử trò chuyện">
+      <button type="button" aria-label="Đóng lịch sử" onClick={() => setIsHistoryOpen(false)} className="absolute inset-0 bg-slate-950/20 backdrop-blur-[1px]" />
+      <div className="relative h-full"><Sidebar conversations={conversations} sessionId={sessionId} createNewChat={handleNewChat} loadConversation={loadConversation} deleteConversation={deleteConversation} onClose={() => setIsHistoryOpen(false)} /></div>
+    </div>}
+    <main className="flex min-w-0 flex-1 flex-col bg-white dark:bg-slate-950">
+      <ChatHeader currentConversationTitle={currentConversationTitle} intervention={intervention} onOpenHistory={() => setIsHistoryOpen(true)} onOpenSettings={() => setIsChatSettingsOpen(true)} onBackgroundChange={handleBackgroundChange} currentBackground={currentBackground} />
+      <section className={`flex min-h-0 flex-1 flex-col ${currentBackground ? 'chat-background' : 'bg-slate-50 dark:bg-slate-900'}`} style={currentBackground ? { backgroundImage: `url(${currentBackground.path})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}>
+        {isEmptyChat ? <Welcome>{input}</Welcome> : <>
+          <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+            <div className="mx-auto max-w-3xl">
+              {messages.map(message => <ChatMessage key={message.id} message={message} formatAIMessage={formatAIMessage} userAvatar={userAvatar} />)}
+              {isLoading && <div className="mb-5 flex justify-start"><div className="rounded-2xl rounded-bl-md border border-slate-200 bg-white px-4 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-800"><span className="inline-flex gap-1"><i className="h-2 w-2 animate-bounce rounded-full bg-cyan-500" /><i className="h-2 w-2 animate-bounce rounded-full bg-cyan-500 [animation-delay:150ms]" /><i className="h-2 w-2 animate-bounce rounded-full bg-cyan-500 [animation-delay:300ms]" /></span></div></div>}
+              <div ref={messagesEndRef} />
             </div>
-          )}
-        </div>
-      </div>
-
-    </div>
-  );
+          </div>
+          {settingsSelected && <div className="shrink-0 border-t border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-950" style={{ paddingBottom: keyboardOffset ? `${keyboardOffset + 12}px` : undefined }}>
+            <div className="mx-auto max-w-3xl">
+              {supportMode !== 'calculation' ? input : <UserAnswerInput userAnswer={userAnswer} setUserAnswer={setUserAnswer} checkUserAnswer={checkUserAnswer} checkUserAnswerWithImage={checkUserAnswerWithImage} isLoading={isLoading} handleAnswerKeyPress={event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); checkUserAnswer(); } }} messages={messages} problemContext={problemContext} setActiveQuestion={setActiveQuestion} title={t('errorCheck.title')} description={t('errorCheck.description')} placeholder={t('errorCheck.placeholder')} buttonLabel={t('errorCheck.button')} showProblemContext={false} onBack={clearSupportMode} />}
+              {supportMode !== 'calculation' && messages.some(message => message.sender === 'bot') && <InterventionGate intervention={intervention} isLoading={isLoading} onSubmit={handleGateSubmit} />}
+              {supportMode !== 'calculation' && <ChatActions hintCount={hintCount} continueChat={handleContinueChat} getFullAnswer={handleFullAnswer} isLoading={isLoading} isCoolingDown={isCoolingDown} cooldownRemaining={cooldownRemaining} intervention={intervention} showActions={messages.length > 0} showHint />}
+            </div>
+          </div>}
+        </>}
+      </section>
+    </main>
+    <NewChatModal isOpen={isChatSettingsOpen} onClose={() => setIsChatSettingsOpen(false)} onStartChat={handleConfiguredChat} />
+  </div>;
 };
 
-export default ChatPage; 
+export default ChatPage;

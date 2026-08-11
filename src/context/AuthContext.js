@@ -53,11 +53,11 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('auth');
   };
 
-  const updateUserCoins = (newCoinCount, newPoints = null) => {
+  const updateUserChestnuts = (newChestnutCount, newPoints = null) => {
     if (user) {
       const updatedUser = { 
         ...user, 
-        coins: newCoinCount,
+        chestnuts: newChestnutCount,
         ...(newPoints !== null && { points: newPoints })
       };
       setUser(updatedUser);
@@ -94,7 +94,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, user, authReady, login, logout, updateUserCoins, updateUserAvatar }}>
+    <AuthContext.Provider value={{ token, user, authReady, login, logout, updateUserChestnuts, updateUserAvatar }}>
       {children}
     </AuthContext.Provider>
   );

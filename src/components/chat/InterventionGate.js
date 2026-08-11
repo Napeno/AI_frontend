@@ -72,7 +72,7 @@ const InterventionGate = ({ intervention, isLoading, onSubmit }) => {
   const handleSubmit = () => {
     if (!canSubmit) return;
     onSubmit(reflectionText.length >= 2
-      ? { type: 'reflection', value: reflectionText }
+      ? { type: intervention.type === 'full_answer_gate' ? 'alternate_view' : 'reflection', value: reflectionText }
       : { type: 'quiz_choice', value: selectedOption });
     setSelectedOption('');
     setReflection('');

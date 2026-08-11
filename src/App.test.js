@@ -32,7 +32,7 @@ test('refreshes a cached admin session and shows the dashboard on home', async (
   }));
   jest.spyOn(global, 'fetch').mockImplementation(async (url) => {
     if (String(url).includes('/auth/me')) {
-      return { ok: true, json: async () => ({ user: { _id: 'admin-id', username: 'admin', name: 'Giáo viên', role: 'admin', coins: 0, points: 0, rank: 'bronze', avatar: 'default' } }) };
+      return { ok: true, json: async () => ({ user: { _id: 'admin-id', username: 'admin', name: 'Giáo viên', role: 'admin', chestnuts: 0, points: 0, rank: 'bronze', avatar: 'default' } }) };
     }
     return {
       ok: true,

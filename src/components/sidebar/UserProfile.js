@@ -1,140 +1,58 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import t from '../../locales/i18n';
 import SettingsModal from '../settings/SettingsModal';
-import CoinDisplay from '../ui/CoinDisplay';
-import RankDisplay from '../ui/RankDisplay';
 import AvatarShop from '../shop/AvatarShop';
+import BackgroundSelector from '../ui/BackgroundSelector';
 import { AVATAR_EMOJIS } from '../../utils/avatarUtils';
 
-const UserProfile = ({ coinAnimationTrigger, pointsAnimationTrigger }) => {
+const UserProfile = ({ compact = false, menuPosition = 'bottom-0', menuAlign = 'left-12', onBackgroundChange, currentBackground }) => {
   const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
   const [isShopOpen, setIsShopOpen] = useState(false);
-  const profileRef = useRef(null);
-
-  const currentAvatarEmoji = AVATAR_EMOJIS[user?.avatar || 'default'] || '👤';
+  const menuRef = useRef(null);
+  const avatar = AVATAR_EMOJIS[user?.avatar || 'default'] || '👤';
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (profileRef.current && !profileRef.current.contains(event.target)) {
-        setIsMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    const close = event => { if (menuRef.current && !menuRef.current.contains(event.target)) setIsMenuOpen(false); };
+    document.addEventListener('mousedown', close);
+    return () => document.removeEventListener('mousedown', close);
   }, []);
 
   if (!user) return null;
 
-  const handleSettingsClick = () => {
-    setActiveTab('general');
-    setIsSettingsOpen(true);
-    setIsMenuOpen(false);
-  };
+  const closeMenu = () => setIsMenuOpen(false);
+  const openSettings = () => { setActiveTab('general'); setIsSettingsOpen(true); closeMenu(); };
+  const openShop = () => { setIsShopOpen(true); closeMenu(); };
 
-  const handleShopClick = () => {
-    setIsShopOpen(true);
-    setIsMenuOpen(false);
-  };
-
-  return (
-    <>
-      {/* Rank Display with Leaderboard Link */}
-      <div className="mb-4" data-rank-display="true">
-        <RankDisplay 
-          showProgress={true} 
-          size="xlarge" 
-          layout="leaderboard" 
-          pointsAnimationTrigger={pointsAnimationTrigger}
-        />
-        <Link
-          to="/leaderboard"
-          className="mt-2 w-full block px-3 py-2 text-center bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm font-medium"
-        >
-          🏆 {t('leaderboard.title')}
-        </Link>
-        <Link
-          to="/practice"
-          className="mt-2 w-full block rounded-lg bg-cyan-600 px-3 py-3 text-center text-base font-bold text-white shadow-sm transition-all duration-300 hover:scale-105 hover:bg-cyan-700 hover:shadow-lg"
-        >
-          📘 Ôn tập 2 phút
-        </Link>
-        {user?.role === 'admin' && <Link to="/admin" className="mt-2 block w-full rounded-lg bg-seablue-700 px-3 py-3 text-center text-base font-bold text-white shadow-sm transition-all hover:bg-seablue-800">📊 Dashboard giáo viên</Link>}
-      </div>
-
-      {/* Coin Display & Shop Button */}
-      <div className="mb-4 flex justify-between items-center">
-        <CoinDisplay coinAnimationTrigger={coinAnimationTrigger} />
-        <button
-          onClick={handleShopClick}
-          className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2"
-          title="Cửa hàng Avatar"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-          </svg>
-          <span className="text-xs font-medium">{t('userProfile.buyNow')}</span>
-        </button>
-      </div>
-
-      <div className="relative" ref={profileRef}>
-        {isMenuOpen && (
-          <div className="absolute bottom-full left-0 w-full mb-2 bg-gray-800 dark:bg-gray-700 text-white rounded-lg shadow-lg">
-            <div className="p-2">
-              <button
-                className="w-full text-left px-3 py-2 text-sm hover:bg-gray-700 dark:hover:bg-gray-600 rounded flex items-center gap-2"
-                onClick={handleShopClick}
-              >
-                🛒 Cửa hàng
-              </button>
-              <button
-                className="w-full text-left px-3 py-2 text-sm hover:bg-gray-700 dark:hover:bg-gray-600 rounded flex items-center gap-2"
-                onClick={handleSettingsClick}
-              >
-                ⚙️ {t('userProfile.settings')}
-              </button>
-              <button
-                className="w-full text-left px-3 py-2 text-sm hover:bg-gray-700 dark:hover:bg-gray-600 rounded flex items-center gap-2"
-                onClick={logout}
-              >
-                🚪 {t('userProfile.logout')}
-              </button>
-            </div>
+  return <>
+    <div className="relative" ref={menuRef}>
+      {isMenuOpen && (
+        <div className={`absolute ${menuPosition} ${menuAlign} z-50 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900`}>
+          <div className="border-b border-slate-100 px-2 pb-2 dark:border-slate-800">
+            <p className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{user.name || user.username}</p>
+            <p className="mt-1 text-xs text-slate-500">🌰 {(user.chestnuts || 0).toLocaleString()} · {user.points || 0} điểm</p>
           </div>
-        )}
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="w-full flex items-center p-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-colors"
-        >
-          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-xl shadow-md">
-            {currentAvatarEmoji}
+          <div className="py-1 text-sm">
+            <Link to="/practice" onClick={closeMenu} className="block rounded-lg px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800">📘 Ôn tập</Link>
+            <Link to="/leaderboard" onClick={closeMenu} className="block rounded-lg px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800">🏆 {t('leaderboard.title')}</Link>
+            <button type="button" onClick={openShop} className="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-800">🛍️ Cửa hàng</button>
+            <button type="button" onClick={openSettings} className="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-800">⚙️ {t('userProfile.settings')}</button>
+            {onBackgroundChange && <div className="px-1 py-1"><BackgroundSelector onBackgroundChange={onBackgroundChange} currentBackground={currentBackground} compact /></div>}
           </div>
-          <div className="ml-3 text-left">
-            <p className="font-semibold text-gray-800 dark:text-gray-200">{user.name || 'User'}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
-          </div>
-        </button>
-      </div>
-      
-      <SettingsModal 
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
-      
-      <AvatarShop
-        isOpen={isShopOpen}
-        onClose={() => setIsShopOpen(false)}
-      />
-    </>
-  );
+          <button type="button" onClick={logout} className="w-full rounded-lg px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30">🚪 {t('userProfile.logout')}</button>
+        </div>
+      )}
+      <button type="button" onClick={() => setIsMenuOpen(value => !value)} aria-label="Mở menu tài khoản" aria-expanded={isMenuOpen} className={compact ? 'flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-100 text-lg hover:bg-cyan-200 dark:bg-cyan-950 dark:hover:bg-cyan-900' : 'rounded-lg p-2'}>
+        {avatar}
+      </button>
+    </div>
+    <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} activeTab={activeTab} setActiveTab={setActiveTab} />
+    <AvatarShop isOpen={isShopOpen} onClose={() => setIsShopOpen(false)} />
+  </>;
 };
 
 export default UserProfile;

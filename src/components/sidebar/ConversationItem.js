@@ -2,37 +2,19 @@ import React from 'react';
 import t from '../../locales/i18n';
 
 const ConversationItem = ({ conversation, isActive, onSelect, onDelete }) => {
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    if (isNaN(date)) return t('conversation.time.invalidDate');
-    
-    const now = new Date();
-    const diffTime = Math.abs(now - date);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 1) return t('conversation.time.today');
-    if (diffDays === 2) return t('conversation.time.yesterday');
-    if (diffDays <= 7) return t('conversation.time.daysAgo').replace('{{days}}', diffDays - 1);
-    return date.toLocaleDateString();
-  };
-
   return (
     <div
-      className={`px-3 py-2.5 sm:px-4 sm:py-3 rounded-lg mb-1.5 sm:mb-2 cursor-pointer transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 border touch-target ${
+      className={`group mb-1 cursor-pointer rounded-lg px-3 py-2 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 ${
         isActive 
-          ? 'bg-indigo-50 dark:bg-indigo-900/50 border-indigo-300 dark:border-indigo-700 shadow-sm' 
-          : 'border-transparent hover:border-gray-200 dark:hover:border-gray-700'
+          ? 'bg-cyan-50 text-cyan-950 dark:bg-cyan-950/40 dark:text-cyan-100' 
+          : 'text-slate-800 dark:text-slate-200'
       }`}
       onClick={onSelect}
     >
-      <div className="flex justify-between items-start gap-2">
+      <div className="flex items-center gap-2">
         <div className="flex-1 min-w-0">
-          <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-200 truncate mb-1">
+          <p className="truncate text-sm font-medium">
             {conversation.title || t('sidebar.conversation.newChat')}
-          </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            {formatDate(conversation.lastUpdate)}
           </p>
         </div>
         <button
@@ -40,7 +22,8 @@ const ConversationItem = ({ conversation, isActive, onSelect, onDelete }) => {
             e.stopPropagation();
             onDelete();
           }}
-          className="text-gray-400 hover:text-red-500 text-sm p-1.5 hover:bg-red-50 dark:hover:bg-gray-600 rounded transition-colors flex-shrink-0 touch-target"
+          aria-label={`${t('common.delete')}: ${conversation.title || t('sidebar.conversation.newChat')}`}
+          className="rounded p-1 text-slate-400 opacity-100 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-950/30 sm:opacity-0 sm:group-hover:opacity-100"
           title={t('common.delete')}
         >
           <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -7,7 +7,7 @@ function ChatMessage({ message, formatAIMessage, userAvatar }) {
   const isContinue = message.sender === 'continue';
   const isFullAnswer = message.sender === 'full-answer';
   const isCheckAnswer = message.sender === 'check-answer';
-  const isCoinAward = message.sender === 'system' && message.type === 'coin-award';
+  const isCoinAward = message.sender === 'system' && message.type === 'chestnut-award';
   const isSystemAction = isContinue || isFullAnswer || isCheckAnswer || isCoinAward;
 
   const messageContent = message.text || '';

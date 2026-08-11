@@ -83,7 +83,7 @@ setError(t('leaderboard.loadingError'));
           setMyRank({
             rank: data.rank,
             points: data.points,
-            coins: data.coins,
+            chestnuts: data.chestnuts,
           });
         } else {
           throw new Error('Invalid rank payload');
@@ -196,7 +196,7 @@ setError(t('leaderboard.loadingError'));
                 <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">điểm xếp hạng</p>
                 {myRank && (
                   <p className="text-[11px] sm:text-xs text-gray-400 dark:text-gray-500 mt-1">
-                    {t('leaderboard.rankCoins', { coins: (myRank.coins || 0).toLocaleString() })}
+                    🌰 {(myRank.chestnuts || 0).toLocaleString()} hạt dẻ
                   </p>
                 )}
               </div>

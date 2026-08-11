@@ -10,9 +10,9 @@ const CoinDisplay = () => {
       <div className="flex items-center justify-center">
         <FaCoins className="text-yellow-500 mr-3 text-2xl" />
         <div className="text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-300">Your Coins</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">Hạt dẻ</p>
           <p className="text-xl font-bold text-gray-800 dark:text-white">
-            {user?.coins || 0}
+            {user?.chestnuts || 0}
           </p>
         </div>
       </div>

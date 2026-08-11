@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import t from '../../locales/i18n';
 
-const BackgroundSelector = ({ onBackgroundChange, currentBackground }) => {
+const BackgroundSelector = ({ onBackgroundChange, currentBackground, compact = false }) => {
   const [backgrounds, setBackgrounds] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -38,13 +38,13 @@ const BackgroundSelector = ({ onBackgroundChange, currentBackground }) => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 p-2 text-seablue-600 dark:text-gray-300 bg-gradient-to-r from-seablue-50 to-seablue-100 dark:from-gray-700 dark:to-gray-600 hover:shadow-md dark:hover:bg-gray-700 rounded-lg transition-colors"
+        className={`flex w-full items-center gap-2 rounded-lg p-2 text-seablue-600 hover:bg-cyan-50 dark:text-gray-300 dark:hover:bg-slate-800 ${compact ? 'text-sm' : 'bg-gradient-to-r from-seablue-50 to-seablue-100 dark:from-gray-700 dark:to-gray-600'}`}
         title={t('background.changeBackground')}
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
-        <span className="text-sm font-medium hidden sm:inline">{t('background.themeBackground')}</span>
+        <span className="text-sm font-medium">{compact ? 'Nền chat' : t('background.themeBackground')}</span>
       </button>
 
       {isOpen && (
@@ -63,8 +63,7 @@ const BackgroundSelector = ({ onBackgroundChange, currentBackground }) => {
             </div>
             
             <div className="grid grid-cols-2 gap-3 mb-3">
-              {/* Default/Clear option */}
-              {/* <div
+              <div
                 onClick={clearBackground}
                 className={`rounded-lg border-2 cursor-pointer transition-all hover:scale-105 ${
                   !currentBackground 
@@ -77,7 +76,7 @@ const BackgroundSelector = ({ onBackgroundChange, currentBackground }) => {
 <div className="text-sm font-medium text-gray-800 dark:text-gray-200">{t('background.default')}</div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">ThinkBridge Theme</div>
                 </div>
-              </div> */}
+              </div>
 
               {/* Background options */}
               {backgrounds.map((bg) => (
