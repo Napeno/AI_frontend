@@ -83,10 +83,10 @@ const UserAnswerInput = ({
     : `${t('problemContext.question')} ${questionToShow?.id} — `;
 
   return (
-    <div className="mb-2 sm:mb-3 p-2.5 sm:p-3 bg-blue-50 rounded-lg border border-blue-200 dark:bg-blue-900/50 dark:border-blue-700/60">
+    <div className="mb-2 sm:mb-3 p-2.5 sm:p-3 bg-orange-50 rounded-lg border border-orange-200 dark:bg-orange-900/50 dark:border-orange-700/60">
       {showProblemContext && questionToShow && (
-        <div className="mb-3 rounded-md border border-blue-200 bg-white/80 p-2 dark:border-blue-700 dark:bg-gray-800/70">
-          <p className="text-xs font-semibold text-blue-800 dark:text-blue-200">
+        <div className="mb-3 rounded-md border border-orange-200 bg-white/80 p-2 dark:border-orange-700 dark:bg-gray-800/70">
+          <p className="text-xs font-semibold text-orange-800 dark:text-orange-200">
             {t('problemContext.title')}: {questionName}{questionToShow.sourceExpression || questionToShow.prompt}
           </p>
           {questions.length > 1 && (
@@ -97,27 +97,27 @@ const UserAnswerInput = ({
                   type="button"
                   onClick={() => setActiveQuestion?.(question.id)}
                   disabled={isLoading}
-                  className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${question.id === problemContext?.activeQuestionId ? 'bg-blue-600 text-white' : question.id === problemContext?.suggestedQuestionId ? 'border border-blue-400 bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-100' : 'border border-blue-200 bg-white text-blue-700 dark:border-blue-700 dark:bg-gray-800 dark:text-blue-200'}`}
+                  className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${question.id === problemContext?.activeQuestionId ? 'bg-orange-600 text-white' : question.id === problemContext?.suggestedQuestionId ? 'border border-orange-400 bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-100' : 'border border-orange-200 bg-white text-orange-700 dark:border-orange-700 dark:bg-gray-800 dark:text-orange-200'}`}
                 >
                   {t('problemContext.question')} {question.id}
                 </button>
               ))}
             </div>
           )}
-          <p className="mt-1 text-xs text-blue-600 dark:text-blue-300">
+          <p className="mt-1 text-xs text-orange-600 dark:text-orange-300">
             {activeQuestion ? t('problemContext.autoSelected') : t('problemContext.selectHint', { question: suggestedQuestion?.id })}
           </p>
         </div>
       )}
       <div className="mb-1 flex items-center justify-between gap-2 sm:mb-2">
-        <p className="text-xs text-blue-800 dark:text-blue-200 sm:text-sm font-medium">{title}</p>
+        <p className="text-xs text-orange-800 dark:text-orange-200 sm:text-sm font-medium">{title}</p>
         {onBack && (
-          <button type="button" onClick={onBack} disabled={isLoading} className="rounded-md px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60 dark:text-blue-200 dark:hover:bg-blue-800">
+          <button type="button" onClick={onBack} disabled={isLoading} className="rounded-md px-2 py-1 text-xs font-semibold text-orange-700 hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-60 dark:text-orange-200 dark:hover:bg-orange-800">
             ← {t('common.back')}
           </button>
         )}
       </div>
-      <p className="text-xs text-blue-600 dark:text-blue-300 mb-2">
+      <p className="text-xs text-orange-600 dark:text-orange-300 mb-2">
         {description}
       </p>
       
@@ -137,9 +137,9 @@ const UserAnswerInput = ({
 
       {/* Image preview for answer check */}
       {selectedAnswerImage && (
-        <div className="mb-2 sm:mb-3 p-2 sm:p-2.5 border border-blue-200 rounded-lg bg-blue-50 dark:bg-blue-800 dark:border-blue-600">
+        <div className="mb-2 sm:mb-3 p-2 sm:p-2.5 border border-orange-200 rounded-lg bg-orange-50 dark:bg-orange-800 dark:border-orange-600">
           <div className="flex items-center justify-between mb-1 sm:mb-2">
-            <span className="text-xs text-blue-600 dark:text-blue-300 truncate">
+            <span className="text-xs text-orange-600 dark:text-orange-300 truncate">
               {t('chat.image.selectedForAnswer')}: {selectedAnswerImage.name}
             </span>
             <button
@@ -149,7 +149,7 @@ const UserAnswerInput = ({
               {t('common.remove')}
             </button>
           </div>
-          <div className="w-16 h-16 sm:w-24 sm:h-24 bg-blue-100 dark:bg-blue-700 rounded-lg overflow-hidden">
+          <div className="w-16 h-16 sm:w-24 sm:h-24 bg-orange-100 dark:bg-orange-700 rounded-lg overflow-hidden">
             <img
               src={URL.createObjectURL(selectedAnswerImage)}
               alt="Answer Preview"
@@ -168,14 +168,14 @@ const UserAnswerInput = ({
             placeholder={selectedAnswerImage ? t('userAnswer.placeholderWithImage') || "Nhập câu trả lời của bạn (có kèm hình ảnh)" : placeholder}
             disabled={isLoading}
             rows="1"
-            className="w-full px-3 py-2 pr-10 sm:px-4 sm:py-3 sm:pr-12 border-2 border-blue-200 rounded-lg text-sm resize-none outline-none focus:border-blue-500 transition-colors disabled:bg-blue-100 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-blue-700 dark:text-gray-200 dark:focus:border-blue-500 dark:disabled:bg-gray-700"
+            className="w-full px-3 py-2 pr-10 sm:px-4 sm:py-3 sm:pr-12 border-2 border-orange-200 rounded-lg text-sm resize-none outline-none focus:border-orange-500 transition-colors disabled:bg-orange-100 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-orange-700 dark:text-gray-200 dark:focus:border-orange-500 dark:disabled:bg-gray-700"
           />
 
           {/* Image upload button for answer */}
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={isLoading}
-            className="absolute right-1.5 sm:right-2 top-1/2 transform -translate-y-1/2 p-1.5 sm:p-2 text-blue-500 hover:text-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-target"
+            className="absolute right-1.5 sm:right-2 top-1/2 transform -translate-y-1/2 p-1.5 sm:p-2 text-orange-500 hover:text-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-target"
             title={t('userAnswer.addImage') || "Thêm hình ảnh"}
           >
             <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -197,7 +197,7 @@ const UserAnswerInput = ({
           className={`check-answer-button px-3 py-2 sm:px-6 sm:py-3 font-semibold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none text-sm sm:text-base touch-target ${
             hasDuplicateAnswer 
               ? 'bg-yellow-600 hover:bg-yellow-700 text-white' 
-              : 'bg-blue-600 hover:bg-blue-700 text-white'
+              : 'bg-orange-600 hover:bg-orange-700 text-white'
           }`}
           data-coin-source="true"
         >

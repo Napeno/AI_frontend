@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+  <title id="title">ThinkBridge squirrel mascot</title>
+  <desc id="desc">A friendly orange squirrel holding an acorn.</desc>
+  <defs>
+    <linearGradient id="fur" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#fb923c"/><stop offset="1" stop-color="#c2410c"/></linearGradient>
+    <linearGradient id="nut" x1="0" x2="1"><stop stop-color="#fbbf24"/><stop offset="1" stop-color="#b45309"/></linearGradient>
+  </defs>
+  <circle cx="120" cy="120" r="112" fill="#fff7ed"/>
+  <path d="M71 148C32 144 26 96 54 73c6 30 28 25 34 42-13-4-23-14-28-25-9 25 4 38 28 42z" fill="url(#fur)"/>
+  <path d="M163 148c45 4 55-51 28-76-6 31-29 26-35 43 14-4 25-14 30-25 9 25-4 38-27 42z" fill="url(#fur)"/>
+  <path d="M63 115c0-48 26-79 57-79s57 31 57 79v47c0 26-23 45-57 45s-57-19-57-45z" fill="url(#fur)"/>
+  <path d="m82 73 6-42 28 25M158 73l-6-42-28 25" fill="#ea580c" stroke="#7c2d12" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M85 145c8 32 62 32 70 0-12 10-57 10-70 0z" fill="#ffedd5"/>
+  <ellipse cx="96" cy="111" rx="10" ry="13" fill="#fff"/><ellipse cx="144" cy="111" rx="10" ry="13" fill="#fff"/>
+  <circle cx="98" cy="114" r="5" fill="#431407"/><circle cx="142" cy="114" r="5" fill="#431407"/>
+  <path d="M111 128q9 8 18 0-9-10-18 0z" fill="#431407"/>
+  <path d="M120 137c-8 10-19 8-22 3m22-3c8 10 19 8 22 3" fill="none" stroke="#7c2d12" stroke-width="4" stroke-linecap="round"/>
+  <path d="M86 184c8-23 60-23 68 0v22H86z" fill="#9a3412"/>
+  <path d="M111 172h18v25h-18z" fill="url(#nut)"/><path d="M107 171c0-12 26-12 26 0z" fill="#78350f"/><path d="M112 166q8-14 16 0" fill="none" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/>
+  <path d="M89 172c-21 4-25 22-12 27M151 172c21 4 25 22 12 27" fill="none" stroke="#c2410c" stroke-width="13" stroke-linecap="round"/>
+</svg>

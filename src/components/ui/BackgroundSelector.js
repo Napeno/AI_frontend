@@ -38,7 +38,7 @@ const BackgroundSelector = ({ onBackgroundChange, currentBackground, compact = f
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex w-full items-center gap-2 rounded-lg p-2 text-seablue-600 hover:bg-cyan-50 dark:text-gray-300 dark:hover:bg-slate-800 ${compact ? 'text-sm' : 'bg-gradient-to-r from-seablue-50 to-seablue-100 dark:from-gray-700 dark:to-gray-600'}`}
+        className={`flex w-full items-center gap-2 rounded-lg p-2 text-seablue-600 hover:bg-orange-50 dark:text-gray-300 dark:hover:bg-slate-800 ${compact ? 'text-sm' : 'bg-gradient-to-r from-seablue-50 to-seablue-100 dark:from-gray-700 dark:to-gray-600'}`}
         title={t('background.changeBackground')}
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +72,7 @@ const BackgroundSelector = ({ onBackgroundChange, currentBackground, compact = f
                 } bg-gradient-to-br from-seablue-50 to-seablue-100 dark:from-gray-700 dark:to-gray-600 p-3`}
               >
                 <div className="text-center">
-                  <div className="text-3xl mb-2">🦭</div>
+                  <div className="text-3xl mb-2">🐿️</div>
 <div className="text-sm font-medium text-gray-800 dark:text-gray-200">{t('background.default')}</div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">ThinkBridge Theme</div>
                 </div>

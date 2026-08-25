@@ -243,6 +243,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         language: getLanguage(),
         educationLevel: chatSettings.current.educationLevel,
         subjectArea: chatSettings.current.subjectArea,
+        course: chatSettings.current.course,
       });
       
       
@@ -366,6 +367,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       } else if (response.ok) {
         const data = await response.json();
         syncIntervention(data.intervention);
+        if (data.badge) setMessages(prev => [...prev, { id: Date.now() + Math.random(), text: `🎉 Huy hiệu mới: ${data.badge.title}`, sender: 'system', type: 'badge-award', timestamp: new Date().toLocaleTimeString() }]);
         const botMessage = {
           id: Date.now() + Math.random(),
           text: data.message,
@@ -438,6 +440,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       } else if (response.ok) {
         const data = await response.json();
         syncIntervention(data.intervention);
+        if (data.badge) setMessages(prev => [...prev, { id: Date.now() + Math.random(), text: `🎉 Huy hiệu mới: ${data.badge.title}`, sender: 'system', type: 'badge-award', timestamp: new Date().toLocaleTimeString() }]);
         const botMessage = {
           id: Date.now() + Math.random(),
           text: data.message,
@@ -765,6 +768,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     formData.append('language', getLanguage());
     formData.append('educationLevel', chatSettings.current.educationLevel);
     formData.append('subjectArea', chatSettings.current.subjectArea);
+    formData.append('course', chatSettings.current.course || '');
     
     if (textMessage.trim() || isStudentWork) {
       formData.append('message', imageMessage);

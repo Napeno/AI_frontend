@@ -15,25 +15,25 @@ module.exports = {
     },
     extend: {
       colors: {
-        // ThinkBridge brand colors
+        // ThinkBridge brand colors - squirrel orange theme
         seablue: {
-          50: '#f0fdfc',
-          100: '#ccfbf7',
-          200: '#99f6f0',
-          300: '#5eeee8',
-          400: '#2dd4bf',
-          500: '#7eeadd', // Main brand color
-          600: '#0ea5ba',
-          700: '#0d8499',
-          800: '#155e75',
-          900: '#164e63',
+          50: '#fff7ed',
+          100: '#ffedd5',
+          200: '#fed7aa',
+          300: '#fdba74',
+          400: '#fb923c',
+          500: '#f97316', // Main brand color
+          600: '#ea580c',
+          700: '#c2410c',
+          800: '#9a3412',
+          900: '#7c2d12',
         },
-        // Ocean gradient colors
+        // Acorn gradient colors (squirrel browns)
         ocean: {
-          light: '#7eeadd',
-          medium: '#06b6d4',
-          deep: '#0e7490',
-          dark: '#164e63',
+          light: '#fdba74',
+          medium: '#f97316',
+          deep: '#c2410c',
+          dark: '#7c2d12',
         }
       },
       fontFamily: {
@@ -175,9 +175,9 @@ module.exports = {
         },
       },
       backgroundImage: {
-        'ocean-gradient': 'linear-gradient(135deg, #7eeadd 0%, #06b6d4 25%, #0e7490 75%, #164e63 100%)',
-        'seablue-gradient': 'linear-gradient(135deg, #7eeadd 0%, #2dd4bf 50%, #0ea5ba 100%)',
-        'wave-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237eeadd' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+        'ocean-gradient': 'linear-gradient(135deg, #fdba74 0%, #f97316 25%, #c2410c 75%, #7c2d12 100%)',
+        'seablue-gradient': 'linear-gradient(135deg, #fdba74 0%, #f97316 50%, #c2410c 100%)',
+        'wave-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23fdba74' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
       },
     },
   },

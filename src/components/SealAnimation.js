@@ -57,20 +57,20 @@ const SealAnimation = ({ trigger, onComplete }) => {
     }
   };
 
-  const getSealExpression = () => {
+  const getSquirrelExpression = () => {
     switch (animationType) {
       case 'success':
-        return '🦭✨'; // Happy seal with sparkles
+        return '🐿️✨'; // Happy squirrel with sparkles
       case 'error':
-        return '🦭💭'; // Thinking seal
+        return '🐿️💭'; // Thinking squirrel
       case 'hint':
-        return '🦭💡'; // Seal with lightbulb
+        return '🐿️💡'; // Squirrel with lightbulb
       case 'reveal':
-        return '🦭📖'; // Seal with book
+        return '🐿️📖'; // Squirrel with book
       case 'welcome':
-        return '🦭👋'; // Waving seal
+        return '🐿️👋'; // Waving squirrel
       default:
-        return <img src="/image/sealedu-logo.png" alt="ThinkBridge Logo" className="w-8 h-8 mx-auto" />; // Default seal
+        return '🐿️'; // Default squirrel
     }
   };
 
@@ -95,7 +95,7 @@ const SealAnimation = ({ trigger, onComplete }) => {
     <div className={`${getAnimationClasses()} ${isVisible ? 'show' : 'hide'}`}>
       <div className="bg-white rounded-full p-3 shadow-lg border-2 border-seablue-300 w-40">
         <div className="text-3xl text-center">
-          {getSealExpression()}
+          {getSquirrelExpression()}
         </div>
         {getMessage() && (
           <div className="text-xs text-center mt-1 text-seablue-600 font-medium">

@@ -48,7 +48,7 @@ const ChatActions = ({
           onClick={continueChat} 
           disabled={actionDisabled}
           title={actionTitle}
-          className="w-full py-2.5 sm:py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-2xl sm:rounded-full hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none text-sm sm:text-base touch-target"
+          className="chat-action chat-action-hint w-full rounded-2xl py-2.5 font-semibold transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none sm:rounded-full sm:py-3"
         >
           {isLoading ? t('chat.actions.thinking') : continueLabel}
         </button>
@@ -60,12 +60,12 @@ const ChatActions = ({
             onClick={getFullAnswer}
             disabled={actionDisabled}
             title={fullAnswerLocked ? t('chat.actions.fullAnswerLocked') : actionTitle}
-            className="w-full py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl sm:rounded-full hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none text-sm sm:text-base touch-target"
+            className="chat-action chat-action-answer w-full rounded-2xl py-2.5 font-semibold transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none sm:rounded-full sm:py-3"
           >
             {isLoading ? t('chat.actions.preparing') : fullAnswerLabel}
           </button>
           {fullAnswerLocked && (
-            <p className="px-2 text-center text-xs sm:text-sm text-blue-700 dark:text-blue-300">
+            <p className="px-2 text-center text-xs sm:text-sm text-orange-700 dark:text-orange-300">
               {t('chat.actions.fullAnswerLocked')}
             </p>
           )}

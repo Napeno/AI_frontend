@@ -31,7 +31,7 @@ const RankUpAnimation = ({ rankUpData, onComplete }) => {
     silver: 'from-gray-300 to-gray-500',
     gold: 'from-yellow-400 to-yellow-600',
     platinum: 'from-slate-300 to-slate-500',
-    diamond: 'from-cyan-300 to-blue-500',
+    diamond: 'from-amber-300 to-orange-500',
   };
 
   return (

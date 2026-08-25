@@ -31,7 +31,7 @@ const NewChatModal = ({ isOpen, onClose, onStartChat }) => {
             <select 
               value={educationLevel} 
               onChange={(e) => setEducationLevel(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-300"
             >
               <option value="elementary">{t('levels.elementary')}</option>
               <option value="middle">{t('levels.middle')}</option>
@@ -43,7 +43,7 @@ const NewChatModal = ({ isOpen, onClose, onStartChat }) => {
             <select 
               value={subject} 
               onChange={(e) => setSubject(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-300"
             >
               {ALL_AVAILABLE_SUBJECTS.map(subjectId => (
                 <option key={subjectId} value={subjectId}>
@@ -63,7 +63,7 @@ const NewChatModal = ({ isOpen, onClose, onStartChat }) => {
           </button>
           <button 
             onClick={handleStart}
-            className="bg-indigo-600 text-white rounded-lg px-4 py-2 font-medium hover:bg-indigo-700"
+            className="bg-orange-600 text-white rounded-lg px-4 py-2 font-medium hover:bg-orange-700"
           >
             {t('newChatModal.start')}
           </button>

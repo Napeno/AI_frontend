@@ -28,7 +28,7 @@ const CustomDropdown = ({ options, selected, onChange }) => {
     <div className="relative w-48" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between border rounded-lg px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        className="w-full flex items-center justify-between border rounded-lg px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
       >
         <span>{selectedOption ? selectedOption.label : ''}</span>
         <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,7 +47,7 @@ const CustomDropdown = ({ options, selected, onChange }) => {
               >
                 <span className="dark:text-gray-200">{option.label}</span>
                 {selected === option.value && (
-                  <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                 )}

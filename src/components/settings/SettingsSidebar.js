@@ -16,7 +16,7 @@ const SettingsSidebar = ({ activeTab, setActiveTab }) => {
             <button
               onClick={() => setActiveTab(tab.key)}
               className={`w-full text-left px-3 py-2 rounded ${
-                activeTab === tab.key ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300' : 'hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700'
+                activeTab === tab.key ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300' : 'hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700'
               }`}
             >
               {tab.label}

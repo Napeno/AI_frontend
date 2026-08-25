@@ -78,9 +78,9 @@ const GameHomePage = () => {
                     <img src="/survey/oil-lamp.gif" alt="Oil Lamp" className="scale-x-[-1] w-full h-auto brightness-110 saturate-[1.2] relative z-[2]" />
                 </div>
 
-                {/* Seal Indie Character (behind table) */}
+                {/* Squirrel Shopkeeper (behind table) */}
                 <div className="absolute z-[3] flex justify-center w-full bottom-[15%] sm:bottom-[18%] md:bottom-[20%] lg:bottom-[23%] xl:bottom-[26%]">
-                    <img src="/survey/seal-indie.png" alt="Seal Shopkeeper" className="w-[33%] sm:w-[28%] md:w-[28%] lg:w-[24%] max-w-[450px] h-auto drop-shadow-[0_8px_25px_rgba(0,0,0,0.5)] origin-[50%_90%] animate-rpg-seal-idle" />
+                    <span role="img" aria-label="Squirrel Shopkeeper" className="text-[6rem] sm:text-[8rem] lg:text-[10rem] drop-shadow-[0_8px_25px_rgba(0,0,0,0.5)] origin-[50%_90%] animate-rpg-seal-idle select-none">🐿️</span>
                 </div>
 
                 {/* Table (in front of seal) */}
