@@ -26,7 +26,7 @@ const RankDisplay = ({ showProgress = true, size = 'medium', layout = 'badge', p
     silver: { name: 'Silver', nameVi: 'Bạc', color: '#C0C0C0', bgGradient: 'from-gray-300 to-gray-500', icon: '/rank/silver.png', threshold: 100 },
     gold: { name: 'Gold', nameVi: 'Vàng', color: '#FFD700', bgGradient: 'from-yellow-400 to-yellow-600', icon: '/rank/gold.png', threshold: 300 },
     platinum: { name: 'Platinum', nameVi: 'Bạch Kim', color: '#E5E4E2', bgGradient: 'from-slate-300 to-slate-500', icon: '/rank/platinum.png', threshold: 600 },
-    diamond: { name: 'Diamond', nameVi: 'Kim Cương', color: '#B9F2FF', bgGradient: 'from-cyan-300 to-blue-500', icon: '/rank/diamond.png', threshold: 1000 },
+    diamond: { name: 'Diamond', nameVi: 'Kim Cương', color: '#B9F2FF', bgGradient: 'from-amber-300 to-orange-500', icon: '/rank/diamond.png', threshold: 1000 },
   };
 
   const userRank = user?.rank || 'bronze';
@@ -60,7 +60,7 @@ const RankDisplay = ({ showProgress = true, size = 'medium', layout = 'badge', p
 
 if (layout === 'leaderboard') {
     return (
-      <div className="w-full p-3 rounded-xl bg-gradient-to-r from-seablue-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 border border-seablue-200 dark:border-gray-600 relative">
+      <div className="w-full p-3 rounded-xl bg-gradient-to-r from-seablue-50 to-amber-50 dark:from-gray-800 dark:to-gray-700 border border-seablue-200 dark:border-gray-600 relative">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className={`flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r ${rankInfo.bgGradient} text-white text-lg shadow-md`}>
@@ -90,7 +90,7 @@ if (layout === 'leaderboard') {
               animation: `pointsFly 2s ease-out forwards`,
             }}
           >
-            <div className="flex items-center gap-1 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
+            <div className="flex items-center gap-1 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
               <span>📊</span>
               <span>+{point.amount}</span>
             </div>
@@ -109,7 +109,7 @@ return (
           </div>
           <div>
             <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">{rankInfo.nameVi || rankInfo.name}</div>
-            <div className="text-xs text-blue-600 dark:text-blue-400">{userPoints.toLocaleString()} điểm</div>
+            <div className="text-xs text-orange-600 dark:text-orange-400">{userPoints.toLocaleString()} điểm</div>
           </div>
         </div>
         {showProgress && nextRank && (
@@ -134,7 +134,7 @@ return (
             animation: `pointsFly 2s ease-out forwards`,
           }}
         >
-          <div className="flex items-center gap-1 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
+          <div className="flex items-center gap-1 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
             <span>📊</span>
             <span>+{point.amount}</span>
           </div>

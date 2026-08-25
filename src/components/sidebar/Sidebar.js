@@ -18,7 +18,7 @@ const Sidebar = ({
       <div className="flex items-center gap-2 border-b border-slate-200 p-3 dark:border-slate-800">
         <button
           onClick={createNewChat}
-          className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-cyan-600 px-3 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-cyan-700"
+          className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-orange-600 px-3 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-orange-700"
         >
           <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

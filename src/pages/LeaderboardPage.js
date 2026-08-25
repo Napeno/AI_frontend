@@ -25,7 +25,7 @@ const getRankInfo = (rank) => {
   if (rank === 1) return { color: 'text-yellow-500', bg: 'bg-yellow-50', icon: '👑' };
   if (rank === 2) return { color: 'text-gray-400', bg: 'bg-gray-50', icon: '🥈' };
   if (rank === 3) return { color: 'text-orange-500', bg: 'bg-orange-50', icon: '🥉' };
-  if (rank <= 10) return { color: 'text-blue-500', bg: 'bg-blue-50', icon: '⭐' };
+  if (rank <= 10) return { color: 'text-orange-500', bg: 'bg-orange-50', icon: '⭐' };
   return { color: 'text-gray-500', bg: 'bg-gray-50', icon: '#' };
 };
 
@@ -137,7 +137,7 @@ setError(t('leaderboard.loadingError'));
               to="/chat" 
               className="px-3 py-2 sm:px-4 bg-seablue-gradient text-white rounded-lg hover:shadow-md transition-all duration-200 font-medium flex items-center gap-2"
             >
-              <img src="/image/sealedu-logo.png" alt="Chat Logo" className="w-5 h-5" />
+              <span role="img" aria-label="Chat Logo" className="text-lg">🐿️</span>
               <span className="hidden sm:inline">{t('leaderboard.backToChat')}</span>
             </Link>
           </div>
@@ -159,7 +159,7 @@ setError(t('leaderboard.loadingError'));
             </h2>
             <div className="flex items-center justify-between p-3 sm:p-4 bg-seablue-50 dark:bg-seablue-900/30 rounded-lg">
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xl sm:text-2xl shadow-md">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r from-orange-500 to-orange-700 text-white flex items-center justify-center text-xl sm:text-2xl shadow-md">
                   {AVATAR_EMOJIS[user.avatar || 'default'] || '👤'}
                 </div>
                 <div>
@@ -186,12 +186,12 @@ setError(t('leaderboard.loadingError'));
               </div>
               <div className="text-right flex-shrink-0 ml-2">
                 <div className="flex items-center gap-1 sm:gap-2 mb-1">
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10" className="text-blue-600"/>
-                    <circle cx="12" cy="12" r="8" className="text-blue-400"/>
-                    <text x="12" y="16" textAnchor="middle" className="text-xs font-bold fill-blue-700">P</text>
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" className="text-orange-600"/>
+                    <circle cx="12" cy="12" r="8" className="text-orange-400"/>
+                    <text x="12" y="16" textAnchor="middle" className="text-xs font-bold fill-orange-700">P</text>
                   </svg>
-                  <span className="font-bold text-blue-600 text-sm sm:text-base">{(user.points || 0).toLocaleString()}</span>
+                  <span className="font-bold text-orange-600 text-sm sm:text-base">{(user.points || 0).toLocaleString()}</span>
                 </div>
                 <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">điểm xếp hạng</p>
                 {myRank && (
@@ -235,7 +235,7 @@ setError(t('leaderboard.loadingError'));
                       </div>
                       
                       {/* Avatar */}
-                      <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xl sm:text-2xl shadow-md flex-shrink-0">
+                      <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-gradient-to-r from-orange-500 to-orange-700 text-white flex items-center justify-center text-xl sm:text-2xl shadow-md flex-shrink-0">
                         {AVATAR_EMOJIS[player.avatar || 'default'] || '👤'}
                       </div>
                       
@@ -258,12 +258,12 @@ setError(t('leaderboard.loadingError'));
                     {/* Score */}
                     <div className="text-right flex-shrink-0 ml-2">
                       <div className="flex items-center gap-1 sm:gap-2 mb-1">
-                        <svg className="w-4 h-4 sm:w-6 sm:h-6 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
-                          <circle cx="12" cy="12" r="10" className="text-blue-600"/>
-                          <circle cx="12" cy="12" r="8" className="text-blue-400"/>
-                          <text x="12" y="16" textAnchor="middle" className="text-xs font-bold fill-blue-700">P</text>
+                        <svg className="w-4 h-4 sm:w-6 sm:h-6 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                          <circle cx="12" cy="12" r="10" className="text-orange-600"/>
+                          <circle cx="12" cy="12" r="8" className="text-orange-400"/>
+                          <text x="12" y="16" textAnchor="middle" className="text-xs font-bold fill-orange-700">P</text>
                         </svg>
-                        <span className="font-bold text-blue-600 text-sm sm:text-xl">
+                        <span className="font-bold text-orange-600 text-sm sm:text-xl">
                           {(player.points || 0).toLocaleString()}
                         </span>
                       </div>
@@ -305,7 +305,7 @@ setError(t('leaderboard.loadingError'));
 
         {leaderboardData.length === 0 && !loading && (
           <div className="text-center py-12">
-            <img src="/image/sealedu-logo.png" alt="ThinkBridge Logo" className="w-16 h-16 mx-auto mb-4" />
+            <span role="img" aria-label="ThinkBridge mascot" className="text-5xl">🐿️</span>
             <p className="text-gray-500 dark:text-gray-400 text-lg mb-2">Chưa có dữ liệu xếp hạng</p>
             <p className="text-sm text-gray-400 dark:text-gray-500">Hãy bắt đầu trò chuyện và kiếm điểm để xuất hiện trên bảng xếp hạng!</p>
           </div>

@@ -7,17 +7,17 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 const HomePage = () => {
   const { token } = useAuth();
   return (
-    <div className="min-h-screen w-full bg-ocean-gradient flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="relative max-w-5xl w-full bg-white/90 dark:bg-gray-800/80 backdrop-blur rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-10">
+    <div className="squirrel-hero min-h-screen w-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-5xl w-full squirrel-card backdrop-blur rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-10">
         {/* Top-right language switcher */}
         <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
           <LanguageSwitcher />
         </div>
 
         <div className="text-center">
-          {/* Seal mascot placeholder - you can replace this with actual GIF later */}
-          <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 mx-auto mb-6 sm:mb-8 bg-seablue-gradient rounded-full shadow-xl animate-float flex items-center justify-center">
-            <img src="/image/homepage.png" alt="seal" className=" bg-seablue-500 rounded-full flex items-center justify-center text-5xl md:text-6xl" />
+          {/* Squirrel mascot placeholder - you can replace this with actual GIF later */}
+          <div className="squirrel-mascot-ring w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 mx-auto mb-6 sm:mb-8 rounded-full shadow-xl animate-float flex items-center justify-center">
+            <img src="/image/squirrel-mascot.svg" alt="Sóc ThinkBridge" className="h-[88%] w-[88%]" />
           </div>
 
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-3 sm:mb-4" dangerouslySetInnerHTML={{ __html: `${t('home.title')}` }} />
@@ -49,7 +49,7 @@ const HomePage = () => {
                 {t('home.start')}
               </Link>
             )}
-            <Link to="/game" className="w-full bg-gradient-to-r from-purple-500 to-orange-500 hover:from-purple-600 hover:to-orange-600 text-white font-bold py-4 rounded-xl shadow-[0_8px_15px_rgba(200,100,0,0.2)] hover:shadow-[0_12px_20px_rgba(200,100,0,0.3)] transition-all duration-300 transform hover:-translate-y-1 mt-3 flex items-center justify-center gap-2 text-lg">
+            <Link to="/game" className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-4 rounded-xl shadow-[0_8px_15px_rgba(200,100,0,0.2)] hover:shadow-[0_12px_20px_rgba(200,100,0,0.3)] transition-all duration-300 transform hover:-translate-y-1 mt-3 flex items-center justify-center gap-2 text-lg">
               <span>📝</span> Làm khảo sát
             </Link>
           </div>

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
 import { post } from '../utils/apiClient';
 import t from '../locales/i18n';
+import { useTheme } from '../context/ThemeContext';
 
 const AuthForm = ({ initialMode = 'login' }) => {
   const { login } = useAuth();
+  const { theme, changeTheme } = useTheme();
   const navigate = useNavigate();
   const [mode, setMode] = useState(initialMode);
   const [name, setName] = useState('');
@@ -15,6 +17,7 @@ const AuthForm = ({ initialMode = 'login' }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
 
 
@@ -43,10 +46,13 @@ const AuthForm = ({ initialMode = 'login' }) => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-ocean-gradient flex items-center justify-center px-4 py-6 sm:p-6 safari-transform-fix">
-      <form onSubmit={onSubmit} className="w-full max-w-md bg-white/90 dark:bg-gray-800/90 backdrop-blur rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8">
+    <div className="squirrel-hero min-h-screen w-full flex items-center justify-center px-4 py-6 sm:p-6 safari-transform-fix">
+      <form onSubmit={onSubmit} className="squirrel-card relative w-full max-w-md backdrop-blur rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8">
+        <button type="button" onClick={() => changeTheme(isDark ? 'light' : 'dark')} aria-label={isDark ? 'Chuyển light mode' : 'Chuyển dark mode'} className="absolute right-4 top-4 rounded-xl bg-seablue-50 px-2 py-1 text-base text-seablue-700 hover:bg-seablue-100 dark:bg-orange-950 dark:text-seablue-200">
+          {isDark ? '☀️' : '🌙'}
+        </button>
         <div className="text-center mb-6 sm:mb-8">
-          <img src="/image/sealedu-logo.png" alt="ThinkBridge Logo" className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3" />
+          <img src="/image/squirrel-mascot.svg" alt="Sóc ThinkBridge" className="squirrel-mascot-ring mx-auto mb-3 h-12 w-12 rounded-full shadow-lg sm:h-16 sm:w-16" />
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-200">
             {mode === 'login' ? t('auth.welcomeBack') : t('auth.join')}
           </h1>

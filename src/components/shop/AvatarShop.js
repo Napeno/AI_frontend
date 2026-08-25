@@ -208,7 +208,7 @@ const AvatarShop = ({ isOpen, onClose }) => {
                   key={avatar.id}
                   className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 hover:scale-[1.02] ${
                     isSelected
-                      ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30'
+                      ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/30'
                       : isOwned
                       ? 'border-green-300 bg-green-50 dark:bg-green-900/20'
                       : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
@@ -254,7 +254,7 @@ const AvatarShop = ({ isOpen, onClose }) => {
                         disabled={isSelected}
                         className={`w-full py-2 px-4 rounded-lg font-semibold text-sm transition-colors ${
                           isSelected
-                            ? 'bg-indigo-500 text-white cursor-default'
+                            ? 'bg-orange-500 text-white cursor-default'
                             : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
                         }`}
                       >
@@ -266,7 +266,7 @@ const AvatarShop = ({ isOpen, onClose }) => {
                         disabled={!canAfford || isLoading}
                         className={`w-full py-2 px-4 rounded-lg font-semibold text-sm transition-colors ${
                           canAfford
-                            ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                            ? 'bg-orange-500 hover:bg-orange-600 text-white'
                             : 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
                         }`}
                       >

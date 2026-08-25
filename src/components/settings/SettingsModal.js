@@ -1,5 +1,4 @@
 import React, { useRef } from 'react';
-import t from '../../locales/i18n';
 import SettingsSidebar from './SettingsSidebar';
 import GeneralSettings from './GeneralSettings';
 import AccountSettings from './AccountSettings';

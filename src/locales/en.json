@@ -220,14 +220,14 @@
     "home": "Home",
     "title": "Welcome to <strong>ThinkBridge</strong>",
     "subtitle": "Your AI learning companion",
-    "description": "Practice, get hints, and check your answers. Learn by doing with your friendly seal guide!",
+    "description": "Practice, get hints, and check your answers. Learn by doing with your friendly squirrel guide!",
     "login": "Login",
     "register": "Register",
     "start": "Start Learning",
     "steps": {
       "step1Title": "🤔 Step 1",
       "step1Desc": "Ask your question",
-      "step1Text": "Describe the problem clearly. Include what you tried. Your seal friend is ready to help!",
+      "step1Text": "Describe the problem clearly. Include what you tried. Your squirrel friend is ready to help!",
       "step2Title": "💡 Step 2",
       "step2Desc": "Get hints, not answers",
       "step2Text": "Use Continue to get step-by-step hints that guide your thinking process.",
@@ -235,7 +235,7 @@
       "step3Desc": "Check your work",
       "step3Text": "Submit your attempt and get feedback and suggestions to improve."
     },
-    "footer": "🌊 Built for learners. Be curious. Experiment. Improve daily with ThinkBridge!"
+    "footer": "🐿️ Built for learners. Be curious. Experiment. Improve daily with ThinkBridge!"
   },
   "settings": {
     "tabs": {
@@ -269,6 +269,6 @@
     "newToSealEdu": "New to ThinkBridge? Create account",
     "alreadyHaveAccount": "Already have an account? Login",
     "forgotPassword": "Forgot password?",
-    "tip": "🌊 Tip: Use your school email for faster account recovery and better learning recommendations!"
+    "tip": "🐿️ Tip: Use your school email for faster account recovery and better learning recommendations!"
   }
 } 

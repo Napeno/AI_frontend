@@ -6,7 +6,7 @@ const ConversationItem = ({ conversation, isActive, onSelect, onDelete }) => {
     <div
       className={`group mb-1 cursor-pointer rounded-lg px-3 py-2 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 ${
         isActive 
-          ? 'bg-cyan-50 text-cyan-950 dark:bg-cyan-950/40 dark:text-cyan-100' 
+          ? 'bg-orange-50 text-orange-950 dark:bg-orange-950/40 dark:text-orange-100' 
           : 'text-slate-800 dark:text-slate-200'
       }`}
       onClick={onSelect}

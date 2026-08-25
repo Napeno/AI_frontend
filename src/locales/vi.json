@@ -214,14 +214,14 @@
     "home": "Trang chủ",
     "title": "Chào mừng đến với <strong>ThinkBridge</strong>",
     "subtitle": "Trợ lý học tập bằng AI của bạn",
-    "description": "Luyện tập, nhận gợi ý và kiểm tra đáp án. Học bằng thực hành cùng bạn hải cẩu thân thiện!",
+    "description": "Luyện tập, nhận gợi ý và kiểm tra đáp án. Học bằng thực hành cùng chú sóc thân thiện!",
     "login": "Đăng nhập",
     "register": "Đăng ký",
     "start": "Bắt đầu học",
     "steps": {
       "step1Title": "🤔 Bước 1",
       "step1Desc": "Đặt câu hỏi",
-      "step1Text": "Mô tả vấn đề rõ ràng. Nêu những gì bạn đã thử. Cậu hải cẩu luôn sẵn sàng giúp đỡ!",
+      "step1Text": "Mô tả vấn đề rõ ràng. Nêu những gì bạn đã thử. Chú sóc luôn sẵn sàng giúp đỡ!",
       "step2Title": "💡 Bước 2",
       "step2Desc": "Nhận gợi ý, không phải đáp án",
       "step2Text": "Sử dụng chức năng Gợi ý để nhận hướng dẫn từng bước cho cách suy nghĩ.",
@@ -229,7 +229,7 @@
       "step3Desc": "Kiểm tra bài làm",
       "step3Text": "Gửi câu trả lời của bạn để nhận phản hồi và gợi ý cải thiện."
     },
-    "footer": "🌊 Dành cho người học. Hãy tò mò. Thử nghiệm. Tiến bộ mỗi ngày cùng ThinkBridge!"
+    "footer": "🐿️ Dành cho người học. Hãy tò mò. Thử nghiệm. Tiến bộ mỗi ngày cùng ThinkBridge!"
   },
   "settings": {
     "tabs": {
@@ -251,7 +251,7 @@
   "auth": {
     "welcomeBack": "Chào mừng trở lại với ThinkBridge!",
     "join": "Tham gia ThinkBridge",
-    "signInContinue": "Đăng nhập để tiếp tục học cùng bạn hải cẩu nhé!",
+    "signInContinue": "Đăng nhập để tiếp tục học cùng chú sóc nhé!",
     "startJourney": "Bắt đầu hành trình học tập của bạn cùng chúng tớ!",
     "name": "Tên",
     "yourName": "Tên của bạn",
@@ -263,6 +263,6 @@
     "newToSealEdu": "Chưa có tài khoản ThinkBridge? Tạo tài khoản",
     "alreadyHaveAccount": "Đã có tài khoản? Đăng nhập",
     "forgotPassword": "Quên mật khẩu?",
-    "tip": "🌊 Mẹo: Sử dụng email trường học để khôi phục tài khoản nhanh hơn và nhận đề xuất học tập tốt hơn!"
+    "tip": "🐿️ Mẹo: Sử dụng email trường học để khôi phục tài khoản nhanh hơn và nhận đề xuất học tập tốt hơn!"
   }
 } 
