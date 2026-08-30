@@ -432,6 +432,14 @@ const AITutorPage = () => {
             ← Về Chat
           </Link>
         </header>
+        <div className="mb-5 h-2 overflow-hidden rounded-full bg-slate-200">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-orange-400 to-orange-600 transition-all"
+            style={{
+              width: `${Math.max(8, ((lesson.currentQuestionIndex + (selected ? 1 : 0)) / 5) * 100)}%`,
+            }}
+          />
+        </div>
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_500px]">
           <section className="min-h-[650px] rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <p className="rounded-xl bg-orange-50 p-3 text-sm text-orange-900">
@@ -504,18 +512,25 @@ const AITutorPage = () => {
                 <h2 className="text-2xl font-bold text-slate-950">
                   AITutor Solve
                 </h2>
-                <img
-                  src="/studentAI.png"
-                  alt="StudentAI"
-                  className="h-28 w-28 object-contain"
-                />
+                <span className="text-sm font-bold text-slate-400">
+                  A− &nbsp; A &nbsp; A+
+                </span>
               </div>
               <div className="mt-4 rounded-2xl border border-blue-300 bg-blue-50 p-4">
-                <h3 className="text-lg font-bold text-blue-700">Mẹo nhỏ</h3>
-                <p className="mt-1 text-sm leading-relaxed text-slate-700">
-                  Đọc kỹ đề, chọn công thức phù hợp rồi điền vào ô trống. Em có
-                  thể kéo thả đáp án hoặc chạm để chọn.
-                </p>
+                <div className="flex items-center gap-3">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-lg font-bold text-blue-700">Mẹo nhỏ</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-slate-700">
+                      Đọc kỹ đề, chọn công thức phù hợp rồi điền vào ô trống. Em
+                      có thể kéo thả đáp án hoặc chạm để chọn.
+                    </p>
+                  </div>
+                  <img
+                    src="/studentAI.png"
+                    alt="StudentAI"
+                    className="h-24 w-24 shrink-0 object-contain"
+                  />
+                </div>
               </div>
             </div>
             <div className="space-y-3 p-4">
@@ -534,17 +549,28 @@ const AITutorPage = () => {
                       </span>
                       <div className="min-w-0 flex-1">
                         <h3 className="font-bold">{step.title}</h3>
-                        <p className="mt-1 text-sm text-slate-700">
-                          {step.explanation ||
-                            "Đọc kỹ đề và nêu bước suy luận của em."}
-                        </p>
+                        {active && selected && (
+                          <p className="mt-1 text-sm text-slate-700">
+                            {step.explanation ||
+                              "Đọc kỹ đề và nêu bước suy luận của em."}
+                          </p>
+                        )}
                         {active &&
-                          (feedback.includes("Chưa đúng") || selected ? (
+                          (feedback.includes("Chưa đúng") ? (
                             <SubjectStep
                               step={step}
                               onSubmit={submitStep}
                               loading={loading}
                             />
+                          ) : feedback.includes("Chính xác") ? (
+                            <button
+                              type="button"
+                              disabled={loading}
+                              onClick={() => submitStep({}, { skip: true })}
+                              className="mt-3 w-full rounded-xl bg-emerald-600 px-3 py-2 text-sm font-bold text-white disabled:opacity-50"
+                            >
+                              Câu tiếp theo →
+                            </button>
                           ) : (
                             <button
                               type="button"
@@ -561,6 +587,15 @@ const AITutorPage = () => {
                 );
               })}
             </div>
+            {!selected && (
+              <div className="m-4 rounded-2xl bg-orange-100 p-4 text-sm text-orange-900">
+                <strong>💡 Gợi ý</strong>
+                <p className="mt-1">
+                  Hãy đọc kỹ đề và chọn đáp án em nghĩ là đúng nhất trước khi
+                  xem hướng dẫn.
+                </p>
+              </div>
+            )}
           </aside>
         </div>
       </div>
