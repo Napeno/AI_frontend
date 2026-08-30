@@ -656,6 +656,30 @@ button,
   box-shadow: 0 24px 70px rgba(25, 79, 64, .18);
 }
 
+/* Homepage remains a bright learning surface even when Chat is in dark mode. */
+.dark .squirrel-home {
+  color: #123b31;
+  background-color: #dcefdc;
+  background-image: url('./assets/background.png');
+}
+.dark .squirrel-home .squirrel-card {
+  background: rgba(248, 255, 250, .9);
+  border-color: rgba(134, 212, 176, .62);
+}
+.dark .squirrel-home h1,
+.dark .squirrel-home h2,
+.dark .squirrel-home h3,
+.dark .squirrel-home p.text-gray-900,
+.dark .squirrel-home p.text-gray-700,
+.dark .squirrel-home p.text-gray-600 { color: #123b31; }
+.dark .squirrel-home .dark\:text-white,
+.dark .squirrel-home .dark\:text-gray-200,
+.dark .squirrel-home .dark\:text-gray-300,
+.dark .squirrel-home .dark\:text-gray-400 { color: #1f654f; }
+.dark .squirrel-home .dark\:bg-gray-700\/50 { background-color: #eefaf4; }
+.dark .squirrel-home .dark\:bg-gray-900 { background-color: #f5fcf8; }
+.dark .squirrel-home .dark\:border-gray-700 { border-color: #b6e6cf; }
+
 .squirrel-mascot-ring {
   background: #58bd91;
   border: 4px solid #f5fcf8;
@@ -858,3 +882,42 @@ button,
 .squirrel-app .from-orange-600 { --tw-gradient-from: #267d60 var(--tw-gradient-from-position); --tw-gradient-to: rgb(38 125 96 / 0) var(--tw-gradient-to-position); }
 .squirrel-app .to-orange-700 { --tw-gradient-to: #1f654f var(--tw-gradient-to-position); }
 .squirrel-app .to-orange-800 { --tw-gradient-to: #194f40 var(--tw-gradient-to-position); }
+
+/* Admin analytics surface: stronger contrast and quiet teal panels. */
+.squirrel-app main.min-h-screen.bg-gray-50 {
+  color: #123b31;
+  background: #e8f7ef;
+}
+.squirrel-app main.min-h-screen.bg-gray-50 h1,
+.squirrel-app main.min-h-screen.bg-gray-50 h2,
+.squirrel-app main.min-h-screen.bg-gray-50 h3,
+.squirrel-app main.min-h-screen.bg-gray-50 h4,
+.squirrel-app main.min-h-screen.bg-gray-50 strong { color: #123b31; }
+.squirrel-app main.min-h-screen.bg-gray-50 p.text-gray-600,
+.squirrel-app main.min-h-screen.bg-gray-50 p.text-gray-500,
+.squirrel-app main.min-h-screen.bg-gray-50 span.text-gray-500 { color: #3f6f60; }
+.squirrel-app main.min-h-screen.bg-gray-50 section.rounded-xl.bg-white,
+.squirrel-app main.min-h-screen.bg-gray-50 section.rounded-xl.bg-white > div.rounded-xl.bg-white {
+  border: 1px solid #c7e8d7;
+  box-shadow: 0 10px 26px rgba(25, 79, 64, .07);
+}
+.squirrel-app main.min-h-screen.bg-gray-50 input,
+.squirrel-app main.min-h-screen.bg-gray-50 select,
+.squirrel-app main.min-h-screen.bg-gray-50 textarea {
+  border-color: #b6e6cf;
+  color: #123b31;
+  background: #fbfffc;
+}
+.squirrel-app main.min-h-screen.bg-gray-50 input:focus,
+.squirrel-app main.min-h-screen.bg-gray-50 select:focus,
+.squirrel-app main.min-h-screen.bg-gray-50 textarea:focus {
+  outline: 2px solid #58bd91;
+  outline-offset: 1px;
+}
+.squirrel-app main.min-h-screen.bg-gray-50 button.bg-seablue-600 {
+  background: linear-gradient(180deg, #3ba77d, #267d60);
+  box-shadow: 0 4px 0 #194f40, 0 8px 16px rgba(25, 79, 64, .16);
+}
+.squirrel-app main.min-h-screen.bg-gray-50 button.bg-seablue-600:hover {
+  background: linear-gradient(180deg, #329b73, #1f654f);
+}

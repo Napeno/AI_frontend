@@ -7,7 +7,7 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 const HomePage = () => {
   const { token } = useAuth();
   return (
-    <div className="squirrel-hero min-h-screen w-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className="squirrel-home squirrel-hero min-h-screen w-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="relative max-w-5xl w-full squirrel-card backdrop-blur rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-10">
         {/* Top-right language switcher */}
         <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
