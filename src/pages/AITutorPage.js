@@ -280,6 +280,7 @@ const AITutorPage = () => {
   const [searchParams] = useSearchParams();
   const [lesson, setLesson] = useState(null);
   const [selected, setSelected] = useState("");
+  const [answerSubmitted, setAnswerSubmitted] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(Boolean(sessionId));
   const question = lesson?.question;
@@ -314,19 +315,25 @@ const AITutorPage = () => {
     };
   }, [sessionId, searchParams]);
 
-  const choose = async (optionId) => {
-    if (!lesson || selected || loading) return;
+  const choose = (optionId) => {
+    if (!lesson || answerSubmitted || loading) return;
     setSelected(optionId);
+    setFeedback("");
+  };
+
+  const submitAnswer = async () => {
+    if (!lesson || !selected || answerSubmitted || loading) return;
     setLoading(true);
     try {
       const response = await post(
         `/ai-tutor/lessons/${lesson.lessonId}/answer`,
-        { questionId: question.id, optionId },
+        { questionId: question.id, optionId: selected },
       );
       const data = await response.json();
       if (!response.ok)
         throw new Error(data.error || "Không thể kiểm tra đáp án.");
       setLesson(data.lesson);
+      setAnswerSubmitted(true);
       setFeedback(data.message);
     } catch (error) {
       setFeedback(error.message);
@@ -336,6 +343,7 @@ const AITutorPage = () => {
   };
 
   const submitStep = async (placements, interactionAnswer) => {
+    const previousQuestionIndex = lesson.currentQuestionIndex;
     setLoading(true);
     try {
       const response = await post(`/ai-tutor/lessons/${lesson.lessonId}/step`, {
@@ -349,10 +357,13 @@ const AITutorPage = () => {
         throw new Error(data.error || "Kiểm tra bước chưa thành công.");
       setLesson(data.lesson);
       setSelected("");
+      setAnswerSubmitted(false);
       setFeedback(
-        data.lesson.completed
-          ? "Bạn đã hoàn thành mini-lesson!"
-          : "Tốt lắm, tiếp tục nhé.",
+        data.lesson.currentQuestionIndex !== previousQuestionIndex
+          ? ""
+          : data.lesson.completed
+            ? "Bạn đã hoàn thành mini-lesson!"
+            : "Tốt lắm, tiếp tục nhé.",
       );
     } catch (error) {
       setFeedback(error.message);
@@ -374,6 +385,7 @@ const AITutorPage = () => {
         throw new Error(data.error || "Không thể quay lại câu trước.");
       setLesson(data.lesson);
       setSelected("");
+      setAnswerSubmitted(false);
       setFeedback("");
     } catch (error) {
       setFeedback(error.message);
@@ -500,14 +512,16 @@ const AITutorPage = () => {
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   {question.options.map((option) => {
                     const isCorrect = question.correctOptionId === option.id;
-                    const isWrong = selected === option.id && !isCorrect;
+                    const isWrong =
+                      answerSubmitted && selected === option.id && !isCorrect;
+                    const isSelected = selected === option.id;
                     return (
                       <button
                         key={option.id}
                         type="button"
                         onClick={() => choose(option.id)}
-                        disabled={loading || Boolean(selected)}
-                        className={`min-h-16 rounded-xl border-2 p-5 text-left text-lg font-semibold transition ${isCorrect ? "border-emerald-500 bg-emerald-50 text-emerald-900" : isWrong ? "border-red-400 bg-red-50 text-red-800" : "border-slate-200 hover:border-orange-500 hover:bg-orange-50"}`}
+                        disabled={loading || answerSubmitted}
+                        className={`min-h-16 rounded-xl border-2 p-5 text-left text-lg font-semibold transition ${answerSubmitted && isCorrect ? "border-emerald-500 bg-emerald-50 text-emerald-900" : isWrong ? "border-red-400 bg-red-50 text-red-800" : isSelected ? "border-sky-400 bg-sky-50 text-sky-900" : "border-slate-200 bg-white hover:border-orange-500 hover:bg-orange-50"}`}
                       >
                         <span className="mr-2 text-orange-600">
                           {option.id}.
@@ -517,6 +531,14 @@ const AITutorPage = () => {
                     );
                   })}
                 </div>
+                <button
+                  type="button"
+                  onClick={submitAnswer}
+                  disabled={!selected || answerSubmitted || loading}
+                  className="mt-5 w-full rounded-xl bg-orange-600 px-5 py-4 text-lg font-bold text-white shadow-sm transition hover:bg-orange-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+                >
+                  {loading ? "Đang kiểm tra…" : "Trả lời →"}
+                </button>
                 {feedback && (
                   <p
                     className={`mt-4 rounded-xl p-3 text-sm font-semibold ${feedback.includes("Chính xác") || feedback.includes("Tốt lắm") || feedback.includes("hoàn thành") ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-900"}`}
