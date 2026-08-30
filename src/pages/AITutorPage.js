@@ -361,6 +361,27 @@ const AITutorPage = () => {
     }
   };
 
+  const goPrevious = async () => {
+    if (!lesson || loading || lesson.currentQuestionIndex <= 0) return;
+    setLoading(true);
+    try {
+      const response = await post(
+        `/ai-tutor/lessons/${lesson.lessonId}/previous`,
+        {},
+      );
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.error || "Không thể quay lại câu trước.");
+      setLesson(data.lesson);
+      setSelected("");
+      setFeedback("");
+    } catch (error) {
+      setFeedback(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (!sessionId)
     return (
       <main className="min-h-screen bg-orange-50 px-4 py-16 text-center">
@@ -503,6 +524,16 @@ const AITutorPage = () => {
                     {feedback}
                   </p>
                 )}
+                <div className="mt-8 flex justify-end gap-3 border-t border-slate-100 pt-5">
+                  <button
+                    type="button"
+                    onClick={goPrevious}
+                    disabled={loading || lesson.currentQuestionIndex === 0}
+                    className="rounded-xl border-2 border-orange-500 px-5 py-3 font-bold text-orange-700 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    ← Câu trước
+                  </button>
+                </div>
               </>
             )}
           </section>
@@ -549,6 +580,9 @@ const AITutorPage = () => {
                       </span>
                       <div className="min-w-0 flex-1">
                         <h3 className="font-bold">{step.title}</h3>
+                        {!selected && (
+                          <div className="mt-2 h-2 rounded-full bg-slate-200" />
+                        )}
                         {active && selected && (
                           <p className="mt-1 text-sm text-slate-700">
                             {step.explanation ||
