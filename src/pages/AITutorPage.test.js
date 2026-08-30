@@ -45,6 +45,11 @@ const makeLesson = ({ index = 0, stepIndex = -1, correctOptionId } = {}) => ({
   },
 });
 
+const guidance = {
+  analysis: 'Phân tích: chọn công thức phù hợp.',
+  easierExample: { prompt: 'Ví dụ dễ hơn: (a + 1)².', answer: 'a² + 2a + 1', hint: 'Ghép đủ ba phần.' },
+};
+
 const renderTutor = () => render(
   <MemoryRouter initialEntries={['/ai-tutor/session-1']}>
     <Routes>
@@ -109,6 +114,60 @@ test('shows praise after a correct submitted answer', async () => {
 
   await waitFor(() => expect(screen.getByText('Chính xác! Mở bước tiếp theo nhé.')).toBeInTheDocument());
   expect(screen.getByRole('button', { name: /Câu tiếp theo/ })).toBeInTheDocument();
+});
+
+test('shows AI analysis and an easier example in the opened guidance card', async () => {
+  post
+    .mockResolvedValueOnce(response({ lesson: { ...makeLesson(), question: { ...makeLesson().question, tutorSteps: [{ ...step, ...guidance }, { ...step, id: 's2', title: 'Bước 2' }] } } }))
+    .mockResolvedValueOnce(response({
+      correct: true,
+      pointsAwarded: 25,
+      totalPoints: 125,
+      chestnutsAwarded: 5,
+      totalChestnuts: 15,
+      message: 'Chính xác! Mở bước tiếp theo nhé.',
+      lesson: { ...makeLesson({ stepIndex: 0, correctOptionId: 'A' }), question: { ...makeLesson({ stepIndex: 0, correctOptionId: 'A' }).question, tutorSteps: [{ ...step, ...guidance }, { ...step, id: 's2', title: 'Bước 2' }] } },
+    }));
+  renderTutor();
+
+  await screen.findByText('Chọn kết quả đúng.');
+  fireEvent.click(screen.getByRole('button', { name: /A\. Bốn/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Trả lời/ }));
+
+  expect(await screen.findByText('Phân tích câu hỏi')).toBeInTheDocument();
+  expect(screen.getByText('Ví dụ dễ hơn')).toBeInTheDocument();
+  expect(screen.queryByText(/token/i)).not.toBeInTheDocument();
+});
+
+test('moves to the next question directly after a correct answer', async () => {
+  post
+    .mockResolvedValueOnce(response({ lesson: makeLesson() }))
+    .mockResolvedValueOnce(response({
+      correct: true,
+      pointsAwarded: 25,
+      totalPoints: 125,
+      chestnutsAwarded: 5,
+      totalChestnuts: 15,
+      message: 'Chính xác! Mở bước tiếp theo nhé.',
+      lesson: makeLesson({ stepIndex: 0, correctOptionId: 'A' }),
+    }))
+    .mockResolvedValueOnce(response({ lesson: makeLesson({ index: 1 }) }));
+  renderTutor();
+
+  await screen.findByText('Chọn kết quả đúng.');
+  fireEvent.click(screen.getByRole('button', { name: /A\. Bốn/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Trả lời/ }));
+  const continueButton = await screen.findByRole('button', { name: /Câu tiếp theo/ });
+  fireEvent.click(continueButton);
+
+  await waitFor(() => expect(post).toHaveBeenLastCalledWith('/ai-tutor/lessons/lesson-1/step', {
+    questionId: 'q1',
+    stepId: 's1',
+    placements: {},
+    interactionAnswer: { skip: true },
+  }));
+  expect(await screen.findByRole('heading', { name: 'Câu 2' })).toBeInTheDocument();
+  expect(screen.getAllByText('🔒')).toHaveLength(2);
 });
 
 test('normalizes repeated tutor step titles and shows one active step', async () => {
