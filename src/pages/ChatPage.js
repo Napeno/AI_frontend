@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useChat } from '../hooks/useChat';
 import { formatAIMessage } from '../utils/chatUtils';
 import t from '../locales/i18n';
@@ -27,6 +27,8 @@ const ChatPage = () => {
   const subjectPickerSeenRef = useRef(false);
   const [settingsSelected, setSettingsSelected] = useState(true);
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const [searchParams] = useSearchParams();
+  const restoredSessionRef = useRef('');
   const userAvatar = '/avatar.png';
   const isCoolingDown = cooldownRemaining > 0;
 
@@ -39,6 +41,13 @@ const ChatPage = () => {
   } = useChat(setCoinAnimationTrigger, setPointsAnimationTrigger);
 
   useEffect(() => { loadConversations(); }, [loadConversations]);
+
+  useEffect(() => {
+    const requestedSessionId = searchParams.get('sessionId');
+    if (!requestedSessionId || restoredSessionRef.current === requestedSessionId) return;
+    restoredSessionRef.current = requestedSessionId;
+    loadConversation(requestedSessionId);
+  }, [searchParams, loadConversation]);
 
   useEffect(() => {
     if (!isHistoryOpen) return undefined;
