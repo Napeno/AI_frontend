@@ -583,13 +583,14 @@ const AITutorPage = () => {
                         {!selected && (
                           <div className="mt-2 h-2 rounded-full bg-slate-200" />
                         )}
-                        {active && selected && (
+                        {active && feedback && (
                           <p className="mt-1 text-sm text-slate-700">
                             {step.explanation ||
                               "Đọc kỹ đề và nêu bước suy luận của em."}
                           </p>
                         )}
                         {active &&
+                          feedback &&
                           (feedback.includes("Chưa đúng") ? (
                             <SubjectStep
                               step={step}
