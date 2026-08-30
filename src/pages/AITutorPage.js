@@ -5,7 +5,7 @@ import { post } from '../utils/apiClient';
 const Visual = ({ visual }) => {
   if (visual?.kind === 'image' && visual?.url) return <img src={visual.url} alt={visual.alt || 'Minh họa do AI tạo'} className="w-full rounded-2xl border border-orange-200 object-contain" />;
   if (visual?.url) return <img src={visual.url} alt={visual.alt || 'Minh họa do AI tạo'} className="w-full rounded-2xl border border-orange-200 object-contain" />;
-  if (visual?.kind === 'svg' && visual?.spec?.svg) return <img src={`data:image/svg+xml,${encodeURIComponent(visual.spec.svg)}`} alt={visual.spec.label || 'Sơ đồ AI tạo'} className="w-full rounded-2xl border border-orange-200 bg-orange-50 object-contain" />;
+  if (visual?.kind === 'svg' && visual?.spec?.svg) return <div role="img" aria-label={visual.spec.label || 'Minh họa do Gemini tạo'} className="flex w-full items-center justify-center overflow-hidden rounded-2xl border border-orange-200 bg-orange-50 p-4 [&>svg]:max-h-60 [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: visual.spec.svg }} />;
   if (visual?.kind === 'svg') return <svg viewBox="0 0 560 240" className="w-full rounded-2xl bg-orange-50 p-4" role="img" aria-label="Sơ đồ AI tạo"><rect x="90" y="38" width="380" height="150" rx="18" fill="#fed7aa" stroke="#f97316" strokeWidth="4" /><path d="M130 150 H430 M280 70 V175" stroke="#c2410c" strokeWidth="4" /><text x="280" y="220" textAnchor="middle" fill="#7c2d12" fontSize="18">{visual?.spec?.label || 'Sơ đồ bài toán'}</text></svg>;
   return null;
 };
