@@ -15,6 +15,7 @@ import PracticePage from './pages/PracticePage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import ThinkingJournalPage from './pages/ThinkingJournalPage';
 import AITutorPage from './pages/AITutorPage';
+import AITutorLibraryPage from './pages/AITutorLibraryPage';
 
 const AppContent = () => {
   const { token, user, authReady, logout } = useAuth();
@@ -111,6 +112,7 @@ const AppContent = () => {
         <Route path="/practice" element={token ? (isAdmin ? <Navigate to="/" replace /> : <PracticePage />) : <Navigate to="/login" replace />} />
         <Route path="/thinking" element={token ? (isAdmin ? <Navigate to="/" replace /> : <ThinkingJournalPage />) : <Navigate to="/login" replace />} />
         <Route path="/ai-tutor" element={token ? (isAdmin ? <Navigate to="/" replace /> : <AITutorPage />) : <Navigate to="/login" replace />} />
+        <Route path="/ai-tutor/library" element={token ? (isAdmin ? <Navigate to="/" replace /> : <AITutorLibraryPage />) : <Navigate to="/login" replace />} />
         <Route path="/ai-tutor/:sessionId" element={token ? (isAdmin ? <Navigate to="/" replace /> : <AITutorPage />) : <Navigate to="/login" replace />} />
         <Route path="/admin" element={token && isAdmin ? <Navigate to="/" replace /> : <Navigate to="/chat" replace />} />
         <Route path="/game" element={isAdmin ? <Navigate to="/" replace /> : <GameHomePage />} />
