@@ -93,9 +93,105 @@ test('reveals the correct answer and wrong-answer guidance only after submit', a
 
   await waitFor(() => expect(screen.getByText('Chưa đúng. Hãy thử lại.')).toBeInTheDocument());
   expect(screen.getAllByText('Tách dữ kiện.').length).toBeGreaterThan(0);
-  expect(screen.getByAltText('StudentAI')).toBeInTheDocument();
-  expect(screen.getByText('Kết quả')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Kết quả: Ô trống' })).toBeInTheDocument();
   expect(screen.getAllByText('🔒')).toHaveLength(1);
+});
+
+test('shows a simple white blank target for wrong-answer guidance', async () => {
+  post
+    .mockResolvedValueOnce(response({ lesson: makeLesson() }))
+    .mockResolvedValueOnce(response({
+      correct: false,
+      message: 'Chưa đúng. Hãy thử lại.',
+      lesson: makeLesson({ stepIndex: 0, correctOptionId: 'B' }),
+    }));
+  renderTutor();
+
+  await screen.findByText('Chọn kết quả đúng.');
+  fireEvent.click(screen.getByRole('button', { name: /A\. Bốn/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Trả lời/ }));
+
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Kết quả: Ô trống' })).toHaveStyle({ backgroundColor: '#fff' }));
+  expect(screen.getByRole('button', { name: '4' })).toBeInTheDocument();
+});
+
+test('shows the correct blank answer and advances after review', async () => {
+  const nextLesson = {
+    ...makeLesson({ stepIndex: 1, correctOptionId: 'B' }),
+    question: {
+      ...makeLesson({ stepIndex: 1, correctOptionId: 'B' }).question,
+      tutorSteps: [step, { ...step, id: 's2', explanation: 'Hướng dẫn bước hai.' }],
+    },
+  };
+  const lessonWithWrongToken = {
+    ...makeLesson({ stepIndex: 0 }),
+    question: {
+      ...makeLesson().question,
+      tutorSteps: [{ ...step, tokens: [step.tokens[0], { id: 't2', label: '9', type: 'number' }] }, { ...step, id: 's2' }],
+    },
+  };
+  post
+    .mockResolvedValueOnce(response({ lesson: makeLesson() }))
+    .mockResolvedValueOnce(response({
+      correct: false,
+      message: 'Chưa đúng. Hãy thử lại.',
+      lesson: lessonWithWrongToken,
+    }))
+    .mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({
+        correct: false,
+        error: 'Câu trả lời chưa đúng. Đáp án đúng ở bên dưới.',
+        correctAnswer: [{ blankId: 'b1', label: '4' }],
+        guidance: 'Tính 2 × 2 × a để tìm số hạng giữa.',
+        lesson: lessonWithWrongToken,
+      }),
+    })
+    .mockResolvedValueOnce(response({ lesson: nextLesson }));
+  renderTutor();
+
+  await screen.findByText('Chọn kết quả đúng.');
+  fireEvent.click(screen.getByRole('button', { name: /A\. Bốn/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Trả lời/ }));
+  const blank = await screen.findByRole('button', { name: 'Kết quả: Ô trống' });
+  fireEvent.click(screen.getByRole('button', { name: '9' }));
+  fireEvent.click(blank);
+  fireEvent.click(await screen.findByRole('button', { name: 'Tiếp tục' }));
+
+  expect(await screen.findByText('Đáp án đúng: 4')).toBeInTheDocument();
+  expect(screen.getByText('Hướng dẫn: Tính 2 × 2 × a để tìm số hạng giữa.')).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Tiếp tục' }));
+  await waitFor(() => expect(post).toHaveBeenLastCalledWith('/ai-tutor/lessons/lesson-1/step', {
+    questionId: 'q1',
+    stepId: 's1',
+    placements: {},
+    interactionAnswer: { stepReview: true },
+  }));
+  expect(screen.queryByText('Tách dữ kiện.')).not.toBeInTheDocument();
+  expect(await screen.findByText('Hướng dẫn bước hai.')).toBeInTheDocument();
+});
+
+test('scrolls the active guidance area into view after a wrong answer', async () => {
+  const scrollIntoView = jest.fn();
+  const originalScrollIntoView = Element.prototype.scrollIntoView;
+  Element.prototype.scrollIntoView = scrollIntoView;
+  post
+    .mockResolvedValueOnce(response({ lesson: makeLesson() }))
+    .mockResolvedValueOnce(response({
+      correct: false,
+      message: 'Chưa đúng. Hãy thử lại.',
+      lesson: makeLesson({ stepIndex: 0, correctOptionId: 'B' }),
+    }));
+
+  try {
+    renderTutor();
+    await screen.findByText('Chọn kết quả đúng.');
+    fireEvent.click(screen.getByRole('button', { name: /A\. Bốn/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Trả lời/ }));
+    await waitFor(() => expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'center' }));
+  } finally {
+    Element.prototype.scrollIntoView = originalScrollIntoView;
+  }
 });
 
 test('shows praise after a correct submitted answer', async () => {
@@ -114,6 +210,8 @@ test('shows praise after a correct submitted answer', async () => {
 
   await waitFor(() => expect(screen.getByText('Chính xác! Mở bước tiếp theo nhé.')).toBeInTheDocument());
   expect(screen.getByRole('button', { name: /Câu tiếp theo/ })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /A\. Bốn/ })).toHaveClass('border-green-700', 'bg-green-600', 'text-white');
+  expect(screen.getByText('Chính xác! Mở bước tiếp theo nhé.').parentElement).toHaveClass('border-emerald-200', 'bg-emerald-50', 'text-emerald-800');
 });
 
 test('shows AI analysis and an easier example in the opened guidance card', async () => {
@@ -134,9 +232,43 @@ test('shows AI analysis and an easier example in the opened guidance card', asyn
   fireEvent.click(screen.getByRole('button', { name: /A\. Bốn/ }));
   fireEvent.click(screen.getByRole('button', { name: /Trả lời/ }));
 
-  expect(await screen.findByText('Phân tích câu hỏi')).toBeInTheDocument();
-  expect(screen.getByText('Ví dụ dễ hơn')).toBeInTheDocument();
+  const moreGuidance = await screen.findByText('Gợi ý thêm');
+  fireEvent.click(moreGuidance);
+  expect(screen.getByText('Phân tích:')).toBeInTheDocument();
+  expect(screen.getByText('Ví dụ dễ hơn:')).toBeInTheDocument();
   expect(screen.queryByText(/token/i)).not.toBeInTheDocument();
+});
+
+test('collapses the completed step and opens the next step', async () => {
+  const lessonWithSteps = stepIndex => ({
+    ...makeLesson({ stepIndex }),
+    question: {
+      ...makeLesson({ stepIndex }).question,
+      tutorSteps: [step, { ...step, id: 's2', title: 'Bước 2', explanation: 'Hướng dẫn bước hai.' }],
+    },
+  });
+  post
+    .mockResolvedValueOnce(response({ lesson: lessonWithSteps(-1) }))
+    .mockResolvedValueOnce(response({
+      correct: false,
+      message: 'Chưa đúng. Hãy thử lại.',
+      lesson: lessonWithSteps(0),
+    }))
+    .mockResolvedValueOnce(response({ lesson: lessonWithSteps(1) }));
+  renderTutor();
+
+  await screen.findByText('Chọn kết quả đúng.');
+  fireEvent.click(screen.getByRole('button', { name: /A\. Bốn/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Trả lời/ }));
+  const blank = await screen.findByRole('button', { name: 'Kết quả: Ô trống' });
+  fireEvent.click(screen.getByRole('button', { name: '4' }));
+  fireEvent.click(blank);
+  fireEvent.click(screen.getByRole('button', { name: 'Tiếp tục' }));
+
+  expect(await screen.findByText('Hướng dẫn bước hai.')).toBeInTheDocument();
+  expect(screen.getByText('Tốt lắm, tiếp tục nhé.').parentElement).toHaveClass('border-emerald-200', 'bg-emerald-50', 'text-emerald-800');
+  expect(screen.queryByText('Tách dữ kiện.')).not.toBeInTheDocument();
+  expect(screen.queryAllByText('🔒')).toHaveLength(0);
 });
 
 test('moves to the next question directly after a correct answer', async () => {
@@ -194,7 +326,7 @@ test('normalizes repeated tutor step titles and shows one active step', async ()
   await waitFor(() => expect(screen.getByText('Chưa đúng. Hãy thử lại.')).toBeInTheDocument());
   expect(screen.getAllByRole('heading', { name: /^Bước [12]$/ })).toHaveLength(2);
   expect(screen.queryByText('Bước 1 · Xác định dữ kiện')).not.toBeInTheDocument();
-  expect(screen.getByText('Kết quả')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Kết quả: Ô trống' })).toBeInTheDocument();
   expect(screen.getAllByText('🔒')).toHaveLength(1);
 });
 
@@ -245,7 +377,7 @@ test('does not show reward or update auth state for an incorrect answer', async 
   await waitFor(() => expect(screen.getByText('Chưa đúng. Hãy thử lại.')).toBeInTheDocument());
   expect(screen.queryByText(/điểm ·/)).not.toBeInTheDocument();
   expect(updateUserChestnuts).not.toHaveBeenCalled();
-  expect(document.querySelectorAll('[aria-hidden="true"] span')).toHaveLength(0);
+  expect(document.querySelectorAll('.animate-confetti-fall')).toHaveLength(0);
 });
 
 test('uses the previous-question endpoint and locks the returned question', async () => {
@@ -267,4 +399,12 @@ test('shows a recoverable message when the API lesson has no active question', a
 
   expect(await screen.findByText('Chưa tải được câu hỏi luyện tập.')).toBeInTheDocument();
   expect(screen.getByRole('link', { name: /Về Chat/ })).toBeInTheDocument();
+});
+
+test('shows the Vietnamese API error when the source conversation is missing', async () => {
+  post.mockResolvedValue({ ok: false, json: async () => ({ error: 'Không tìm thấy cuộc trò chuyện.' }) });
+  renderTutor();
+
+  expect(await screen.findByText('Không tìm thấy cuộc trò chuyện.')).toBeInTheDocument();
+  expect(screen.queryByText('Conversation not found')).not.toBeInTheDocument();
 });

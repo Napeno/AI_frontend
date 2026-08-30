@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { post } from "../utils/apiClient";
 import { useAuth } from "../context/AuthContext";
@@ -81,23 +81,20 @@ const StepGuidance = ({ step, animate = false }) => (
     <p className="text-base leading-7 text-slate-800 sm:text-lg">
       <TypedText text={step.explanation} animate={animate} />
     </p>
-    {step.analysis && (
-      <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-5 text-base leading-7 text-blue-950">
-        <p className="font-bold text-blue-700">Phân tích câu hỏi</p>
-        <p className="mt-1"><TypedText text={step.analysis} animate={animate} /></p>
-      </div>
-    )}
-    {step.easierExample?.prompt && (
-      <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-base leading-7 text-amber-950">
-        <p className="font-bold text-amber-700">Ví dụ dễ hơn</p>
-        <p className="mt-1"><TypedText text={step.easierExample.prompt} animate={animate} /></p>
-        {step.easierExample.hint && <p className="mt-2 text-sm text-amber-800">Gợi ý: {step.easierExample.hint}</p>}
-      </div>
+    {(step.analysis || step.easierExample?.prompt) && (
+      <details className="mt-3 rounded-xl border border-slate-200 bg-slate-50 text-sm leading-6 text-slate-700">
+        <summary className="cursor-pointer px-3 py-2 font-bold text-slate-800">Gợi ý thêm</summary>
+        <div className="space-y-2 border-t border-slate-200 px-3 py-3">
+          {step.analysis && <p><strong>Phân tích:</strong> <TypedText text={step.analysis} animate={animate} /></p>}
+          {step.easierExample?.prompt && <p><strong>Ví dụ dễ hơn:</strong> <TypedText text={step.easierExample.prompt} animate={animate} /></p>}
+          {step.easierExample?.hint && <p className="text-slate-600">Gợi ý: {step.easierExample.hint}</p>}
+        </div>
+      </details>
     )}
   </>
 );
 
-const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false }) => {
+const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false, stepFeedback = null }) => {
   const [placements, setPlacements] = useState({});
   const [picked, setPicked] = useState("");
   const [order, setOrder] = useState([]);
@@ -254,74 +251,65 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false }) =>
     step.blanks.length > 0 &&
     step.blanks.every((blank) => placements[blank.id]);
   return (
-    <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-md sm:p-7">
-      <p className="text-base leading-7 text-slate-800 sm:text-lg">
-        <TypedText text={step.explanation} animate={animateExplanation} />
-      </p>
-      {step.analysis && (
-        <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-5 text-base leading-7 text-blue-950">
-          <p className="font-bold text-blue-700">Phân tích câu hỏi</p>
-          <p className="mt-1"><TypedText text={step.analysis} animate={animateExplanation} /></p>
-        </div>
-      )}
-      {step.easierExample?.prompt && (
-        <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-base leading-7 text-amber-950">
-          <p className="font-bold text-amber-700">Ví dụ dễ hơn</p>
-          <p className="mt-1"><TypedText text={step.easierExample.prompt} animate={animateExplanation} /></p>
-          {step.easierExample.hint && <p className="mt-2 text-sm text-amber-800">Gợi ý: {step.easierExample.hint}</p>}
-        </div>
-      )}
-      <p className="mt-6 text-base font-bold text-slate-800">Chọn đáp án để điền vào ô trống</p>
-      <div className="mt-3 rounded-2xl border-2 border-slate-200 bg-slate-50 p-4 shadow-inner">
-        <p className="mb-3 text-sm font-semibold text-slate-600">Đáp án có thể chọn</p>
-        <div className="flex flex-wrap gap-3">
-          {step.tokens.map((token) => (
-            <button
-              key={token.id}
-              type="button"
-              draggable
-              onDragStart={(event) =>
-                event.dataTransfer.setData("text/plain", token.id)
-              }
-              onClick={() => setPicked(token.id)}
-              className={`rounded-xl border-2 bg-white px-5 py-3 text-base font-bold shadow-sm transition ${picked === token.id ? "border-emerald-600 bg-emerald-50 text-emerald-900" : "border-slate-300 text-slate-800 hover:border-emerald-500 hover:bg-emerald-50"}`}
-            >
-              {token.label}
-            </button>
-          ))}
-        </div>
-      </div>
-      <div className="mt-4 space-y-3">
-        {step.blanks.map((blank) => (
+    <div className="mt-3 rounded-2xl border-0 bg-transparent p-0">
+      <StepGuidance step={step} animate={animateExplanation} />
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        {step.tokens.map((token) => (
           <button
-            key={blank.id}
+            key={token.id}
             type="button"
-            onClick={() => put(blank.id)}
-            onDragOver={(event) => event.preventDefault()}
-            onDrop={(event) => {
-              event.preventDefault();
-              setPlacements((value) => ({
-                ...value,
-                [blank.id]: event.dataTransfer.getData("text/plain"),
-              }));
-            }}
-            className="flex min-h-16 w-full items-center justify-between gap-4 rounded-xl border-2 border-dashed border-slate-300 bg-white px-5 py-4 text-left text-base shadow-sm"
+            draggable
+            onDragStart={(event) =>
+              event.dataTransfer.setData("text/plain", token.id)
+            }
+            onClick={() => setPicked(token.id)}
+            className={`rounded-lg border-2 bg-white px-3 py-2 text-sm font-bold shadow-sm transition ${picked === token.id ? "border-orange-500 bg-orange-100 text-orange-900" : "border-slate-300 text-slate-800 hover:border-orange-400 hover:bg-orange-50"}`}
           >
-            <span className="font-bold text-slate-900">{blank.label}</span>
-            <span className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 font-semibold text-slate-700">
-              {labelFor(placements[blank.id])}
-            </span>
+            {token.label}
           </button>
         ))}
       </div>
-      <button
-        type="button"
-        disabled={!ready || loading}
-        onClick={() => onSubmit(placements, {})}
-        className="mt-5 w-full rounded-xl bg-emerald-600 px-5 py-4 text-base font-bold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        Tiếp tục
-      </button>
+      <div className="mt-4 space-y-2">
+        {step.blanks.map((blank, index) => (
+          <div key={blank.id} className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => put(blank.id)}
+              onDragOver={(event) => event.preventDefault()}
+              onDrop={(event) => {
+                event.preventDefault();
+                setPlacements((value) => ({
+                  ...value,
+                  [blank.id]: event.dataTransfer.getData("text/plain"),
+                }));
+              }}
+              aria-label={`${blank.label}: ${placements[blank.id] ? labelFor(placements[blank.id]) : "Ô trống"}`}
+              style={{ backgroundColor: "#fff" }}
+              className={`flex h-12 min-w-20 items-center justify-center rounded-lg border-2 bg-white px-4 text-base font-bold shadow-sm transition ${placements[blank.id] ? "border-emerald-500 text-emerald-800" : "border-slate-300 text-slate-300 hover:border-orange-400"}`}
+            >
+              {placements[blank.id] ? labelFor(placements[blank.id]) : ""}
+            </button>
+            {index < step.blanks.length - 1 && <span className="text-lg text-slate-500">,</span>}
+          </div>
+        ))}
+      </div>
+      {stepFeedback && (
+        <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900">
+          <p className="font-bold">Đáp án đúng: {stepFeedback.correctAnswer?.map(answer => answer.label).join(", ") || "Xem lại hướng dẫn ở trên."}</p>
+          {stepFeedback.guidance && <p className="mt-1">Hướng dẫn: {stepFeedback.guidance}</p>}
+        </div>
+      )}
+      <div className="mt-4 flex flex-wrap items-center justify-end gap-3 border-t border-orange-200 pt-4">
+        {!ready && !stepFeedback && <p className="text-sm text-slate-500">Hãy điền đủ tất cả ô trống</p>}
+        <button
+          type="button"
+          disabled={(!ready && !stepFeedback) || loading}
+          onClick={() => onSubmit(stepFeedback ? {} : placements, stepFeedback ? { stepReview: true } : {})}
+          className="rounded-xl bg-slate-300 px-6 py-3 text-xs font-extrabold uppercase tracking-wide text-white transition enabled:bg-orange-500 enabled:hover:bg-orange-600 disabled:cursor-not-allowed"
+        >
+          Tiếp tục
+        </button>
+      </div>
     </div>
   );
 };
@@ -334,10 +322,12 @@ const AITutorPage = () => {
   const [selected, setSelected] = useState("");
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
   const [answerCorrect, setAnswerCorrect] = useState(null);
+  const [stepFeedback, setStepFeedback] = useState(null);
   const [reward, setReward] = useState(null);
   const [confettiBurst, setConfettiBurst] = useState(0);
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(Boolean(sessionId));
+  const activeStepRef = useRef(null);
   const question = lesson?.question;
   const activeStep = useMemo(
     () => question?.tutorSteps?.[lesson?.currentStepIndex] || null,
@@ -374,6 +364,7 @@ const AITutorPage = () => {
           setAnswerSubmitted(false);
           setAnswerCorrect(null);
           setReward(null);
+          setStepFeedback(null);
           setSelected("");
         }
       } catch (error) {
@@ -409,6 +400,7 @@ const AITutorPage = () => {
       setLesson(normalizeLesson(data.lesson));
       setAnswerSubmitted(true);
       setAnswerCorrect(data.correct);
+      setStepFeedback(null);
       setReward(data.correct && data.pointsAwarded > 0 ? {
         points: data.pointsAwarded,
         chestnuts: data.chestnutsAwarded || 0,
@@ -416,9 +408,7 @@ const AITutorPage = () => {
       if (data.correct && data.totalChestnuts !== null && data.totalChestnuts !== undefined) {
         updateUserChestnuts?.(data.totalChestnuts, data.totalPoints);
       }
-      if (data.correct) {
-        if (data.pointsAwarded > 0) setConfettiBurst(value => value + 1);
-      }
+      if (data.correct) setConfettiBurst(value => value + 1);
       setFeedback(data.message);
     } catch (error) {
       setFeedback(error.message);
@@ -438,9 +428,17 @@ const AITutorPage = () => {
         interactionAnswer,
       });
       const data = await response.json();
-      if (!response.ok)
+      if (!response.ok) {
+        if (data.lesson && data.correct === false && data.guidance) {
+          setLesson(normalizeLesson(data.lesson));
+          setStepFeedback({ correctAnswer: data.correctAnswer, guidance: data.guidance });
+          setFeedback(data.error || "Câu trả lời chưa đúng.");
+          return;
+        }
         throw new Error(data.error || "Kiểm tra bước chưa thành công.");
+      }
       setLesson(normalizeLesson(data.lesson));
+      setStepFeedback(null);
       const movedToNextQuestion =
         data.lesson.currentQuestionIndex !== previousQuestionIndex;
       setSelected(movedToNextQuestion ? "" : selected);
@@ -461,6 +459,14 @@ const AITutorPage = () => {
     }
   };
 
+  useEffect(() => {
+    if (answerCorrect !== false) return undefined;
+    const timeoutId = setTimeout(() => {
+      activeStepRef.current?.scrollIntoView?.({ behavior: "smooth", block: "center" });
+    }, 60);
+    return () => clearTimeout(timeoutId);
+  }, [answerCorrect, lesson?.currentQuestionIndex, lesson?.currentStepIndex]);
+
   const goPrevious = async () => {
     if (!lesson || loading || lesson.currentQuestionIndex <= 0) return;
     setLoading(true);
@@ -477,6 +483,7 @@ const AITutorPage = () => {
       setAnswerSubmitted(false);
       setAnswerCorrect(null);
       setReward(null);
+      setStepFeedback(null);
       setFeedback("");
     } catch (error) {
       setFeedback(error.message);
@@ -626,9 +633,9 @@ const AITutorPage = () => {
                         type="button"
                         onClick={() => choose(option.id)}
                         disabled={loading || answerSubmitted}
-                        className={`min-h-16 rounded-xl border-2 p-5 text-left text-lg font-bold transition ${answerSubmitted && isCorrect ? "border-emerald-500 bg-emerald-50 text-emerald-900" : isWrong ? "border-red-400 bg-red-50 text-red-800" : isSelected ? "border-[#2f5fe5] bg-[#eef4ff] text-[#173b9d]" : "border-[#c5d3f5] bg-[#ffffff] text-[#173b9d] hover:border-[#2f5fe5] hover:bg-[#f5f8ff]"}`}
+                        className={`min-h-16 rounded-xl border-2 p-5 text-left text-lg font-bold transition ${answerSubmitted && isCorrect ? "border-green-700 bg-green-600 text-white" : isWrong ? "border-red-400 bg-red-50 text-red-800" : isSelected ? "border-[#2f5fe5] bg-[#eef4ff] text-[#173b9d]" : "border-[#c5d3f5] bg-[#ffffff] text-[#173b9d] hover:border-[#2f5fe5] hover:bg-[#f5f8ff]"}`}
                       >
-                        <span className="mr-2 text-[#2f5fe5]">
+                          <span className={`mr-2 ${answerSubmitted && isCorrect ? "text-green-100" : "text-[#2f5fe5]"}`}>
                           {option.id}.
                         </span>
                         {option.text}
@@ -649,9 +656,12 @@ const AITutorPage = () => {
                 {feedback && (
                   <p
                     aria-live="polite"
-                    className={`mt-4 rounded-xl p-4 text-sm font-semibold ${answerCorrect === false ? "border border-rose-200 bg-rose-50 text-rose-800" : feedback.includes("Chính xác") || feedback.includes("Tốt lắm") || feedback.includes("hoàn thành") ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-900"}`}
+                    className={`mt-4 rounded-xl p-4 text-sm font-semibold ${answerCorrect === false && !feedback.includes("Tốt lắm") ? "border border-rose-200 bg-rose-50 text-rose-800" : feedback.includes("Chính xác") || feedback.includes("Tốt lắm") || feedback.includes("hoàn thành") ? "border border-emerald-200 bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-900"}`}
                   >
-                    <TypedText text={feedback} animate={answerCorrect === false} />
+                    <TypedText
+                      text={feedback}
+                      animate={answerCorrect === false && !feedback.includes("Tốt lắm")}
+                    />
                   </p>
                 )}
                 {reward && (
@@ -676,39 +686,38 @@ const AITutorPage = () => {
               </>
             )}
           </section>
-          <aside className="min-h-[900px] overflow-hidden rounded-3xl border-2 border-slate-200 bg-white shadow-xl">
-            <div className="border-b-2 border-slate-200 bg-white p-9">
+          <aside className="flex min-h-[760px] flex-col overflow-hidden rounded-3xl border-2 border-slate-200 bg-white shadow-xl lg:h-[calc(100vh-4rem)] lg:max-h-[1100px] lg:min-h-0">
+            <div className="shrink-0 border-b-2 border-slate-200 bg-white p-7 sm:p-9">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-3xl font-bold text-slate-950">
-                  AITutor Solve
+                  Hướng dẫn AI Tutor
                 </h2>
                 <span className="text-sm font-bold text-slate-400">
                   A− &nbsp; A &nbsp; A+
                 </span>
               </div>
-              <div className="mt-6 rounded-3xl border-2 border-blue-300 bg-blue-50 p-6 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-xl font-bold text-blue-700">Mẹo nhỏ</h3>
-                    <p className="mt-2 text-base leading-7 text-slate-800">
-                      Đọc phần phân tích, xem ví dụ dễ hơn rồi chọn đáp án và kéo vào vị trí cần điền.
-                    </p>
-                  </div>
-                  <img
-                    src="/studentAI.png"
-                    alt="StudentAI"
-                    className="h-32 w-32 shrink-0 object-contain"
-                  />
-                </div>
-              </div>
             </div>
-            <div className="space-y-5 p-7">
+            <div className="scrollbar-thin min-h-0 flex-1 space-y-5 overflow-y-auto p-7">
+              <div className="flex items-center gap-4 overflow-hidden rounded-3xl border-2 border-sky-200 bg-sky-50 p-5 text-sky-950 shadow-sm">
+                <div className="min-w-0 flex-1">
+                  <p className="text-lg font-bold">Mẹo nhỏ</p>
+                  <p className="mt-1 text-sm leading-6">
+                    Điền vào các ô trống. Đáp án có thể là số, biểu thức hoặc một từ.
+                  </p>
+                </div>
+                <img
+                  src="/studentAI.png"
+                  alt="Mascot hướng dẫn học tập"
+                  className="h-24 w-24 shrink-0 object-contain sm:h-28 sm:w-28"
+                />
+              </div>
               {question.tutorSteps.map((step, index) => {
                 const unlocked = answerSubmitted && index <= lesson.currentStepIndex;
                 const active = unlocked && index === lesson.currentStepIndex;
                 return (
                   <article
                     key={step.id}
+                    ref={active ? activeStepRef : undefined}
                     className={`min-h-24 rounded-3xl border-2 p-6 shadow-md ${active ? "border-emerald-400 bg-white" : unlocked ? "border-emerald-200 bg-white" : "border-slate-200 bg-white text-violet-700"}`}
                   >
                     <div className="flex gap-3">
@@ -736,6 +745,7 @@ const AITutorPage = () => {
                               onSubmit={submitStep}
                               loading={loading}
                               animateExplanation
+                              stepFeedback={stepFeedback}
                             />
                           ) : answerCorrect === true ? (
                             <button
@@ -763,7 +773,7 @@ const AITutorPage = () => {
               })}
             </div>
             {!answerSubmitted && (
-              <div className="m-7 rounded-3xl border-2 border-amber-200 bg-amber-50 p-6 text-base leading-7 text-amber-950 shadow-sm">
+              <div className="mx-7 mb-7 rounded-3xl border-2 border-amber-200 bg-amber-50 p-5 text-base leading-7 text-amber-950 shadow-sm">
                 <strong className="text-lg">💡 Gợi ý</strong>
                 <p className="mt-1">
                   {selected

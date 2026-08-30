@@ -20,3 +20,20 @@ test('opens the compact support menu and submits the selected choice', () => {
   fireEvent.click(screen.getByRole('button', { name: 'Kiểm tra lỗi sai' }));
   expect(onSubmit).toHaveBeenCalledWith({ type: 'support_choice', value: 'calculation' });
 });
+
+test('shows the student question when a blocker gate has a mini quiz', () => {
+  const onSubmit = jest.fn();
+  const miniQuiz = {
+    question: 'Bước nhỏ đầu tiên em nên làm là gì?',
+    options: [
+      { id: 'A', text: 'Xác định dữ kiện' },
+      { id: 'B', text: 'Chép đáp án' },
+    ],
+  };
+
+  render(<InterventionGate intervention={{ active: true, requiredAction: 'choose_blocker', miniQuiz }} isLoading={false} onSubmit={onSubmit} />);
+
+  expect(screen.getByText(miniQuiz.question)).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /A\. Xác định dữ kiện/i })).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Em chưa hiểu đề' })).not.toBeInTheDocument();
+});
