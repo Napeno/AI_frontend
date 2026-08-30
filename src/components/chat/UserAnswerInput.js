@@ -83,7 +83,7 @@ const UserAnswerInput = ({
     : `${t('problemContext.question')} ${questionToShow?.id} — `;
 
   return (
-    <div className="mb-2 sm:mb-3 p-2.5 sm:p-3 bg-orange-50 rounded-lg border border-orange-200 dark:bg-orange-900/50 dark:border-orange-700/60">
+    <div className="check-answer-panel mb-2 sm:mb-3 rounded-2xl border p-2.5 sm:p-3">
       {showProblemContext && questionToShow && (
         <div className="mb-3 rounded-md border border-orange-200 bg-white/80 p-2 dark:border-orange-700 dark:bg-gray-800/70">
           <p className="text-xs font-semibold text-orange-800 dark:text-orange-200">

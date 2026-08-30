@@ -15,7 +15,7 @@ import ChatActions from '../components/chat/ChatActions';
 import InterventionGate from '../components/chat/InterventionGate';
 
 const CHAT_COOLDOWN_SECONDS = 3;
-const DEFAULT_CHAT_SETTINGS = { educationLevel: 'middle', subjectArea: 'natural_sciences', course: 'mathematics' };
+const DEFAULT_CHAT_SETTINGS = { educationLevel: 'middle', subjectArea: 'mathematics', course: 'mathematics' };
 
 const ChatPage = () => {
   const [keyboardOffset, setKeyboardOffset] = useState(0);

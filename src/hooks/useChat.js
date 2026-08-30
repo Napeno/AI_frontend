@@ -39,7 +39,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
   const [intervention, setIntervention] = useState(DEFAULT_INTERVENTION);
   const [problemContext, setProblemContext] = useState(null);
   const messagesEndRef = useRef(null);
-  const chatSettings = useRef({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
+  const chatSettings = useRef({ educationLevel: 'middle', subjectArea: 'mathematics', course: 'mathematics' });
 
   const syncIntervention = useCallback((nextIntervention, fallback = DEFAULT_INTERVENTION) => {
     setIntervention(nextIntervention || fallback);
@@ -70,7 +70,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     if (!sessionId && !isInitialized) {
       setIsInitialized(true);
       // Create a default chat so the screen isn't empty
-      createNewChat({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
+      createNewChat({ educationLevel: 'middle', subjectArea: 'mathematics', course: 'mathematics' });
     }
   }, [sessionId, isInitialized, createNewChat]);
 
@@ -114,6 +114,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
         chatSettings.current = {
           educationLevel: data.educationLevel || 'middle',
           subjectArea: data.subjectArea || 'natural_sciences',
+          course: data.course || (data.subjectArea === 'mathematics' ? 'mathematics' : null),
         };
         
         const conversationMessages = data.history
@@ -207,7 +208,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       if (response.ok) {
         await loadConversations();
         if (sessionId === sessionIdToDelete) {
-          createNewChat({ educationLevel: 'middle', subjectArea: 'natural_sciences' });
+          createNewChat({ educationLevel: 'middle', subjectArea: 'mathematics', course: 'mathematics' });
         }
       }
     } catch (error) {

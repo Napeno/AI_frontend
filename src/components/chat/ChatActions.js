@@ -65,7 +65,7 @@ const ChatActions = ({
             {isLoading ? t('chat.actions.preparing') : fullAnswerLabel}
           </button>
           {fullAnswerLocked && (
-            <p className="px-2 text-center text-xs sm:text-sm text-orange-700 dark:text-orange-300">
+            <p className="px-2 text-center text-xs sm:text-sm text-violet-700 dark:text-violet-300">
               {t('chat.actions.fullAnswerLocked')}
             </p>
           )}
