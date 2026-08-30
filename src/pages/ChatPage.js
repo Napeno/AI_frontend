@@ -106,7 +106,7 @@ const ChatPage = () => {
     setIsHistoryOpen(false);
   };
   const isEmptyChat = settingsSelected && messages.length === 0;
-  const input = <ChatInput inputMessage={inputMessage} setInputMessage={setInputMessage} isLoading={isLoading} isCoolingDown={isCoolingDown} cooldownRemaining={cooldownRemaining} onSend={handleSendMessage} handleKeyPress={handleKeyPress} selectedImage={selectedImage} setSelectedImage={setSelectedImage} supportMode={supportMode} onOpenSubjectPicker={() => setIsSubjectPickerOpen(true)} />;
+  const input = <ChatInput inputMessage={inputMessage} setInputMessage={setInputMessage} isLoading={isLoading} isCoolingDown={isCoolingDown} cooldownRemaining={cooldownRemaining} onSend={handleSendMessage} handleKeyPress={handleKeyPress} selectedImage={selectedImage} setSelectedImage={setSelectedImage} supportMode={supportMode} onOpenSubjectPicker={isEmptyChat ? () => setIsSubjectPickerOpen(true) : undefined} />;
 
   return <div className="chat-shell flex h-[100dvh] overflow-hidden">
     <ChatRail onNewChat={handleNewChat} onOpenHistory={() => setIsHistoryOpen(true)} coinAnimationTrigger={coinAnimationTrigger} pointsAnimationTrigger={pointsAnimationTrigger} />
