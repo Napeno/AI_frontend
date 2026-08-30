@@ -4,7 +4,6 @@ import { useAuth } from '../../context/AuthContext';
 import t from '../../locales/i18n';
 import SettingsModal from '../settings/SettingsModal';
 import AvatarShop from '../shop/AvatarShop';
-import { AVATAR_EMOJIS } from '../../utils/avatarUtils';
 import { get } from '../../utils/apiClient';
 
 const UserProfile = ({ compact = false, menuPosition = 'bottom-0', menuAlign = 'left-12' }) => {
@@ -16,7 +15,6 @@ const UserProfile = ({ compact = false, menuPosition = 'bottom-0', menuAlign = '
   const [badges, setBadges] = useState([]);
   const [journal, setJournal] = useState(null);
   const menuRef = useRef(null);
-  const avatar = AVATAR_EMOJIS[user?.avatar || 'default'] || '👤';
 
   useEffect(() => {
     const close = event => { if (menuRef.current && !menuRef.current.contains(event.target)) setIsMenuOpen(false); };
@@ -66,7 +64,7 @@ const UserProfile = ({ compact = false, menuPosition = 'bottom-0', menuAlign = '
         </div>
       )}
       <button type="button" onClick={() => setIsMenuOpen(value => !value)} aria-label="Mở menu tài khoản" aria-expanded={isMenuOpen} className={compact ? 'flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 text-lg hover:bg-orange-200 dark:bg-orange-950 dark:hover:bg-orange-900' : 'rounded-lg p-2'}>
-        {avatar}
+        <img src="/avatar.png" alt="Avatar người dùng" className="h-8 w-8 object-contain" />
       </button>
     </div>
     <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} activeTab={activeTab} setActiveTab={setActiveTab} />

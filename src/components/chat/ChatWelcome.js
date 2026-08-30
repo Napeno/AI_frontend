@@ -5,7 +5,7 @@ const ChatWelcome = () => {
   return (
     <div className="text-center text-gray-600 my-10">
       <div className="mb-6">
-        <span role="img" aria-label="squirrel" className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-5xl shadow bg-seablue-gradient">🐿️</span>
+        <span className="flex h-16 w-16 items-center justify-center mx-auto mb-4 rounded-full bg-orange-100 shadow"><img src="/avatar.png" alt="ThinkBridge" className="h-14 w-14 object-contain" /></span>
       </div>
       <p className="text-lg mb-2 font-bold text-gray-900">Ready to learn?</p>
       <p className="text-base mb-4 text-gray-700">Ask a question, get a hint, try your answer, and iterate. I’ll help you think — not just tell you the answer.</p>

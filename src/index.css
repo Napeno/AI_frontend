@@ -57,7 +57,7 @@
 /* Custom scrollbar styles with ThinkBridge squirrel theme */
 .scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: #fdba74 #fff7ed;
+  scrollbar-color: #86d4b0 #eefaf4;
 }
 
 .scrollbar-thin::-webkit-scrollbar {
@@ -65,18 +65,18 @@
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {
-  background: #fff7ed;
+  background: #eefaf4;
   border-radius: 10px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #fdba74;
+  background: #86d4b0;
   border-radius: 10px;
-  border: 2px solid #fff7ed;
+  border: 2px solid #eefaf4;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: #fb923c;
+  background: #329b73;
 }
 
 /* Hide scrollbar for better UX on mobile */
@@ -247,7 +247,7 @@
 
 /* Warm acorn background for chat - with image placeholder support */
 .chat-background {
-  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  background: linear-gradient(135deg, #eefaf4 0%, #d9f3e6 100%);
   position: relative;
 }
 
@@ -271,7 +271,7 @@
 }
 
 .chat-background[data-bg-image]::before {
-  background-color: rgba(255, 247, 237, 0.3);
+  background-color: rgba(238, 250, 244, 0.3);
   background-image: none;
   z-index: -1;
 }
@@ -629,33 +629,50 @@ button,
   animation: game-shimmer 3s ease-in-out infinite;
 }
 
-/* Shared orange-and-acorn skin. It intentionally remaps legacy neutral utilities
+/* Shared blue/green learning skin. It intentionally remaps legacy neutral utilities
    so older screens inherit the squirrel theme without changing their behavior. */
 .squirrel-app {
-  --squirrel-cream: #fffaf1;
-  --squirrel-paper: #fff7ed;
-  --squirrel-peach: #ffedd5;
-  --squirrel-orange: #ea580c;
-  --squirrel-bark: #7c2d12;
-  color: #431407;
+  --squirrel-cream: #f5fcf8;
+  --squirrel-paper: #e5f5ed;
+  --squirrel-peach: #d9f3e6;
+  --squirrel-orange: #329b73;
+  --squirrel-bark: #194f40;
+  color: #123b31;
   background: var(--squirrel-paper);
 }
 
 .squirrel-hero {
-  background:
-    radial-gradient(circle at 15% 20%, rgba(251, 191, 36, .55) 0 2px, transparent 3px) 0 0 / 54px 54px,
-    radial-gradient(circle at 80% 78%, rgba(194, 65, 12, .22) 0 4px, transparent 5px) 0 0 / 82px 82px,
-    linear-gradient(135deg, #7c2d12 0%, #c2410c 48%, #fb923c 100%);
+  background-color: #dcefdc;
+  background-image: url('./assets/background.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 .squirrel-card {
-  background: rgba(255, 250, 241, .94);
-  border: 1px solid rgba(255, 237, 213, .8);
+  background: rgba(248, 255, 250, .9);
+  border: 1px solid rgba(134, 212, 176, .62);
+  box-shadow: 0 24px 70px rgba(25, 79, 64, .18);
 }
 
 .squirrel-mascot-ring {
-  background: linear-gradient(145deg, #fbbf24, #f97316 55%, #c2410c);
-  border: 4px solid #fff7ed;
+  background: #58bd91;
+  border: 4px solid #f5fcf8;
+}
+
+/* Raised teal buttons matching the reference surface. */
+.squirrel-hero a.bg-seablue-500,
+.squirrel-hero a.bg-seablue-600 {
+  background: linear-gradient(180deg, #3ba77d 0%, #267d60 100%);
+  border: 1px solid rgba(18, 59, 49, .28);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 7px 0 #194f40, 0 12px 22px rgba(25,79,64,.2);
+  text-shadow: 0 1px 2px rgba(18,59,49,.55);
+}
+.squirrel-hero a.bg-seablue-500:hover,
+.squirrel-hero a.bg-seablue-600:hover {
+  background: linear-gradient(180deg, #329b73 0%, #1f654f 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 4px 0 #123b31, 0 9px 16px rgba(25,79,64,.24);
 }
 
 .squirrel-app .bg-white,
@@ -667,52 +684,52 @@ button,
 .squirrel-app .text-gray-900,
 .squirrel-app .text-gray-800,
 .squirrel-app .text-slate-900,
-.squirrel-app .text-slate-800 { color: #431407; }
+.squirrel-app .text-slate-800 { color: #123b31; }
 .squirrel-app .text-gray-700,
 .squirrel-app .text-gray-600,
 .squirrel-app .text-slate-700,
-.squirrel-app .text-slate-600 { color: #7c2d12; }
+.squirrel-app .text-slate-600 { color: #1f654f; }
 .squirrel-app .text-gray-500,
 .squirrel-app .text-gray-400,
 .squirrel-app .text-slate-500,
-.squirrel-app .text-slate-400 { color: #9a3412; }
+.squirrel-app .text-slate-400 { color: #347d67; }
 .squirrel-app .border-gray-200,
 .squirrel-app .border-gray-300,
 .squirrel-app .border-slate-200,
-.squirrel-app .border-slate-300 { border-color: #fed7aa; }
+.squirrel-app .border-slate-300 { border-color: #b6e6cf; }
 .squirrel-app .hover\\:bg-gray-100:hover,
-.squirrel-app .hover\\:bg-slate-100:hover { background-color: #ffedd5; }
+.squirrel-app .hover\\:bg-slate-100:hover { background-color: #d9f3e6; }
 
-.dark .squirrel-app { background: #2d160c; color: #ffedd5; }
+.dark .squirrel-app { background: #102c26; color: #d9f3e6; }
 .dark .squirrel-app .dark\\:bg-gray-900,
 .dark .squirrel-app .dark\\:bg-gray-800,
 .dark .squirrel-app .dark\\:bg-slate-950,
-.dark .squirrel-app .dark\\:bg-slate-900 { background-color: #3f1d0f; }
+.dark .squirrel-app .dark\\:bg-slate-900 { background-color: #163d32; }
 .dark .squirrel-app .dark\\:bg-gray-700,
-.dark .squirrel-app .dark\\:bg-slate-800 { background-color: #54260f; }
+.dark .squirrel-app .dark\\:bg-slate-800 { background-color: #1d5042; }
 .dark .squirrel-app .dark\\:border-gray-700,
 .dark .squirrel-app .dark\\:border-gray-600,
-.dark .squirrel-app .dark\\:border-slate-800 { border-color: #7c2d12; }
+.dark .squirrel-app .dark\\:border-slate-800 { border-color: #2f8064; }
 .dark .squirrel-app .dark\\:text-gray-200,
 .dark .squirrel-app .dark\\:text-gray-300,
 .dark .squirrel-app .dark\\:text-slate-100,
 .dark .squirrel-app .dark\\:text-slate-300,
-.dark .squirrel-app .dark\\:text-slate-400 { color: #ffedd5; }
+.dark .squirrel-app .dark\\:text-slate-400 { color: #d9f3e6; }
 
-::selection { background: #fdba74; color: #431407; }
+::selection { background: #86d4b0; color: #123b31; }
 
 /* Chat is a self-contained surface: no user-selected wallpaper or legacy blue/green
    utilities are allowed to leak into the conversation. */
 .chat-shell {
-  --chat-page: #fff8ee;
-  --chat-panel: #fffdf9;
-  --chat-panel-strong: #fff4e5;
-  --chat-border: #f5d0a6;
-  --chat-text: #431407;
-  --chat-muted: #9a5a2b;
-  --chat-accent: #ea580c;
-  --chat-accent-deep: #9a3412;
-  --chat-shadow: 0 14px 35px rgba(124, 45, 18, .09);
+  --chat-page: #e8f7ef;
+  --chat-panel: #f8fffb;
+  --chat-panel-strong: #e0f4e9;
+  --chat-border: #b6e6cf;
+  --chat-text: #123b31;
+  --chat-muted: #347d67;
+  --chat-accent: #329b73;
+  --chat-accent-deep: #1f654f;
+  --chat-shadow: 0 14px 35px rgba(25, 79, 64, .09);
   background: var(--chat-page);
   color: var(--chat-text);
 }
@@ -722,7 +739,7 @@ button,
   border-right: 1px solid var(--chat-border);
 }
 
-.chat-brand { background: #fff0db; }
+.chat-brand { background: #d9f3e6; }
 .chat-rail-button,
 .chat-header-button,
 .chat-icon-button { color: var(--chat-muted); }
@@ -739,7 +756,7 @@ button,
 .chat-canvas {
   background:
     radial-gradient(circle at 11% 12%, rgba(251, 191, 36, .14) 0 2px, transparent 3px) 0 0 / 64px 64px,
-    linear-gradient(145deg, #fffaf2, #fff7ed);
+    linear-gradient(145deg, #f5fcf8, #e5f5ed);
 }
 .chat-canvas > div { position: relative; z-index: 1; }
 .chat-composer {
@@ -750,7 +767,7 @@ button,
 .chat-welcome { color: var(--chat-text); }
 .chat-welcome p:not(.chat-kicker) { color: var(--chat-muted); }
 .chat-welcome-mascot {
-  background: linear-gradient(145deg, #fbbf24, #f97316);
+  background: linear-gradient(145deg, #9edec9, #329b73);
   border: 4px solid #fff;
   border-radius: 9999px;
   box-shadow: var(--chat-shadow);
@@ -763,15 +780,15 @@ button,
 .chat-input-shell:focus-within { border-color: var(--chat-accent); box-shadow: 0 0 0 3px rgba(249, 115, 22, .14); }
 .chat-input { color: var(--chat-text); }
 .chat-input::placeholder { color: #c58a61; }
-.chat-send { background: linear-gradient(135deg, #f97316, #c2410c); color: white; }
-.chat-send:hover { background: linear-gradient(135deg, #ea580c, #9a3412); }
+.chat-send { background: linear-gradient(135deg, #58bd91, #267d60); color: white; }
+.chat-send:hover { background: linear-gradient(135deg, #329b73, #1f654f); }
 .chat-image-preview { background: var(--chat-panel-strong); border: 1px solid var(--chat-border); }
 .chat-image-thumb { background: #fed7aa; }
 .chat-muted { color: var(--chat-muted); }
 
 .chat-bubble { line-height: 1.6; }
 .chat-bubble-ai { background: var(--chat-panel); border: 1px solid var(--chat-border); color: var(--chat-text); box-shadow: var(--chat-shadow); }
-.chat-bubble-user { background: linear-gradient(135deg, #f97316, #c2410c); color: white; box-shadow: 0 12px 24px rgba(194, 65, 12, .22); }
+.chat-bubble-user { background: linear-gradient(135deg, #58bd91, #267d60); color: white; box-shadow: 0 12px 24px rgba(25, 79, 64, .22); }
 .chat-bubble-success { background: #ecfdf3; border: 1px solid #86efac; color: #14532d; }
 .chat-bubble-error { background: #fff1f2; border: 1px solid #fda4af; color: #881337; }
 .chat-bubble-warn { background: #fff7ed; border: 1px solid #fdba74; color: #7c2d12; }
@@ -780,32 +797,64 @@ button,
 .chat-bubble-user .math-formula { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.35); color: white; }
 .chat-system-message { box-shadow: var(--chat-shadow); }
 .chat-action { color: white; font-size: .875rem; }
-.chat-action-hint { background: linear-gradient(135deg, #f59e0b, #ea580c); }
-.chat-action-answer { background: linear-gradient(135deg, #ea580c, #9a3412); }
+.chat-action-hint { background: linear-gradient(135deg, #58bd91, #267d60); }
+.chat-action-answer { background: linear-gradient(135deg, #329b73, #1f654f); }
 .chat-action:hover { transform: translateY(-1px); filter: brightness(1.04); }
 
 .dark .chat-shell {
-  --chat-page: #211009;
-  --chat-panel: #2d160c;
-  --chat-panel-strong: #3a1d0c;
-  --chat-border: #713513;
-  --chat-text: #fff1dc;
-  --chat-muted: #edb786;
-  --chat-accent: #fb923c;
-  --chat-accent-deep: #fdba74;
+  --chat-page: #102c26;
+  --chat-panel: #163d32;
+  --chat-panel-strong: #1d5042;
+  --chat-border: #2f8064;
+  --chat-text: #e5f5ed;
+  --chat-muted: #9edec9;
+  --chat-accent: #58bd91;
+  --chat-accent-deep: #9edec9;
   --chat-shadow: 0 16px 42px rgba(0, 0, 0, .32);
 }
-.dark .chat-rail { background: #251107; }
-.dark .chat-brand { background: #4a210d; }
+.dark .chat-rail { background: #12352c; }
+.dark .chat-brand { background: #1d5042; }
 .dark .chat-rail-button:hover,
 .dark .chat-header-button:hover,
-.dark .chat-icon-button:hover { background: #4a210d; color: #fdba74; }
+.dark .chat-icon-button:hover { background: #1d5042; color: #9edec9; }
 .dark .chat-header,
-.dark .chat-composer { background: #2d160c; }
-.dark .chat-canvas { background: radial-gradient(circle at 11% 12%, rgba(251, 146, 60, .12) 0 2px, transparent 3px) 0 0 / 64px 64px, linear-gradient(145deg, #241107, #32170a); }
-.dark .chat-welcome-mascot { border-color: #3a1d0c; }
+.dark .chat-composer { background: #163d32; }
+.dark .chat-canvas { background: radial-gradient(circle at 11% 12%, rgba(134, 212, 176, .12) 0 2px, transparent 3px) 0 0 / 64px 64px, linear-gradient(145deg, #12352c, #1d5042); }
+.dark .chat-welcome-mascot { border-color: #1d5042; }
 .dark .chat-input::placeholder { color: #b8794c; }
 .dark .chat-bubble-success { background: #123d27; border-color: #28764c; color: #dcfce7; }
 .dark .chat-bubble-error { background: #4a1420; border-color: #9f233b; color: #ffe4e6; }
 .dark .chat-bubble-warn { background: #4a210d; border-color: #9a4a1e; color: #ffedd5; }
 .dark .chat-bubble .math-formula { background: #4a210d; border-color: #9a4a1e; color: #ffedd5; }
+
+/* Keep legacy orange utility classes visually aligned with the current brand. */
+.squirrel-app .bg-orange-50 { background-color: #eefaf4; }
+.squirrel-app .bg-orange-100 { background-color: #d9f3e6; }
+.squirrel-app .bg-orange-200 { background-color: #b6e6cf; }
+.squirrel-app .bg-orange-500 { background-color: #329b73; }
+.squirrel-app .bg-orange-600 { background-color: #267d60; }
+.squirrel-app .bg-orange-700 { background-color: #1f654f; }
+.squirrel-app .text-orange-200 { color: #d9f3e6; }
+.squirrel-app .text-orange-300 { color: #9edec9; }
+.squirrel-app .text-orange-400 { color: #58bd91; }
+.squirrel-app .text-orange-500,
+.squirrel-app .text-orange-600 { color: #267d60; }
+.squirrel-app .text-orange-700,
+.squirrel-app .text-orange-800,
+.squirrel-app .text-orange-900,
+.squirrel-app .text-orange-950 { color: #194f40; }
+.squirrel-app .border-orange-100,
+.squirrel-app .border-orange-200,
+.squirrel-app .border-orange-300 { border-color: #b6e6cf; }
+.squirrel-app .border-orange-400,
+.squirrel-app .border-orange-500,
+.squirrel-app .border-orange-600 { border-color: #329b73; }
+.squirrel-app .hover\\:bg-orange-50:hover,
+.squirrel-app .hover\\:bg-orange-100:hover,
+.squirrel-app .dark\\:hover\\:bg-orange-900:hover { background-color: #d9f3e6; }
+.squirrel-app .hover\\:bg-orange-600:hover,
+.squirrel-app .hover\\:bg-orange-700:hover { background-color: #1f654f; }
+.squirrel-app .from-orange-500 { --tw-gradient-from: #329b73 var(--tw-gradient-from-position); --tw-gradient-to: rgb(50 155 115 / 0) var(--tw-gradient-to-position); }
+.squirrel-app .from-orange-600 { --tw-gradient-from: #267d60 var(--tw-gradient-from-position); --tw-gradient-to: rgb(38 125 96 / 0) var(--tw-gradient-to-position); }
+.squirrel-app .to-orange-700 { --tw-gradient-to: #1f654f var(--tw-gradient-to-position); }
+.squirrel-app .to-orange-800 { --tw-gradient-to: #194f40 var(--tw-gradient-to-position); }

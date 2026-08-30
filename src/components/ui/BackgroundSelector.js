@@ -72,7 +72,7 @@ const BackgroundSelector = ({ onBackgroundChange, currentBackground, compact = f
                 } bg-gradient-to-br from-seablue-50 to-seablue-100 dark:from-gray-700 dark:to-gray-600 p-3`}
               >
                 <div className="text-center">
-                  <div className="text-3xl mb-2">🐿️</div>
+                  <img src="/avatar.png" alt="ThinkBridge" className="mx-auto mb-2 h-12 w-12 object-contain" />
 <div className="text-sm font-medium text-gray-800 dark:text-gray-200">{t('background.default')}</div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">ThinkBridge Theme</div>
                 </div>

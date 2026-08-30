@@ -57,23 +57,6 @@ const SealAnimation = ({ trigger, onComplete }) => {
     }
   };
 
-  const getSquirrelExpression = () => {
-    switch (animationType) {
-      case 'success':
-        return '🐿️✨'; // Happy squirrel with sparkles
-      case 'error':
-        return '🐿️💭'; // Thinking squirrel
-      case 'hint':
-        return '🐿️💡'; // Squirrel with lightbulb
-      case 'reveal':
-        return '🐿️📖'; // Squirrel with book
-      case 'welcome':
-        return '🐿️👋'; // Waving squirrel
-      default:
-        return '🐿️'; // Default squirrel
-    }
-  };
-
   const getMessage = () => {
     switch (animationType) {
       case 'success':
@@ -94,8 +77,8 @@ const SealAnimation = ({ trigger, onComplete }) => {
   return (
     <div className={`${getAnimationClasses()} ${isVisible ? 'show' : 'hide'}`}>
       <div className="bg-white rounded-full p-3 shadow-lg border-2 border-seablue-300 w-40">
-        <div className="text-3xl text-center">
-          {getSquirrelExpression()}
+        <div className="flex justify-center">
+          <img src="/avatar.png" alt="ThinkBridge" className="h-16 w-16 object-contain" />
         </div>
         {getMessage() && (
           <div className="text-xs text-center mt-1 text-seablue-600 font-medium">

@@ -52,7 +52,7 @@ const AuthForm = ({ initialMode = 'login' }) => {
           {isDark ? '☀️' : '🌙'}
         </button>
         <div className="text-center mb-6 sm:mb-8">
-          <img src="/image/squirrel-mascot.svg" alt="Sóc ThinkBridge" className="squirrel-mascot-ring mx-auto mb-3 h-12 w-12 rounded-full shadow-lg sm:h-16 sm:w-16" />
+          <img src="/avatar.png" alt="Sóc ThinkBridge" className="squirrel-mascot-ring mx-auto mb-3 h-12 w-12 rounded-full object-contain shadow-lg sm:h-16 sm:w-16" />
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-200">
             {mode === 'login' ? t('auth.welcomeBack') : t('auth.join')}
           </h1>

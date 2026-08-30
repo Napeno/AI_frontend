@@ -193,7 +193,7 @@ const PracticePage = () => {
                     <div className="flex-1 min-h-0 overflow-y-auto bg-gradient-to-br from-orange-50/70 via-white to-amber-50/70 p-3 scrollbar-thin dark:from-gray-900 dark:via-gray-900 dark:to-orange-950/30 sm:p-4">
                       {activeItem.practice?.prompt && (
                         <div className="mb-4 flex justify-start gap-2">
-                          <div className="squirrel-avatar mt-1 shrink-0"><span role="img" aria-label="ThinkBridge" className="text-sm">🐿️</span></div>
+                          <div className="squirrel-avatar mt-1 shrink-0"><img src="/avatar.png" alt="ThinkBridge" className="h-full w-full object-contain" /></div>
                           <div className="max-w-[85%] rounded-2xl rounded-bl-md border border-orange-200 bg-white px-4 py-3 text-sm text-slate-800 shadow-sm dark:border-orange-800 dark:bg-gray-800 dark:text-slate-100 sm:text-base">
                             <p className="mb-2 text-xs font-semibold text-orange-700 dark:text-orange-300">Bài tương tự để mình luyện lại</p>
                             <div className="chat-message" dangerouslySetInnerHTML={{ __html: formatAIMessage(activeItem.practice.prompt) }} />
@@ -203,7 +203,7 @@ const PracticePage = () => {
 
                       {turns.map((turn, index) => (
                         <div key={`${turn.createdAt || index}-${index}`} className={`mb-4 flex gap-2 ${turn.role === 'student' ? 'justify-end' : 'justify-start'}`}>
-                          {turn.role === 'assistant' && <div className="squirrel-avatar mt-1 shrink-0"><span role="img" aria-label="ThinkBridge" className="text-sm">🐿️</span></div>}
+                          {turn.role === 'assistant' && <div className="squirrel-avatar mt-1 shrink-0"><img src="/avatar.png" alt="ThinkBridge" className="h-full w-full object-contain" /></div>}
                           <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow-sm sm:text-base ${turn.role === 'student' ? 'rounded-br-md bg-gradient-to-r from-orange-500 to-orange-700 text-white' : 'rounded-bl-md border border-orange-200 bg-white text-slate-800 dark:border-orange-800 dark:bg-gray-800 dark:text-slate-100'}`}>
                             <div className={turn.role === 'assistant' ? 'chat-message' : 'whitespace-pre-wrap'} dangerouslySetInnerHTML={{ __html: formatAIMessage(turn.content) }} />
                             {turn.hint && turn.action === 'hint' && <div className="mt-3 rounded-lg bg-orange-50 px-3 py-2 text-sm text-orange-900 dark:bg-orange-950/50 dark:text-orange-100" dangerouslySetInnerHTML={{ __html: formatAIMessage(`💡 ${turn.hint}`) }} />}
@@ -211,7 +211,7 @@ const PracticePage = () => {
                           </div>
                         </div>
                       ))}
-                      {isSubmitting && <div className="mb-4 flex items-center gap-2 text-sm text-orange-700 dark:text-orange-300"><div className="squirrel-avatar"><span role="img" aria-label="ThinkBridge" className="text-sm">🐿️</span></div><span>ThinkBridge đang suy nghĩ...</span></div>}
+                      {isSubmitting && <div className="mb-4 flex items-center gap-2 text-sm text-orange-700 dark:text-orange-300"><div className="squirrel-avatar"><img src="/avatar.png" alt="ThinkBridge" className="h-full w-full object-contain" /></div><span>ThinkBridge đang suy nghĩ...</span></div>}
                       <div ref={messagesEndRef} />
                     </div>
 

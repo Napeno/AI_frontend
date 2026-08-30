@@ -57,7 +57,7 @@ const AppContent = () => {
       {!hideHeader && (
         <div className="w-full p-3 sm:p-4 bg-white border-b border-seablue-200 flex items-center justify-between shadow-sm">
           <Link to="/" className="text-lg sm:text-xl font-bold text-seablue-600 flex items-center gap-2">
-            <img src="/image/squirrel-mascot.svg" alt="ThinkBridge squirrel" className="h-8 w-8" />
+            <img src="/avatar.png" alt="ThinkBridge squirrel" className="h-8 w-8 object-contain" />
             <span className="hidden xs:inline">ThinkBridge</span>
             <span className="xs:hidden">SE</span>
           </Link>
@@ -77,7 +77,7 @@ const AppContent = () => {
                   <span className="hidden sm:inline">{t('leaderboard.title')}</span>
                 </Link>
                 <Link to="/chat" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">
-                  <span role="img" aria-label="Chat Logo" className="text-sm">🐿️</span>
+                  <img src="/avatar.png" alt="Chat Logo" className="h-5 w-5 object-contain" />
                   <span className="hidden sm:inline">Chat</span>
                 </Link>
                 <Link to="/ai-tutor" className="text-seablue-600 hover:text-seablue-700 font-medium px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">AI Tutor</Link>
