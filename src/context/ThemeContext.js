@@ -7,16 +7,13 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
-    if (storedTheme) {
-      setTheme(storedTheme);
-    }
+    // Keep the first visit predictable; old `system` values are migrated to light.
+    if (storedTheme === 'dark' || storedTheme === 'light') setTheme(storedTheme);
   }, []);
 
   useEffect(() => {
     const root = window.document.documentElement;
-    const isDark =
-      theme === 'dark' ||
-      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const isDark = theme === 'dark';
 
     root.classList.toggle('dark', isDark);
     localStorage.setItem('theme', theme);
@@ -33,4 +30,4 @@ export const ThemeProvider = ({ children }) => {
   );
 };
 
-export const useTheme = () => useContext(ThemeContext); 
+export const useTheme = () => useContext(ThemeContext);
