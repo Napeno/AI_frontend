@@ -125,7 +125,7 @@ function ChatMessage({ message, formatAIMessage, userAvatar, sessionId }) {
       {/* Add avatar for AI messages */}
       {!isUser && (
         <div className="squirrel-avatar mr-1.5 sm:mr-3 flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8">
-          <img src="/image/squirrel-mascot.svg" alt="ThinkBridge mascot" className="h-5 w-5 sm:h-6 sm:w-6" />
+          <img src="/avatar.png" alt="ThinkBridge mascot" className="h-5 w-5 object-contain sm:h-6 sm:w-6" />
         </div>
       )}
       <div className={containerClasses}>
@@ -160,7 +160,7 @@ function ChatMessage({ message, formatAIMessage, userAvatar, sessionId }) {
               aria-label={isCorrect ? 'correct' : 'incorrect'}
               className="text-4xl sm:text-5xl lg:text-6xl"
             >
-              {isCorrect ? '🐿️' : '🙈'}
+              <img src="/avatar.png" alt={isCorrect ? 'correct' : 'incorrect'} className="h-14 w-14 object-contain sm:h-16 sm:w-16" />
             </span>
           </div>
         )}
@@ -196,7 +196,7 @@ function ChatMessage({ message, formatAIMessage, userAvatar, sessionId }) {
       </div>
       {/* Add avatar for user messages */}
       {isUser && (
-        <div className="user-avatar ml-1.5 sm:ml-3 flex-shrink-0 text-xs sm:text-base w-6 h-6 sm:w-8 sm:h-8">{userAvatar}</div>
+        <div className="user-avatar ml-1.5 sm:ml-3 flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8"><img src={userAvatar || '/avatar.png'} alt="Avatar người dùng" className="h-full w-full object-contain" /></div>
       )}
     </div>
   );

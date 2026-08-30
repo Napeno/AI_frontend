@@ -11,7 +11,7 @@ const RailButton = ({ label, onClick, children }) => (
 const ChatRail = ({ onNewChat, onOpenHistory, coinAnimationTrigger, pointsAnimationTrigger }) => (
   <aside className="chat-rail hidden h-full w-16 shrink-0 flex-col items-center py-3 md:flex">
     <Link to="/" title="ThinkBridge" aria-label="ThinkBridge" className="chat-brand mb-5 flex h-10 w-10 items-center justify-center rounded-xl">
-      <img src="/image/squirrel-mascot.svg" alt="ThinkBridge squirrel" className="h-8 w-8" />
+      <img src="/avatar.png" alt="ThinkBridge squirrel" className="h-8 w-8 object-contain" />
     </Link>
     <RailButton label="Tạo chat mới" onClick={onNewChat}>
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>

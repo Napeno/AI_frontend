@@ -76,7 +76,7 @@ const AITutorPage = () => {
     } catch (error) { setFeedback(error.message); } finally { setLoading(false); }
   };
 
-  if (!sessionId) return <main className="min-h-screen bg-orange-50 px-4 py-16 text-center"><div className="mx-auto max-w-lg rounded-3xl bg-white p-8 shadow-sm"><div className="text-5xl">🐿️</div><h1 className="mt-4 text-2xl font-bold text-orange-950">AI Tutor học từ bài trong Chat</h1><p className="mt-3 text-slate-600">Mở một bài toán trong Chat rồi bấm “Luyện bài này với AI Tutor” để bắt đầu.</p><Link to="/chat" className="mt-6 inline-block rounded-xl bg-orange-600 px-4 py-2 font-bold text-white">Về Chat</Link></div></main>;
+  if (!sessionId) return <main className="min-h-screen bg-orange-50 px-4 py-16 text-center"><div className="mx-auto max-w-lg rounded-3xl bg-white p-8 shadow-sm"><img src="/avatar.png" alt="ThinkBridge" className="mx-auto h-20 w-20 object-contain" /><h1 className="mt-4 text-2xl font-bold text-orange-950">AI Tutor học từ bài trong Chat</h1><p className="mt-3 text-slate-600">Mở một bài toán trong Chat rồi bấm “Luyện bài này với AI Tutor” để bắt đầu.</p><Link to="/chat" className="mt-6 inline-block rounded-xl bg-orange-600 px-4 py-2 font-bold text-white">Về Chat</Link></div></main>;
   if (loading && !lesson) return <main className="min-h-screen bg-orange-50 p-10 text-center text-orange-800">AI đang chuẩn bị bài luyện từ cuộc trò chuyện của bạn…</main>;
   if (!lesson) return <main className="min-h-screen bg-orange-50 p-10 text-center"><p className="text-red-700">{feedback}</p><Link to="/chat" className="mt-4 inline-block text-orange-700 underline">Về Chat</Link></main>;
 

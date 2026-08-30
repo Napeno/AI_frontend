@@ -193,7 +193,7 @@ const QuizGamePage = () => {
 
                 {/* Squirrel Shopkeeper (behind table) */}
                 <div className="absolute z-[3] flex justify-center w-full bottom-[15%] sm:bottom-[18%] md:bottom-[20%] lg:bottom-[23%] xl:bottom-[26%]">
-                    <span role="img" aria-label="Squirrel Shopkeeper" className="text-[6rem] sm:text-[8rem] lg:text-[10rem] drop-shadow-[0_8px_25px_rgba(0,0,0,0.5)] origin-[50%_90%] animate-rpg-seal-idle select-none">🐿️</span>
+                    <img src="/avatar.png" alt="Squirrel Shopkeeper" className="h-40 w-40 object-contain drop-shadow-[0_8px_25px_rgba(0,0,0,0.5)] origin-[50%_90%] animate-rpg-seal-idle sm:h-56 sm:w-56 lg:h-72 lg:w-72" />
                 </div>
 
                 {/* Table (in front of seal) */}

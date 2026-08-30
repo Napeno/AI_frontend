@@ -4,22 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { get } from '../utils/apiClient';
 import t from '../locales/i18n';
 
-// Avatar emojis mapping
-const AVATAR_EMOJIS = {
-  default: '👤',
-  student: '🧑‍🎓',
-  friend: '👩‍🏫',
-  scientist: '🧑‍🔬',
-  artist: '🧑‍🎨',
-  engineer: '👷',
-  astronaut: '🧑‍🚀',
-  detective: '🕵️',
-  ninja: '🥷',
-  wizard: '🧙‍♂️',
-  crown: '👑',
-  unicorn: '🦄',
-};
-
 // Rank colors and icons
 const getRankInfo = (rank) => {
   if (rank === 1) return { color: 'text-yellow-500', bg: 'bg-yellow-50', icon: '👑' };
@@ -137,7 +121,7 @@ setError(t('leaderboard.loadingError'));
               to="/chat" 
               className="px-3 py-2 sm:px-4 bg-seablue-gradient text-white rounded-lg hover:shadow-md transition-all duration-200 font-medium flex items-center gap-2"
             >
-              <span role="img" aria-label="Chat Logo" className="text-lg">🐿️</span>
+              <img src="/avatar.png" alt="Chat Logo" className="h-6 w-6 object-contain" />
               <span className="hidden sm:inline">{t('leaderboard.backToChat')}</span>
             </Link>
           </div>
@@ -160,7 +144,7 @@ setError(t('leaderboard.loadingError'));
             <div className="flex items-center justify-between p-3 sm:p-4 bg-seablue-50 dark:bg-seablue-900/30 rounded-lg">
               <div className="flex items-center gap-3 sm:gap-4">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r from-orange-500 to-orange-700 text-white flex items-center justify-center text-xl sm:text-2xl shadow-md">
-                  {AVATAR_EMOJIS[user.avatar || 'default'] || '👤'}
+                  <img src="/avatar.png" alt="Avatar người dùng" className="h-8 w-8 object-contain sm:h-10 sm:w-10" />
                 </div>
                 <div>
                   <p className="font-semibold text-gray-800 dark:text-gray-200 text-sm sm:text-base">{user.name || 'You'}</p>
@@ -236,7 +220,7 @@ setError(t('leaderboard.loadingError'));
                       
                       {/* Avatar */}
                       <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-gradient-to-r from-orange-500 to-orange-700 text-white flex items-center justify-center text-xl sm:text-2xl shadow-md flex-shrink-0">
-                        {AVATAR_EMOJIS[player.avatar || 'default'] || '👤'}
+                        <img src="/avatar.png" alt="Avatar học sinh" className="h-8 w-8 object-contain sm:h-12 sm:w-12" />
                       </div>
                       
                       {/* User Info */}
@@ -305,7 +289,7 @@ setError(t('leaderboard.loadingError'));
 
         {leaderboardData.length === 0 && !loading && (
           <div className="text-center py-12">
-            <span role="img" aria-label="ThinkBridge mascot" className="text-5xl">🐿️</span>
+            <img src="/avatar.png" alt="ThinkBridge mascot" className="h-16 w-16 object-contain" />
             <p className="text-gray-500 dark:text-gray-400 text-lg mb-2">Chưa có dữ liệu xếp hạng</p>
             <p className="text-sm text-gray-400 dark:text-gray-500">Hãy bắt đầu trò chuyện và kiếm điểm để xuất hiện trên bảng xếp hạng!</p>
           </div>

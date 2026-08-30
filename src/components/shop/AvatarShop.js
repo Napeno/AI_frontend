@@ -223,7 +223,7 @@ const AvatarShop = ({ isOpen, onClose }) => {
                   {/* Avatar */}
                   <div className="text-center flex flex-col h-full">
                     <div> {/* Content wrapper */}
-                    <div className="text-5xl sm:text-6xl mb-2">{avatar.emoji}</div>
+                    <img src="/avatar.png" alt="Avatar sóc ThinkBridge" className="mx-auto mb-2 h-16 w-16 object-contain sm:h-20 sm:w-20" />
                     <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1 text-sm sm:text-base">
                       {avatar.name}
                     </h3>

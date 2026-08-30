@@ -1,14 +1,1 @@
-export const AVATAR_EMOJIS = {
-  default: '👤',
-  student: '🧑‍🎓',
-  friend: '👩‍🏫',
-  scientist: '🧑‍🔬',
-  artist: '🧑‍🎨',
-  engineer: '👷',
-  astronaut: '🧑‍🚀',
-  detective: '🕵️',
-  ninja: '🥷',
-  wizard: '🧙‍♂️',
-  crown: '👑',
-  unicorn: '🦄',
-}; 
+export const AVATAR_IMAGE = '/avatar.png';

@@ -12,7 +12,7 @@ const ChatInput = ({
   selectedImage,
   setSelectedImage,
   supportMode,
-  onFocus,
+  onOpenSubjectPicker,
 }) => {
   const fileInputRef = useRef(null);
 
@@ -85,12 +85,6 @@ const ChatInput = ({
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            onFocus={(e) => {
-              onFocus?.(e);
-              // Mobile keyboard handling is done at page level
-              // Just ensure the input stays visible without aggressive scrolling
-            }}
-            onClick={onFocus}
             placeholder={placeholder}
             disabled={isLoading}
             rows="1"
@@ -127,6 +121,10 @@ const ChatInput = ({
           <span className="sm:hidden">{buttonLabelMobile}</span>
         </button>
       </div>
+
+      {onOpenSubjectPicker && <button type="button" onClick={onOpenSubjectPicker} className="mt-2 inline-flex items-center rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800 transition hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-300">
+        📚 Chọn môn học
+      </button>}
 
       {isCoolingDown && (
         <div className="mt-1 sm:mt-2 text-right text-xs sm:text-sm text-gray-500 dark:text-gray-400">

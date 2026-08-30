@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { useChat } from '../hooks/useChat';
 import { formatAIMessage } from '../utils/chatUtils';
 import t from '../locales/i18n';
-import { useAuth } from '../context/AuthContext';
-import { AVATAR_EMOJIS } from '../utils/avatarUtils';
 import ChatRail from '../components/sidebar/ChatRail';
 import Sidebar from '../components/sidebar/Sidebar';
 import ChatHeader from '../components/chat/ChatHeader';
@@ -20,18 +18,16 @@ const CHAT_COOLDOWN_SECONDS = 3;
 const DEFAULT_CHAT_SETTINGS = { educationLevel: 'middle', subjectArea: 'natural_sciences', course: 'mathematics' };
 
 const ChatPage = () => {
-  const { user } = useAuth();
   const [keyboardOffset, setKeyboardOffset] = useState(0);
   const [coinAnimationTrigger, setCoinAnimationTrigger] = useState(null);
   const [pointsAnimationTrigger, setPointsAnimationTrigger] = useState(null);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isChatSettingsOpen, setIsChatSettingsOpen] = useState(false);
   const [isSubjectPickerOpen, setIsSubjectPickerOpen] = useState(false);
-  const [subjectPickerSeen, setSubjectPickerSeen] = useState(false);
   const subjectPickerSeenRef = useRef(false);
   const [settingsSelected, setSettingsSelected] = useState(true);
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
-  const userAvatar = AVATAR_EMOJIS[user?.avatar || 'default'] || '👤';
+  const userAvatar = '/avatar.png';
   const isCoolingDown = cooldownRemaining > 0;
 
   const {
@@ -89,28 +85,19 @@ const ChatPage = () => {
   }, [getFullAnswer, isCoolingDown, isLoading, startCooldown]);
   const handleNewChat = useCallback(() => {
     createNewChat(DEFAULT_CHAT_SETTINGS);
-    setSubjectPickerSeen(false);
     subjectPickerSeenRef.current = false;
     setSettingsSelected(true);
     setIsHistoryOpen(false);
   }, [createNewChat]);
   const handleConfiguredChat = settings => {
     createNewChat(settings);
-    setSubjectPickerSeen(true);
     subjectPickerSeenRef.current = true;
     setSettingsSelected(true);
     setIsChatSettingsOpen(false);
     setIsHistoryOpen(false);
   };
-  const handleChatInputFocus = useCallback(() => {
-    if (!subjectPickerSeenRef.current && messages.length === 0 && !isSubjectPickerOpen) {
-      subjectPickerSeenRef.current = true;
-      setSubjectPickerSeen(true);
-      setIsSubjectPickerOpen(true);
-    }
-  }, [isSubjectPickerOpen, messages.length]);
   const isEmptyChat = settingsSelected && messages.length === 0;
-  const input = <ChatInput inputMessage={inputMessage} setInputMessage={setInputMessage} isLoading={isLoading} isCoolingDown={isCoolingDown} cooldownRemaining={cooldownRemaining} onSend={handleSendMessage} handleKeyPress={handleKeyPress} selectedImage={selectedImage} setSelectedImage={setSelectedImage} supportMode={supportMode} onFocus={handleChatInputFocus} />;
+  const input = <ChatInput inputMessage={inputMessage} setInputMessage={setInputMessage} isLoading={isLoading} isCoolingDown={isCoolingDown} cooldownRemaining={cooldownRemaining} onSend={handleSendMessage} handleKeyPress={handleKeyPress} selectedImage={selectedImage} setSelectedImage={setSelectedImage} supportMode={supportMode} onOpenSubjectPicker={() => setIsSubjectPickerOpen(true)} />;
 
   return <div className="chat-shell flex h-[100dvh] overflow-hidden">
     <ChatRail onNewChat={handleNewChat} onOpenHistory={() => setIsHistoryOpen(true)} coinAnimationTrigger={coinAnimationTrigger} pointsAnimationTrigger={pointsAnimationTrigger} />
@@ -125,7 +112,7 @@ const ChatPage = () => {
           <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
             <div className="mx-auto max-w-3xl">
               {messages.map(message => <ChatMessage key={message.id} message={message} formatAIMessage={formatAIMessage} userAvatar={userAvatar} sessionId={sessionId} />)}
-              {problemContext?.questions?.length > 0 && sessionId && <div className="mb-5 flex justify-center"><Link to={`/ai-tutor/${sessionId}?questionId=${encodeURIComponent(problemContext.activeQuestionId || problemContext.suggestedQuestionId || 'main')}`} className="rounded-2xl border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-bold text-orange-800 shadow-sm transition hover:bg-orange-100">🐿️ Luyện bài này với AI Tutor</Link></div>}
+              {problemContext?.questions?.length > 0 && sessionId && <div className="mb-5 flex justify-center"><Link to={`/ai-tutor/${sessionId}?questionId=${encodeURIComponent(problemContext.activeQuestionId || problemContext.suggestedQuestionId || 'main')}`} className="inline-flex items-center gap-2 rounded-2xl border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-bold text-orange-800 shadow-sm transition hover:bg-orange-100"><img src="/avatar.png" alt="" className="h-5 w-5 object-contain" />Luyện bài này với AI Tutor</Link></div>}
               {isLoading && <div className="mb-5 flex justify-start"><div className="rounded-2xl rounded-bl-md border border-slate-200 bg-white px-4 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-800"><span className="inline-flex gap-1"><i className="h-2 w-2 animate-bounce rounded-full bg-orange-500" /><i className="h-2 w-2 animate-bounce rounded-full bg-orange-500 [animation-delay:150ms]" /><i className="h-2 w-2 animate-bounce rounded-full bg-orange-500 [animation-delay:300ms]" /></span></div></div>}
               <div ref={messagesEndRef} />
             </div>
@@ -141,7 +128,7 @@ const ChatPage = () => {
       </section>
     </main>
     <NewChatModal isOpen={isChatSettingsOpen} onClose={() => setIsChatSettingsOpen(false)} onStartChat={handleConfiguredChat} />
-    <NewChatModal isOpen={isSubjectPickerOpen} onClose={() => { subjectPickerSeenRef.current = false; setSubjectPickerSeen(false); setIsSubjectPickerOpen(false); }} onStartChat={settings => { createNewChat(settings); setSettingsSelected(true); subjectPickerSeenRef.current = true; setSubjectPickerSeen(true); setIsSubjectPickerOpen(false); }} />
+    <NewChatModal isOpen={isSubjectPickerOpen} onClose={() => { subjectPickerSeenRef.current = false; setIsSubjectPickerOpen(false); }} onStartChat={settings => { createNewChat(settings); setSettingsSelected(true); subjectPickerSeenRef.current = true; setIsSubjectPickerOpen(false); }} />
   </div>;
 };
 
