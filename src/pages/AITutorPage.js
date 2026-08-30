@@ -1,8 +1,53 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { post } from "../utils/apiClient";
+import { useAuth } from "../context/AuthContext";
 
-const Visual = ({ visual }) => {
+const TypedText = ({ text, animate = false }) => {
+  const [visibleText, setVisibleText] = useState(animate ? "" : text);
+
+  useEffect(() => {
+    if (!animate) {
+      setVisibleText(text);
+      return undefined;
+    }
+    setVisibleText("");
+    let index = 0;
+    const intervalId = setInterval(() => {
+      index += 1;
+      setVisibleText(text.slice(0, index));
+      if (index >= text.length) clearInterval(intervalId);
+    }, 24);
+    return () => clearInterval(intervalId);
+  }, [animate, text]);
+
+  return <span>{visibleText}</span>;
+};
+
+const Confetti = ({ burst }) => (
+  <div
+    key={burst}
+    aria-hidden="true"
+    className="pointer-events-none fixed inset-0 z-50 overflow-hidden"
+  >
+    {Array.from({ length: 36 }, (_, index) => (
+      <span
+        key={index}
+        className="absolute top-0 h-3 w-2 animate-confetti-fall opacity-0"
+        style={{
+          left: `${(index * 29) % 100}%`,
+          animationDelay: `${(index % 8) * 0.08}s`,
+          animationDuration: `${2 + (index % 4) * 0.25}s`,
+          backgroundColor: ["#f97316", "#facc15", "#10b981", "#60a5fa", "#f472b6"][index % 5],
+          transform: `rotate(${(index * 37) % 360}deg)`,
+        }}
+      />
+    ))}
+  </div>
+);
+
+const Visual = ({ visual, allowVisual = true }) => {
+  if (!allowVisual) return null;
   if (visual?.kind === "image" && visual?.url)
     return (
       <img
@@ -28,34 +73,10 @@ const Visual = ({ visual }) => {
         dangerouslySetInnerHTML={{ __html: visual.spec.svg }}
       />
     );
-  if (visual?.kind === "svg")
-    return (
-      <svg
-        viewBox="0 0 560 240"
-        className="w-full rounded-2xl bg-orange-50 p-4"
-        role="img"
-        aria-label="Sơ đồ AI tạo"
-      >
-        <rect
-          x="90"
-          y="38"
-          width="380"
-          height="150"
-          rx="18"
-          fill="#fed7aa"
-          stroke="#f97316"
-          strokeWidth="4"
-        />
-        <path d="M130 150 H430 M280 70 V175" stroke="#c2410c" strokeWidth="4" />
-        <text x="280" y="220" textAnchor="middle" fill="#7c2d12" fontSize="18">
-          {visual?.spec?.label || "Sơ đồ bài toán"}
-        </text>
-      </svg>
-    );
   return null;
 };
 
-const SubjectStep = ({ step, onSubmit, loading }) => {
+const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false }) => {
   const [placements, setPlacements] = useState({});
   const [picked, setPicked] = useState("");
   const [order, setOrder] = useState([]);
@@ -80,11 +101,11 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
           : [...value, itemId],
       );
     return (
-      <div className="mt-3 rounded-xl border border-orange-200 bg-white p-3">
+      <div className="mt-3 rounded-2xl border border-violet-200 bg-white p-4 shadow-sm">
         <p className="text-sm leading-relaxed text-slate-700">
-          {step.explanation}
+          <TypedText text={step.explanation} animate={animateExplanation} />
         </p>
-        <p className="mt-3 text-xs font-bold uppercase tracking-wide text-orange-700">
+        <p className="mt-3 text-xs font-bold uppercase tracking-wide text-violet-700">
           Chạm theo đúng thứ tự
         </p>
         <div className="mt-2 space-y-2">
@@ -93,9 +114,9 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
               key={item.id}
               type="button"
               onClick={() => add(item.id)}
-              className={`flex w-full items-center gap-2 rounded-lg border p-2 text-left text-sm ${order.includes(item.id) ? "border-orange-500 bg-orange-50" : "border-slate-200"}`}
+              className={`flex w-full items-center gap-2 rounded-lg border p-3 text-left text-sm ${order.includes(item.id) ? "border-violet-500 bg-violet-50 text-violet-900" : "border-slate-200 bg-slate-50 hover:border-violet-300"}`}
             >
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-orange-100 font-bold text-orange-800">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-violet-100 font-bold text-violet-800">
                 {order.indexOf(item.id) + 1 || "–"}
               </span>
               {item.text}
@@ -106,7 +127,7 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
           type="button"
           disabled={order.length !== interaction.items.length || loading}
           onClick={() => onSubmit({}, { order })}
-          className="mt-3 w-full rounded-xl bg-orange-600 px-3 py-2 text-sm font-bold text-white disabled:opacity-50"
+          className="mt-4 w-full rounded-xl bg-violet-600 px-3 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-violet-700 disabled:opacity-50"
         >
           Tiếp tục
         </button>
@@ -117,9 +138,9 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
     ["match_pairs", "label_diagram", "cause_effect"].includes(interaction?.type)
   )
     return (
-      <div className="mt-3 rounded-xl border border-orange-200 bg-white p-3">
+      <div className="mt-3 rounded-2xl border border-cyan-200 bg-white p-4 shadow-sm">
         <p className="text-sm leading-relaxed text-slate-700">
-          {step.explanation}
+          <TypedText text={step.explanation} animate={animateExplanation} />
         </p>
         <div className="mt-3 space-y-2">
           {interaction.left.map((left) => (
@@ -136,7 +157,7 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
                     [left.id]: event.target.value,
                   }))
                 }
-                className="rounded-lg border border-orange-200 p-2 text-sm"
+                className="rounded-lg border border-cyan-200 bg-cyan-50 p-2 text-sm text-cyan-950"
               >
                 <option value="">Chọn đáp án</option>
                 {interaction.right.map((right) => (
@@ -154,7 +175,7 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
             Object.keys(matches).length !== interaction.left.length || loading
           }
           onClick={() => onSubmit({}, { matches })}
-          className="mt-3 w-full rounded-xl bg-orange-600 px-3 py-2 text-sm font-bold text-white disabled:opacity-50"
+          className="mt-4 w-full rounded-xl bg-cyan-600 px-3 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-cyan-700 disabled:opacity-50"
         >
           Tiếp tục
         </button>
@@ -162,9 +183,12 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
     );
   if (interaction?.type === "evidence_choice")
     return (
-      <div className="mt-3 rounded-xl border border-orange-200 bg-white p-3">
+      <div className="mt-3 rounded-2xl border border-rose-200 bg-white p-4 shadow-sm">
         <p className="text-sm leading-relaxed text-slate-700">
-          {interaction.prompt || step.explanation}
+          <TypedText
+            text={interaction.prompt || step.explanation}
+            animate={animateExplanation}
+          />
         </p>
         <div className="mt-3 space-y-2">
           {interaction.choices.map((choice) => (
@@ -172,7 +196,7 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
               key={choice.id}
               type="button"
               onClick={() => setChoiceId(choice.id)}
-              className={`w-full rounded-lg border p-2 text-left text-sm ${choiceId === choice.id ? "border-orange-500 bg-orange-50" : "border-slate-200"}`}
+              className={`w-full rounded-lg border p-3 text-left text-sm ${choiceId === choice.id ? "border-rose-500 bg-rose-50 text-rose-900" : "border-slate-200 bg-slate-50 hover:border-rose-300"}`}
             >
               {choice.text}
             </button>
@@ -182,7 +206,7 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
           type="button"
           disabled={!choiceId || loading}
           onClick={() => onSubmit({}, { choiceId })}
-          className="mt-3 w-full rounded-xl bg-orange-600 px-3 py-2 text-sm font-bold text-white disabled:opacity-50"
+          className="mt-4 w-full rounded-xl bg-rose-600 px-3 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-rose-700 disabled:opacity-50"
         >
           Tiếp tục
         </button>
@@ -190,21 +214,24 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
     );
   if (interaction?.type === "cloze")
     return (
-      <div className="mt-3 rounded-xl border border-orange-200 bg-white p-3">
+      <div className="mt-3 rounded-2xl border border-amber-200 bg-white p-4 shadow-sm">
         <p className="text-sm leading-relaxed text-slate-700">
-          {interaction.prompt || step.explanation}
+          <TypedText
+            text={interaction.prompt || step.explanation}
+            animate={animateExplanation}
+          />
         </p>
         <input
           value={clozeText}
           onChange={(event) => setClozeText(event.target.value)}
-          className="mt-3 w-full rounded-lg border border-orange-200 p-2 text-sm"
+          className="mt-3 w-full rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-950"
           placeholder="Điền câu trả lời"
         />
         <button
           type="button"
           disabled={!clozeText.trim() || loading}
           onClick={() => onSubmit({}, { text: clozeText })}
-          className="mt-3 w-full rounded-xl bg-orange-600 px-3 py-2 text-sm font-bold text-white disabled:opacity-50"
+          className="mt-4 w-full rounded-xl bg-amber-600 px-3 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-amber-700 disabled:opacity-50"
         >
           Tiếp tục
         </button>
@@ -220,9 +247,9 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
     step.blanks.length > 0 &&
     step.blanks.every((blank) => placements[blank.id]);
   return (
-    <div className="mt-3 rounded-xl border border-orange-200 bg-white p-3">
+    <div className="mt-3 rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm">
       <p className="text-sm leading-relaxed text-slate-700">
-        {step.explanation}
+        <TypedText text={step.explanation} animate={animateExplanation} />
       </p>
       <div className="mt-3 flex flex-wrap gap-2">
         {step.tokens.map((token) => (
@@ -234,7 +261,7 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
               event.dataTransfer.setData("text/plain", token.id)
             }
             onClick={() => setPicked(token.id)}
-            className={`rounded-lg border px-3 py-1.5 text-sm font-bold ${picked === token.id ? "border-orange-600 bg-orange-100 text-orange-900" : "border-orange-200 bg-orange-50 text-orange-800"}`}
+            className={`rounded-lg border px-3 py-2 text-sm font-bold ${picked === token.id ? "border-emerald-600 bg-emerald-100 text-emerald-900" : token.type === "operator" ? "border-violet-200 bg-violet-50 text-violet-800" : token.type === "number" ? "border-blue-200 bg-blue-50 text-blue-800" : "border-emerald-200 bg-emerald-50 text-emerald-800"}`}
           >
             {token.label}
           </button>
@@ -254,10 +281,10 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
                 [blank.id]: event.dataTransfer.getData("text/plain"),
               }));
             }}
-            className="flex w-full items-center justify-between rounded-lg border border-dashed border-orange-300 bg-orange-50 px-3 py-2 text-left text-sm"
+            className="flex w-full items-center justify-between rounded-lg border border-dashed border-emerald-300 bg-emerald-50 px-3 py-3 text-left text-sm"
           >
-            <span className="font-semibold text-orange-900">{blank.label}</span>
-            <span className="rounded bg-white px-2 py-1 text-orange-700">
+            <span className="font-semibold text-emerald-900">{blank.label}</span>
+            <span className="rounded bg-white px-2 py-1 text-emerald-700">
               {labelFor(placements[blank.id])}
             </span>
           </button>
@@ -267,7 +294,7 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
         type="button"
         disabled={!ready || loading}
         onClick={() => onSubmit(placements, {})}
-        className="mt-3 w-full rounded-xl bg-orange-600 px-3 py-2 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-4 w-full rounded-xl bg-emerald-600 px-3 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
       >
         Tiếp tục
       </button>
@@ -278,9 +305,13 @@ const SubjectStep = ({ step, onSubmit, loading }) => {
 const AITutorPage = () => {
   const { sessionId } = useParams();
   const [searchParams] = useSearchParams();
+  const { updateUserChestnuts } = useAuth() || {};
   const [lesson, setLesson] = useState(null);
   const [selected, setSelected] = useState("");
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
+  const [answerCorrect, setAnswerCorrect] = useState(null);
+  const [reward, setReward] = useState(null);
+  const [confettiBurst, setConfettiBurst] = useState(0);
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(Boolean(sessionId));
   const question = lesson?.question;
@@ -288,6 +319,18 @@ const AITutorPage = () => {
     () => question?.tutorSteps?.[lesson?.currentStepIndex] || null,
     [question, lesson?.currentStepIndex],
   );
+
+  useEffect(() => {
+    if (!confettiBurst) return undefined;
+    const timeoutId = setTimeout(() => setConfettiBurst(0), 2800);
+    return () => clearTimeout(timeoutId);
+  }, [confettiBurst]);
+
+  const normalizeLesson = (value) => {
+    if (!value) return value;
+    const index = Number.isInteger(value.currentQuestionIndex) ? value.currentQuestionIndex : 0;
+    return value.question ? value : { ...value, question: value.questions?.[index] || null };
+  };
 
   useEffect(() => {
     if (!sessionId) return;
@@ -302,7 +345,13 @@ const AITutorPage = () => {
         const data = await response.json();
         if (!response.ok)
           throw new Error(data.error || "Không thể tạo bài luyện.");
-        if (active) setLesson(data.lesson);
+        if (active) {
+          setLesson(normalizeLesson(data.lesson));
+          setAnswerSubmitted(false);
+          setAnswerCorrect(null);
+          setReward(null);
+          setSelected("");
+        }
       } catch (error) {
         if (active) setFeedback(error.message);
       } finally {
@@ -319,6 +368,7 @@ const AITutorPage = () => {
     if (!lesson || answerSubmitted || loading) return;
     setSelected(optionId);
     setFeedback("");
+    setAnswerCorrect(null);
   };
 
   const submitAnswer = async () => {
@@ -332,8 +382,19 @@ const AITutorPage = () => {
       const data = await response.json();
       if (!response.ok)
         throw new Error(data.error || "Không thể kiểm tra đáp án.");
-      setLesson(data.lesson);
+      setLesson(normalizeLesson(data.lesson));
       setAnswerSubmitted(true);
+      setAnswerCorrect(data.correct);
+      setReward(data.correct && data.pointsAwarded > 0 ? {
+        points: data.pointsAwarded,
+        chestnuts: data.chestnutsAwarded || 0,
+      } : null);
+      if (data.correct && data.totalChestnuts !== null && data.totalChestnuts !== undefined) {
+        updateUserChestnuts?.(data.totalChestnuts, data.totalPoints);
+      }
+      if (data.correct) {
+        if (data.pointsAwarded > 0) setConfettiBurst(value => value + 1);
+      }
       setFeedback(data.message);
     } catch (error) {
       setFeedback(error.message);
@@ -355,11 +416,15 @@ const AITutorPage = () => {
       const data = await response.json();
       if (!response.ok)
         throw new Error(data.error || "Kiểm tra bước chưa thành công.");
-      setLesson(data.lesson);
-      setSelected("");
-      setAnswerSubmitted(false);
+      setLesson(normalizeLesson(data.lesson));
+      const movedToNextQuestion =
+        data.lesson.currentQuestionIndex !== previousQuestionIndex;
+      setSelected(movedToNextQuestion ? "" : selected);
+      setAnswerSubmitted(!movedToNextQuestion);
+      setAnswerCorrect(movedToNextQuestion ? null : answerCorrect);
+      setReward(movedToNextQuestion ? null : reward);
       setFeedback(
-        data.lesson.currentQuestionIndex !== previousQuestionIndex
+        movedToNextQuestion
           ? ""
           : data.lesson.completed
             ? "Bạn đã hoàn thành mini-lesson!"
@@ -383,9 +448,11 @@ const AITutorPage = () => {
       const data = await response.json();
       if (!response.ok)
         throw new Error(data.error || "Không thể quay lại câu trước.");
-      setLesson(data.lesson);
+      setLesson(normalizeLesson(data.lesson));
       setSelected("");
       setAnswerSubmitted(false);
+      setAnswerCorrect(null);
+      setReward(null);
       setFeedback("");
     } catch (error) {
       setFeedback(error.message);
@@ -425,10 +492,10 @@ const AITutorPage = () => {
         AI đang chuẩn bị bài luyện từ cuộc trò chuyện của bạn…
       </main>
     );
-  if (!lesson)
+  if (!lesson || !question)
     return (
       <main className="min-h-screen bg-orange-50 p-10 text-center">
-        <p className="text-red-700">{feedback}</p>
+        <p className="text-red-700">{feedback || "Chưa tải được câu hỏi luyện tập."}</p>
         <Link
           to={
             sessionId
@@ -444,6 +511,7 @@ const AITutorPage = () => {
 
   return (
     <main className="min-h-screen bg-[#fff8ee] px-4 py-6 text-slate-900 sm:px-8">
+      {confettiBurst > 0 && <Confetti burst={confettiBurst} />}
       <div className="mx-auto max-w-[1360px]">
         <header className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -469,11 +537,11 @@ const AITutorPage = () => {
           <div
             className="h-full rounded-full bg-gradient-to-r from-orange-400 to-orange-600 transition-all"
             style={{
-              width: `${Math.max(8, ((lesson.currentQuestionIndex + (selected ? 1 : 0)) / 5) * 100)}%`,
+              width: `${Math.max(8, ((lesson.currentQuestionIndex + (answerSubmitted ? 1 : 0)) / 5) * 100)}%`,
             }}
           />
         </div>
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_500px]">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_560px]">
           <section className="min-h-[650px] rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <p className="rounded-xl bg-orange-50 p-3 text-sm text-orange-900">
               <strong>Đề bài từ Chat:</strong> {lesson.sourceText}
@@ -492,6 +560,16 @@ const AITutorPage = () => {
                 <p className="mt-2 text-slate-600">
                   Bạn đã luyện xong các bước quan trọng của bài này.
                 </p>
+                {lesson.currentQuestionIndex > 0 && (
+                  <button
+                    type="button"
+                    onClick={goPrevious}
+                    disabled={loading}
+                    className="mt-6 rounded-xl border-2 border-orange-500 px-5 py-3 font-bold text-orange-700 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    ← Câu trước
+                  </button>
+                )}
               </div>
             ) : (
               <>
@@ -507,7 +585,10 @@ const AITutorPage = () => {
                   {question.prompt}
                 </p>
                 <div className="mt-5">
-                  <Visual visual={question.visual} />
+                  <Visual
+                    visual={question.visual}
+                    allowVisual={question.interactionType !== "math_tokens"}
+                  />
                 </div>
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   {question.options.map((option) => {
@@ -521,9 +602,9 @@ const AITutorPage = () => {
                         type="button"
                         onClick={() => choose(option.id)}
                         disabled={loading || answerSubmitted}
-                        className={`min-h-16 rounded-xl border-2 p-5 text-left text-lg font-semibold transition ${answerSubmitted && isCorrect ? "border-emerald-500 bg-emerald-50 text-emerald-900" : isWrong ? "border-red-400 bg-red-50 text-red-800" : isSelected ? "border-sky-400 bg-sky-50 text-sky-900" : "border-slate-200 bg-white hover:border-orange-500 hover:bg-orange-50"}`}
+                        className={`min-h-16 rounded-xl border-2 p-5 text-left text-lg font-bold transition ${answerSubmitted && isCorrect ? "border-emerald-500 bg-emerald-50 text-emerald-900" : isWrong ? "border-red-400 bg-red-50 text-red-800" : isSelected ? "border-[#2f5fe5] bg-[#eef4ff] text-[#173b9d]" : "border-[#c5d3f5] bg-[#ffffff] text-[#173b9d] hover:border-[#2f5fe5] hover:bg-[#f5f8ff]"}`}
                       >
-                        <span className="mr-2 text-orange-600">
+                        <span className="mr-2 text-[#2f5fe5]">
                           {option.id}.
                         </span>
                         {option.text}
@@ -531,20 +612,32 @@ const AITutorPage = () => {
                     );
                   })}
                 </div>
-                <button
-                  type="button"
-                  onClick={submitAnswer}
-                  disabled={!selected || answerSubmitted || loading}
-                  className="mt-5 w-full rounded-xl bg-orange-600 px-5 py-4 text-lg font-bold text-white shadow-sm transition hover:bg-orange-700 disabled:cursor-not-allowed disabled:bg-slate-300"
-                >
-                  {loading ? "Đang kiểm tra…" : "Trả lời →"}
-                </button>
+                {selected && !answerSubmitted && (
+                  <button
+                    type="button"
+                    onClick={submitAnswer}
+                    disabled={answerSubmitted || loading}
+                    className="mt-5 w-full rounded-xl bg-[#2f5fe5] px-5 py-4 text-lg font-bold text-white shadow-sm transition hover:bg-[#234ac1] disabled:cursor-not-allowed disabled:bg-slate-300"
+                  >
+                    {loading ? "Đang kiểm tra…" : "Trả lời →"}
+                  </button>
+                )}
                 {feedback && (
                   <p
-                    className={`mt-4 rounded-xl p-3 text-sm font-semibold ${feedback.includes("Chính xác") || feedback.includes("Tốt lắm") || feedback.includes("hoàn thành") ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-900"}`}
+                    aria-live="polite"
+                    className={`mt-4 rounded-xl p-4 text-sm font-semibold ${answerCorrect === false ? "border border-rose-200 bg-rose-50 text-rose-800" : feedback.includes("Chính xác") || feedback.includes("Tốt lắm") || feedback.includes("hoàn thành") ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-900"}`}
                   >
-                    {feedback}
+                    <TypedText text={feedback} animate={answerCorrect === false} />
                   </p>
+                )}
+                {reward && (
+                  <div className="mt-4 flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500 text-xl text-white">✓</span>
+                    <div>
+                      <p className="font-bold">Tuyệt vời! Em đã trả lời đúng.</p>
+                      <p className="font-bold text-orange-600">+{reward.points} điểm · +{reward.chestnuts} hạt dẻ</p>
+                    </div>
+                  </div>
                 )}
                 <div className="mt-8 flex justify-end gap-3 border-t border-slate-100 pt-5">
                   <button
@@ -559,8 +652,8 @@ const AITutorPage = () => {
               </>
             )}
           </section>
-          <aside className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-            <div className="border-b border-slate-200 p-6">
+          <aside className="min-h-[720px] overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-b from-white via-emerald-50/30 to-cyan-50/40 shadow-sm">
+            <div className="border-b border-emerald-200 p-8">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-2xl font-bold text-slate-950">
                   AITutor Solve
@@ -586,40 +679,45 @@ const AITutorPage = () => {
                 </div>
               </div>
             </div>
-            <div className="space-y-3 p-4">
+            <div className="space-y-4 p-6">
               {question.tutorSteps.map((step, index) => {
-                const active = index === lesson.currentStepIndex;
+                const unlocked = answerSubmitted && index <= lesson.currentStepIndex;
+                const active = unlocked && index === lesson.currentStepIndex;
                 return (
                   <article
                     key={step.id}
-                    className={`rounded-2xl border p-4 ${active ? "border-orange-300 bg-orange-50" : "border-slate-100 bg-slate-50"}`}
+                    className={`rounded-2xl border p-5 shadow-sm ${active ? "border-orange-300 bg-orange-50" : unlocked ? "border-emerald-200 bg-emerald-50" : "border-violet-200 bg-violet-50 text-violet-700"}`}
                   >
                     <div className="flex gap-3">
                       <span
-                        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold ${active ? "bg-orange-600 text-white" : "bg-slate-200 text-slate-700"}`}
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${active ? "bg-orange-600 text-white" : unlocked ? "bg-emerald-600 text-white" : "bg-violet-200 text-violet-700"}`}
                       >
-                        {index + 1}
+                        {unlocked ? index + 1 : "🔒"}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-bold">{step.title}</h3>
-                        {!selected && (
+                        <h3 className="font-bold">Bước {index + 1}</h3>
+                        {!unlocked && (
                           <div className="mt-2 h-2 rounded-full bg-slate-200" />
                         )}
-                        {active && feedback && (
-                          <p className="mt-1 text-sm text-slate-700">
-                            {step.explanation ||
-                              "Đọc kỹ đề và nêu bước suy luận của em."}
+                        {active && answerSubmitted && answerCorrect !== false && (
+                          <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                            <TypedText
+                              text={step.explanation || "Đọc kỹ đề và nêu bước suy luận của em."}
+                              animate={answerCorrect === true}
+                            />
                           </p>
                         )}
                         {active &&
-                          feedback &&
-                          (feedback.includes("Chưa đúng") ? (
+                          answerSubmitted &&
+                          !lesson.completed &&
+                          (answerCorrect === false ? (
                             <SubjectStep
                               step={step}
                               onSubmit={submitStep}
                               loading={loading}
+                              animateExplanation
                             />
-                          ) : feedback.includes("Chính xác") ? (
+                          ) : answerCorrect === true ? (
                             <button
                               type="button"
                               disabled={loading}
@@ -644,12 +742,13 @@ const AITutorPage = () => {
                 );
               })}
             </div>
-            {!selected && (
-              <div className="m-4 rounded-2xl bg-orange-100 p-4 text-sm text-orange-900">
+            {!answerSubmitted && (
+              <div className="m-6 rounded-2xl border border-amber-200 bg-amber-100 p-5 text-sm text-amber-950 shadow-sm">
                 <strong>💡 Gợi ý</strong>
                 <p className="mt-1">
-                  Hãy đọc kỹ đề và chọn đáp án em nghĩ là đúng nhất trước khi
-                  xem hướng dẫn.
+                  {selected
+                    ? 'Em đã chọn đáp án. Bấm “Trả lời” để kiểm tra và mở hướng dẫn.'
+                    : 'Hãy đọc kỹ đề và chọn đáp án em nghĩ là đúng nhất trước khi xem hướng dẫn.'}
                 </p>
               </div>
             )}
