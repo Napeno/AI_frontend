@@ -17,7 +17,7 @@ const TypedText = ({ text, animate = false }) => {
       index += 1;
       setVisibleText(text.slice(0, index));
       if (index >= text.length) clearInterval(intervalId);
-    }, 24);
+    }, 20);
     return () => clearInterval(intervalId);
   }, [animate, text]);
 
@@ -76,6 +76,27 @@ const Visual = ({ visual, allowVisual = true }) => {
   return null;
 };
 
+const StepGuidance = ({ step, animate = false }) => (
+  <>
+    <p className="text-base leading-7 text-slate-800 sm:text-lg">
+      <TypedText text={step.explanation} animate={animate} />
+    </p>
+    {step.analysis && (
+      <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-5 text-base leading-7 text-blue-950">
+        <p className="font-bold text-blue-700">Phân tích câu hỏi</p>
+        <p className="mt-1"><TypedText text={step.analysis} animate={animate} /></p>
+      </div>
+    )}
+    {step.easierExample?.prompt && (
+      <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-base leading-7 text-amber-950">
+        <p className="font-bold text-amber-700">Ví dụ dễ hơn</p>
+        <p className="mt-1"><TypedText text={step.easierExample.prompt} animate={animate} /></p>
+        {step.easierExample.hint && <p className="mt-2 text-sm text-amber-800">Gợi ý: {step.easierExample.hint}</p>}
+      </div>
+    )}
+  </>
+);
+
 const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false }) => {
   const [placements, setPlacements] = useState({});
   const [picked, setPicked] = useState("");
@@ -101,10 +122,8 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false }) =>
           : [...value, itemId],
       );
     return (
-      <div className="mt-3 rounded-2xl border border-violet-200 bg-white p-4 shadow-sm">
-        <p className="text-sm leading-relaxed text-slate-700">
-          <TypedText text={step.explanation} animate={animateExplanation} />
-        </p>
+      <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-md sm:p-7">
+        <StepGuidance step={step} animate={animateExplanation} />
         <p className="mt-3 text-xs font-bold uppercase tracking-wide text-violet-700">
           Chạm theo đúng thứ tự
         </p>
@@ -138,10 +157,8 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false }) =>
     ["match_pairs", "label_diagram", "cause_effect"].includes(interaction?.type)
   )
     return (
-      <div className="mt-3 rounded-2xl border border-cyan-200 bg-white p-4 shadow-sm">
-        <p className="text-sm leading-relaxed text-slate-700">
-          <TypedText text={step.explanation} animate={animateExplanation} />
-        </p>
+      <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-md sm:p-7">
+        <StepGuidance step={step} animate={animateExplanation} />
         <div className="mt-3 space-y-2">
           {interaction.left.map((left) => (
             <label
@@ -183,13 +200,8 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false }) =>
     );
   if (interaction?.type === "evidence_choice")
     return (
-      <div className="mt-3 rounded-2xl border border-rose-200 bg-white p-4 shadow-sm">
-        <p className="text-sm leading-relaxed text-slate-700">
-          <TypedText
-            text={interaction.prompt || step.explanation}
-            animate={animateExplanation}
-          />
-        </p>
+      <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-md sm:p-7">
+        <StepGuidance step={{ ...step, explanation: interaction.prompt || step.explanation }} animate={animateExplanation} />
         <div className="mt-3 space-y-2">
           {interaction.choices.map((choice) => (
             <button
@@ -214,13 +226,8 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false }) =>
     );
   if (interaction?.type === "cloze")
     return (
-      <div className="mt-3 rounded-2xl border border-amber-200 bg-white p-4 shadow-sm">
-        <p className="text-sm leading-relaxed text-slate-700">
-          <TypedText
-            text={interaction.prompt || step.explanation}
-            animate={animateExplanation}
-          />
-        </p>
+      <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-md sm:p-7">
+        <StepGuidance step={{ ...step, explanation: interaction.prompt || step.explanation }} animate={animateExplanation} />
         <input
           value={clozeText}
           onChange={(event) => setClozeText(event.target.value)}
@@ -242,32 +249,49 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false }) =>
   };
   const labelFor = (tokenId) =>
     step.tokens.find((token) => token.id === tokenId)?.label ||
-    "Kéo token vào đây";
+    "Chọn đáp án";
   const ready =
     step.blanks.length > 0 &&
     step.blanks.every((blank) => placements[blank.id]);
   return (
-    <div className="mt-3 rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm">
-      <p className="text-sm leading-relaxed text-slate-700">
+    <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-md sm:p-7">
+      <p className="text-base leading-7 text-slate-800 sm:text-lg">
         <TypedText text={step.explanation} animate={animateExplanation} />
       </p>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {step.tokens.map((token) => (
-          <button
-            key={token.id}
-            type="button"
-            draggable
-            onDragStart={(event) =>
-              event.dataTransfer.setData("text/plain", token.id)
-            }
-            onClick={() => setPicked(token.id)}
-            className={`rounded-lg border px-3 py-2 text-sm font-bold ${picked === token.id ? "border-emerald-600 bg-emerald-100 text-emerald-900" : token.type === "operator" ? "border-violet-200 bg-violet-50 text-violet-800" : token.type === "number" ? "border-blue-200 bg-blue-50 text-blue-800" : "border-emerald-200 bg-emerald-50 text-emerald-800"}`}
-          >
-            {token.label}
-          </button>
-        ))}
+      {step.analysis && (
+        <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-5 text-base leading-7 text-blue-950">
+          <p className="font-bold text-blue-700">Phân tích câu hỏi</p>
+          <p className="mt-1"><TypedText text={step.analysis} animate={animateExplanation} /></p>
+        </div>
+      )}
+      {step.easierExample?.prompt && (
+        <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-base leading-7 text-amber-950">
+          <p className="font-bold text-amber-700">Ví dụ dễ hơn</p>
+          <p className="mt-1"><TypedText text={step.easierExample.prompt} animate={animateExplanation} /></p>
+          {step.easierExample.hint && <p className="mt-2 text-sm text-amber-800">Gợi ý: {step.easierExample.hint}</p>}
+        </div>
+      )}
+      <p className="mt-6 text-base font-bold text-slate-800">Chọn đáp án để điền vào ô trống</p>
+      <div className="mt-3 rounded-2xl border-2 border-slate-200 bg-slate-50 p-4 shadow-inner">
+        <p className="mb-3 text-sm font-semibold text-slate-600">Đáp án có thể chọn</p>
+        <div className="flex flex-wrap gap-3">
+          {step.tokens.map((token) => (
+            <button
+              key={token.id}
+              type="button"
+              draggable
+              onDragStart={(event) =>
+                event.dataTransfer.setData("text/plain", token.id)
+              }
+              onClick={() => setPicked(token.id)}
+              className={`rounded-xl border-2 bg-white px-5 py-3 text-base font-bold shadow-sm transition ${picked === token.id ? "border-emerald-600 bg-emerald-50 text-emerald-900" : "border-slate-300 text-slate-800 hover:border-emerald-500 hover:bg-emerald-50"}`}
+            >
+              {token.label}
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="mt-3 space-y-2">
+      <div className="mt-4 space-y-3">
         {step.blanks.map((blank) => (
           <button
             key={blank.id}
@@ -281,10 +305,10 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false }) =>
                 [blank.id]: event.dataTransfer.getData("text/plain"),
               }));
             }}
-            className="flex w-full items-center justify-between rounded-lg border border-dashed border-emerald-300 bg-emerald-50 px-3 py-3 text-left text-sm"
+            className="flex min-h-16 w-full items-center justify-between gap-4 rounded-xl border-2 border-dashed border-slate-300 bg-white px-5 py-4 text-left text-base shadow-sm"
           >
-            <span className="font-semibold text-emerald-900">{blank.label}</span>
-            <span className="rounded bg-white px-2 py-1 text-emerald-700">
+            <span className="font-bold text-slate-900">{blank.label}</span>
+            <span className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 font-semibold text-slate-700">
               {labelFor(placements[blank.id])}
             </span>
           </button>
@@ -294,7 +318,7 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false }) =>
         type="button"
         disabled={!ready || loading}
         onClick={() => onSubmit(placements, {})}
-        className="mt-4 w-full rounded-xl bg-emerald-600 px-3 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-5 w-full rounded-xl bg-emerald-600 px-5 py-4 text-base font-bold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
       >
         Tiếp tục
       </button>
@@ -510,9 +534,9 @@ const AITutorPage = () => {
     );
 
   return (
-    <main className="min-h-screen bg-[#fff8ee] px-4 py-6 text-slate-900 sm:px-8">
+    <main className="min-h-screen bg-[#fff8ee] px-4 py-8 text-slate-900 sm:px-10">
       {confettiBurst > 0 && <Confetti burst={confettiBurst} />}
-      <div className="mx-auto max-w-[1360px]">
+      <div className="mx-auto max-w-[1480px]">
         <header className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs font-bold uppercase tracking-[.18em] text-orange-700">
@@ -541,8 +565,8 @@ const AITutorPage = () => {
             }}
           />
         </div>
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_560px]">
-          <section className="min-h-[650px] rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_640px]">
+          <section className="min-h-[760px] rounded-3xl border-2 border-slate-200 bg-white p-7 shadow-lg sm:p-9">
             <p className="rounded-xl bg-orange-50 p-3 text-sm text-orange-900">
               <strong>Đề bài từ Chat:</strong> {lesson.sourceText}
             </p>
@@ -652,60 +676,56 @@ const AITutorPage = () => {
               </>
             )}
           </section>
-          <aside className="min-h-[720px] overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-b from-white via-emerald-50/30 to-cyan-50/40 shadow-sm">
-            <div className="border-b border-emerald-200 p-8">
+          <aside className="min-h-[900px] overflow-hidden rounded-3xl border-2 border-slate-200 bg-white shadow-xl">
+            <div className="border-b-2 border-slate-200 bg-white p-9">
               <div className="flex items-center justify-between gap-3">
-                <h2 className="text-2xl font-bold text-slate-950">
+                <h2 className="text-3xl font-bold text-slate-950">
                   AITutor Solve
                 </h2>
                 <span className="text-sm font-bold text-slate-400">
                   A− &nbsp; A &nbsp; A+
                 </span>
               </div>
-              <div className="mt-4 rounded-2xl border border-blue-300 bg-blue-50 p-4">
+              <div className="mt-6 rounded-3xl border-2 border-blue-300 bg-blue-50 p-6 shadow-sm">
                 <div className="flex items-center gap-3">
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-lg font-bold text-blue-700">Mẹo nhỏ</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-slate-700">
-                      Đọc kỹ đề, chọn công thức phù hợp rồi điền vào ô trống. Em
-                      có thể kéo thả đáp án hoặc chạm để chọn.
+                    <h3 className="text-xl font-bold text-blue-700">Mẹo nhỏ</h3>
+                    <p className="mt-2 text-base leading-7 text-slate-800">
+                      Đọc phần phân tích, xem ví dụ dễ hơn rồi chọn đáp án và kéo vào vị trí cần điền.
                     </p>
                   </div>
                   <img
                     src="/studentAI.png"
                     alt="StudentAI"
-                    className="h-24 w-24 shrink-0 object-contain"
+                    className="h-32 w-32 shrink-0 object-contain"
                   />
                 </div>
               </div>
             </div>
-            <div className="space-y-4 p-6">
+            <div className="space-y-5 p-7">
               {question.tutorSteps.map((step, index) => {
                 const unlocked = answerSubmitted && index <= lesson.currentStepIndex;
                 const active = unlocked && index === lesson.currentStepIndex;
                 return (
                   <article
                     key={step.id}
-                    className={`rounded-2xl border p-5 shadow-sm ${active ? "border-orange-300 bg-orange-50" : unlocked ? "border-emerald-200 bg-emerald-50" : "border-violet-200 bg-violet-50 text-violet-700"}`}
+                    className={`min-h-24 rounded-3xl border-2 p-6 shadow-md ${active ? "border-emerald-400 bg-white" : unlocked ? "border-emerald-200 bg-white" : "border-slate-200 bg-white text-violet-700"}`}
                   >
                     <div className="flex gap-3">
                       <span
-                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${active ? "bg-orange-600 text-white" : unlocked ? "bg-emerald-600 text-white" : "bg-violet-200 text-violet-700"}`}
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-base font-bold ${active ? "bg-emerald-600 text-white" : unlocked ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-500"}`}
                       >
                         {unlocked ? index + 1 : "🔒"}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-bold">Bước {index + 1}</h3>
+                        <h3 className="text-lg font-bold text-slate-950">Bước {index + 1}</h3>
                         {!unlocked && (
                           <div className="mt-2 h-2 rounded-full bg-slate-200" />
                         )}
                         {active && answerSubmitted && answerCorrect !== false && (
-                          <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                            <TypedText
-                              text={step.explanation || "Đọc kỹ đề và nêu bước suy luận của em."}
-                              animate={answerCorrect === true}
-                            />
-                          </p>
+                          <div className="mt-5 rounded-3xl border-2 border-slate-200 bg-white p-6 shadow-md sm:p-7">
+                            <StepGuidance step={step} animate={answerCorrect === true} />
+                          </div>
                         )}
                         {active &&
                           answerSubmitted &&
@@ -743,8 +763,8 @@ const AITutorPage = () => {
               })}
             </div>
             {!answerSubmitted && (
-              <div className="m-6 rounded-2xl border border-amber-200 bg-amber-100 p-5 text-sm text-amber-950 shadow-sm">
-                <strong>💡 Gợi ý</strong>
+              <div className="m-7 rounded-3xl border-2 border-amber-200 bg-amber-50 p-6 text-base leading-7 text-amber-950 shadow-sm">
+                <strong className="text-lg">💡 Gợi ý</strong>
                 <p className="mt-1">
                   {selected
                     ? 'Em đã chọn đáp án. Bấm “Trả lời” để kiểm tra và mở hướng dẫn.'
