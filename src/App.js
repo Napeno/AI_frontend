@@ -16,6 +16,7 @@ import AdminDashboardPage from './pages/AdminDashboardPage';
 import ThinkingJournalPage from './pages/ThinkingJournalPage';
 import AITutorPage from './pages/AITutorPage';
 import AITutorLibraryPage from './pages/AITutorLibraryPage';
+import GiftShopPage from './pages/GiftShopPage';
 
 const AppContent = () => {
   const { token, user, authReady, logout } = useAuth();
@@ -32,7 +33,8 @@ const AppContent = () => {
 
   // Check if current page is chat page or game page
   const isChatPage = location.pathname === '/chat';
-  const hideHeader = location.pathname.startsWith('/chat') || location.pathname.startsWith('/game');
+  const isTutorWorkspace = location.pathname === '/ai-tutor' || (location.pathname.startsWith('/ai-tutor/') && location.pathname !== '/ai-tutor/library');
+  const hideHeader = location.pathname.startsWith('/chat') || location.pathname.startsWith('/game') || isTutorWorkspace;
 
   // Toggle chat-page class on body
   useEffect(() => {
@@ -82,6 +84,7 @@ const AppContent = () => {
                   <span className="hidden sm:inline">Chat</span>
                 </Link>
                 <Link to="/ai-tutor" className="text-seablue-600 hover:text-seablue-700 font-medium px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">AI Tutor</Link>
+                <Link to="/shop" className="text-orange-600 hover:text-orange-700 font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-orange-50 transition-colors"><span>🛍️</span><span className="hidden sm:inline">Cửa hàng</span></Link>
                 </>}
                 <div className="hidden md:flex items-center gap-2">
                   <span className="text-gray-700 text-xs">{user?.username}</span>
@@ -113,6 +116,7 @@ const AppContent = () => {
         <Route path="/thinking" element={token ? (isAdmin ? <Navigate to="/" replace /> : <ThinkingJournalPage />) : <Navigate to="/login" replace />} />
         <Route path="/ai-tutor" element={token ? (isAdmin ? <Navigate to="/" replace /> : <AITutorPage />) : <Navigate to="/login" replace />} />
         <Route path="/ai-tutor/library" element={token ? (isAdmin ? <Navigate to="/" replace /> : <AITutorLibraryPage />) : <Navigate to="/login" replace />} />
+        <Route path="/shop" element={token ? (isAdmin ? <Navigate to="/" replace /> : <GiftShopPage />) : <Navigate to="/login" replace />} />
         <Route path="/ai-tutor/:sessionId" element={token ? (isAdmin ? <Navigate to="/" replace /> : <AITutorPage />) : <Navigate to="/login" replace />} />
         <Route path="/admin" element={token && isAdmin ? <Navigate to="/" replace /> : <Navigate to="/chat" replace />} />
         <Route path="/game" element={isAdmin ? <Navigate to="/" replace /> : <GameHomePage />} />
