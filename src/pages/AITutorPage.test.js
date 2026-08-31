@@ -2,10 +2,10 @@ import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import AITutorPage from './AITutorPage';
-import { post } from '../utils/apiClient';
+import { get, post } from '../utils/apiClient';
 import { useAuth } from '../context/AuthContext';
 
-jest.mock('../utils/apiClient', () => ({ post: jest.fn() }));
+jest.mock('../utils/apiClient', () => ({ get: jest.fn(), post: jest.fn() }));
 jest.mock('../context/AuthContext', () => ({ useAuth: jest.fn() }));
 
 const response = body => ({ ok: true, json: async () => body });
@@ -210,7 +210,7 @@ test('shows praise after a correct submitted answer', async () => {
 
   await waitFor(() => expect(screen.getByText('Chính xác! Mở bước tiếp theo nhé.')).toBeInTheDocument());
   expect(screen.getByRole('button', { name: /Câu tiếp theo/ })).toBeInTheDocument();
-  expect(screen.getByRole('button', { name: /A\. Bốn/ })).toHaveClass('border-green-700', 'bg-green-600', 'text-white');
+  expect(screen.getByRole('button', { name: /A\. Bốn/ })).toHaveClass('border-emerald-700', 'bg-emerald-600', 'text-white');
   expect(screen.getByText('Chính xác! Mở bước tiếp theo nhé.').parentElement).toHaveClass('border-emerald-200', 'bg-emerald-50', 'text-emerald-800');
 });
 
@@ -269,6 +269,35 @@ test('collapses the completed step and opens the next step', async () => {
   expect(screen.getByText('Tốt lắm, tiếp tục nhé.').parentElement).toHaveClass('border-emerald-200', 'bg-emerald-50', 'text-emerald-800');
   expect(screen.queryByText('Tách dữ kiện.')).not.toBeInTheDocument();
   expect(screen.queryAllByText('🔒')).toHaveLength(0);
+});
+
+test('opens step three instead of skipping to the next question', async () => {
+  const steps = [
+    step,
+    { ...step, id: 's2', title: 'Bước 2', explanation: 'Hướng dẫn bước hai.' },
+    { ...step, id: 's3', title: 'Bước 3', explanation: 'Hướng dẫn bước ba.' },
+  ];
+  const lessonWithSteps = stepIndex => ({
+    ...makeLesson({ stepIndex }),
+    question: { ...makeLesson({ stepIndex }).question, tutorSteps: steps },
+  });
+  post
+    .mockResolvedValueOnce(response({ lesson: lessonWithSteps(-1) }))
+    .mockResolvedValueOnce(response({ correct: false, message: 'Chưa đúng.', lesson: lessonWithSteps(0) }))
+    .mockResolvedValueOnce(response({ lesson: lessonWithSteps(1) }));
+  renderTutor();
+
+  await screen.findByText('Chọn kết quả đúng.');
+  fireEvent.click(screen.getByRole('button', { name: /A\. Bốn/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Trả lời/ }));
+  const blank = await screen.findByRole('button', { name: 'Kết quả: Ô trống' });
+  fireEvent.click(screen.getByRole('button', { name: '4' }));
+  fireEvent.click(blank);
+  fireEvent.click(screen.getByRole('button', { name: 'Tiếp tục' }));
+
+  expect(await screen.findByText('Hướng dẫn bước hai.')).toBeInTheDocument();
+  expect(screen.getByText('Bước 3')).toBeInTheDocument();
+  expect(screen.getAllByText('🔒')).toHaveLength(1);
 });
 
 test('moves to the next question directly after a correct answer', async () => {
@@ -399,6 +428,21 @@ test('shows a recoverable message when the API lesson has no active question', a
 
   expect(await screen.findByText('Chưa tải được câu hỏi luyện tập.')).toBeInTheDocument();
   expect(screen.getByRole('link', { name: /Về Chat/ })).toBeInTheDocument();
+});
+
+test('opens a selected library lesson without trying to create it again', async () => {
+  get.mockResolvedValue(response({ lesson: makeLesson() }));
+  render(
+    <MemoryRouter initialEntries={['/ai-tutor/session-1?questionId=q1&lessonId=lesson-1']}>
+      <Routes>
+        <Route path="/ai-tutor/:sessionId" element={<AITutorPage />} />
+      </Routes>
+    </MemoryRouter>,
+  );
+
+  expect(await screen.findByText('Chọn kết quả đúng.')).toBeInTheDocument();
+  expect(get).toHaveBeenCalledWith('/ai-tutor/lessons/lesson-1');
+  expect(post).not.toHaveBeenCalled();
 });
 
 test('shows the Vietnamese API error when the source conversation is missing', async () => {

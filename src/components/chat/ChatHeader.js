@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import ThinkingBattery from './ThinkingBattery';
 import UserProfile from '../sidebar/UserProfile';
 import { useTheme } from '../../context/ThemeContext';
@@ -22,6 +23,7 @@ const ChatHeader = ({ currentConversationTitle, intervention, onOpenHistory, onO
       <button type="button" onClick={onOpenSettings} title="Thiết lập chat" aria-label="Thiết lập chat" className="chat-header-button rounded-xl p-2">
         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM19.5 12a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM12 22.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM4.5 12a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.5v15M4.5 12h15" /></svg>
       </button>
+      <Link to="/shop" title="Cửa hàng" aria-label="Cửa hàng" className="chat-header-button rounded-xl p-2 text-base">🛍️</Link>
       <div className="md:hidden"><UserProfile compact menuPosition="top-12" menuAlign="right-0" /></div>
     </div>
   </header>;
