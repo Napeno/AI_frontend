@@ -271,6 +271,35 @@ test('collapses the completed step and opens the next step', async () => {
   expect(screen.queryAllByText('🔒')).toHaveLength(0);
 });
 
+test('opens step three instead of skipping to the next question', async () => {
+  const steps = [
+    step,
+    { ...step, id: 's2', title: 'Bước 2', explanation: 'Hướng dẫn bước hai.' },
+    { ...step, id: 's3', title: 'Bước 3', explanation: 'Hướng dẫn bước ba.' },
+  ];
+  const lessonWithSteps = stepIndex => ({
+    ...makeLesson({ stepIndex }),
+    question: { ...makeLesson({ stepIndex }).question, tutorSteps: steps },
+  });
+  post
+    .mockResolvedValueOnce(response({ lesson: lessonWithSteps(-1) }))
+    .mockResolvedValueOnce(response({ correct: false, message: 'Chưa đúng.', lesson: lessonWithSteps(0) }))
+    .mockResolvedValueOnce(response({ lesson: lessonWithSteps(1) }));
+  renderTutor();
+
+  await screen.findByText('Chọn kết quả đúng.');
+  fireEvent.click(screen.getByRole('button', { name: /A\. Bốn/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Trả lời/ }));
+  const blank = await screen.findByRole('button', { name: 'Kết quả: Ô trống' });
+  fireEvent.click(screen.getByRole('button', { name: '4' }));
+  fireEvent.click(blank);
+  fireEvent.click(screen.getByRole('button', { name: 'Tiếp tục' }));
+
+  expect(await screen.findByText('Hướng dẫn bước hai.')).toBeInTheDocument();
+  expect(screen.getByText('Bước 3')).toBeInTheDocument();
+  expect(screen.getAllByText('🔒')).toHaveLength(1);
+});
+
 test('moves to the next question directly after a correct answer', async () => {
   post
     .mockResolvedValueOnce(response({ lesson: makeLesson() }))
