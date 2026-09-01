@@ -19,8 +19,14 @@ const ChatRail = ({ onNewChat, onOpenHistory, coinAnimationTrigger, pointsAnimat
     <RailButton label="Lịch sử trò chuyện" onClick={onOpenHistory}>
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
     </RailButton>
+    <Link to="/practice" title="Sổ tay lỗi" aria-label="Sổ tay lỗi" className="chat-rail-button flex h-10 w-10 items-center justify-center rounded-xl text-lg transition-colors">
+      <span aria-hidden="true">📘</span>
+    </Link>
     <Link to="/ai-tutor/library" title="Luyện tập cùng AI Tutor" aria-label="Luyện tập cùng AI Tutor" className="chat-rail-button flex h-10 w-10 items-center justify-center rounded-xl transition-colors">
       <span className="text-lg" aria-hidden="true">📚</span>
+    </Link>
+    <Link to="/thinking" title="Nhật ký tư duy" aria-label="Nhật ký tư duy" className="chat-rail-button flex h-10 w-10 items-center justify-center rounded-xl text-lg transition-colors">
+      <span aria-hidden="true">📓</span>
     </Link>
     <div className="mt-auto">
       <UserProfile compact coinAnimationTrigger={coinAnimationTrigger} pointsAnimationTrigger={pointsAnimationTrigger} />
