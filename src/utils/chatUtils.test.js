@@ -19,3 +19,10 @@ test('renders a bare LaTeX fraction without requiring delimiters', () => {
 
   expect(html).toContain('math-fraction');
 });
+
+test('normalizes duplicated Gemini math escaping', () => {
+  const html = formatAIMessage('Chọn \\\\(x + 1\\\\)^2.');
+
+  expect(html).toContain('math-formula');
+  expect(html).not.toContain('\\\\(');
+});

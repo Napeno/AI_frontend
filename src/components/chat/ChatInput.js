@@ -12,6 +12,10 @@ const ChatInput = ({
   selectedImage,
   setSelectedImage,
   supportMode,
+  answerMode = false,
+  answerValue = '',
+  setAnswerValue,
+  onSendAnswer,
   onOpenSubjectPicker,
 }) => {
   const fileInputRef = useRef(null);
@@ -30,13 +34,11 @@ const ChatInput = ({
     }
   };
 
-  const handleSend = () => {
-    if (typeof onSend === 'function') {
-      onSend();
-    }
-  };
+  const value = answerMode ? answerValue : inputMessage;
+  const setValue = answerMode ? setAnswerValue : setInputMessage;
+  const handleSend = () => (answerMode ? onSendAnswer?.() : onSend?.());
 
-  const trimmedInput = (inputMessage || '').trim();
+  const trimmedInput = (value || '').trim();
   const sendDisabled = isLoading || isCoolingDown || (!trimmedInput && !selectedImage);
   const buttonTitle = isCoolingDown
     ? t('chat.cooldown.tooltip', { seconds: cooldownRemaining })
@@ -47,7 +49,9 @@ const ChatInput = ({
   const buttonLabelMobile = isCoolingDown
     ? `${cooldownRemaining}s`
     : '📤';
-  const placeholder = supportMode === 'calculation'
+  const placeholder = answerMode
+    ? t('chat.input.answerPlaceholder')
+    : supportMode === 'calculation'
     ? t('chat.input.workPlaceholder')
     : selectedImage
       ? t('chat.input.placeholderWithImage')
@@ -79,16 +83,16 @@ const ChatInput = ({
         </div>
       )}
 
-      <div className="chat-input-shell flex items-end gap-2 rounded-2xl p-2 shadow-sm">
+      <div className={`chat-input-shell flex items-center gap-2 rounded-2xl p-2 shadow-sm ${answerMode ? 'chat-input-shell-answer' : ''}`}>
         <div className="flex-1 relative">
           <textarea
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
+            value={value}
+            onChange={(e) => setValue?.(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={placeholder}
             disabled={isLoading}
             rows="1"
-            className="chat-input w-full resize-none bg-transparent px-2 py-2 pr-10 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-60"
+            className="chat-input w-full resize-none bg-transparent px-2 py-2 pr-10 text-sm leading-5 outline-none disabled:cursor-not-allowed disabled:opacity-60"
           />
           
           {/* Image upload button */}
@@ -115,9 +119,9 @@ const ChatInput = ({
           onClick={handleSend} 
           disabled={sendDisabled}
           title={buttonTitle}
-          className="chat-send rounded-xl px-3 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+          className={`chat-send shrink-0 rounded-xl px-3 py-2 text-sm font-semibold leading-5 transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${answerMode ? 'chat-send-answer' : ''}`}
         >
-          <span className="hidden sm:inline">{buttonLabelDesktop}</span>
+          <span className="hidden sm:inline">{answerMode ? t('userAnswer.checkButton') : buttonLabelDesktop}</span>
           <span className="sm:hidden">{buttonLabelMobile}</span>
         </button>
       </div>

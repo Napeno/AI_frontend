@@ -13,6 +13,7 @@ import ChatInput from '../components/chat/ChatInput';
 import UserAnswerInput from '../components/chat/UserAnswerInput';
 import ChatActions from '../components/chat/ChatActions';
 import InterventionGate from '../components/chat/InterventionGate';
+import RewardCelebration from '../components/chat/RewardCelebration';
 
 const CHAT_COOLDOWN_SECONDS = 3;
 const DEFAULT_CHAT_SETTINGS = { educationLevel: 'middle', subjectArea: 'mathematics', course: 'mathematics' };
@@ -21,6 +22,9 @@ const ChatPage = () => {
   const [keyboardOffset, setKeyboardOffset] = useState(0);
   const [coinAnimationTrigger, setCoinAnimationTrigger] = useState(null);
   const [pointsAnimationTrigger, setPointsAnimationTrigger] = useState(null);
+  const [rewardCelebration, setRewardCelebration] = useState(null);
+  const lastRewardIdRef = useRef(null);
+  const rewardInitializedRef = useRef(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isChatSettingsOpen, setIsChatSettingsOpen] = useState(false);
   const [isSubjectPickerOpen, setIsSubjectPickerOpen] = useState(false);
@@ -39,6 +43,19 @@ const ChatPage = () => {
     loadConversation, deleteConversation, sendMessage, sendImageMessage, continueChat, getFullAnswer,
     checkUserAnswer, checkUserAnswerWithImage,
   } = useChat(setCoinAnimationTrigger, setPointsAnimationTrigger);
+
+  useEffect(() => {
+    const rewardMessage = [...messages].reverse().find(message => message.type === 'chestnut-award');
+    if (!rewardInitializedRef.current && messages.length > 0) {
+      rewardInitializedRef.current = true;
+      lastRewardIdRef.current = rewardMessage?.id || null;
+      return;
+    }
+    if (rewardMessage && rewardMessage.id !== lastRewardIdRef.current) {
+      lastRewardIdRef.current = rewardMessage.id;
+      setRewardCelebration({ points: 25, chestnuts: 5, id: rewardMessage.id });
+    }
+  }, [messages]);
 
   useEffect(() => { loadConversations(); }, [loadConversations]);
 
@@ -81,6 +98,38 @@ const ChatPage = () => {
   const handleKeyPress = event => {
     if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); handleSendMessage(); }
   };
+  const latestBotIndex = messages.reduce((index, message, currentIndex) => (
+    message.sender === 'bot' ? currentIndex : index
+  ), -1);
+  const latestBotMessage = messages[latestBotIndex];
+  const isClarificationMessage = latestBotMessage?.evaluationStatus === 'uncertain'
+    || /(?:^|\n)\s*(?:💬\s*)?cần làm rõ\b/i.test(latestBotMessage?.text || '')
+    || /(?:^|\n)\s*(?:💬\s*)?need clarification\b/i.test(latestBotMessage?.text || '');
+  const isFollowUpQuestion = !latestBotMessage?.evaluationStatus
+    && /\?|\b(?:bao nhiêu|thế nào|đúng không|phải không|hay không)\b/i.test(latestBotMessage?.text || '');
+  const answerMode = supportMode !== 'calculation'
+    && (isClarificationMessage || isFollowUpQuestion)
+    && !messages.slice(latestBotIndex + 1).some(message => message.sender === 'user');
+  const handleAnswerKeyPress = event => {
+    if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); handleSendAnswer(); }
+  };
+  const handleSendAnswer = useCallback(async () => {
+    if (isLoading || isCoolingDown || (!selectedImage && !userAnswer.trim())) return;
+    if (selectedImage) {
+      try {
+        await checkUserAnswerWithImage(selectedImage, userAnswer);
+      } finally {
+        setSelectedImage(null);
+        startCooldown();
+      }
+    } else {
+      try {
+        await checkUserAnswer();
+      } finally {
+        startCooldown();
+      }
+    }
+  }, [checkUserAnswer, checkUserAnswerWithImage, isCoolingDown, isLoading, selectedImage, setSelectedImage, startCooldown, userAnswer]);
   const handleGateSubmit = useCallback(async response => {
     if (!isLoading) await (intervention?.type === 'full_answer_gate' ? getFullAnswer(response) : continueChat(response));
   }, [continueChat, getFullAnswer, intervention?.type, isLoading]);
@@ -106,9 +155,10 @@ const ChatPage = () => {
     setIsHistoryOpen(false);
   };
   const isEmptyChat = settingsSelected && messages.length === 0;
-  const input = <ChatInput inputMessage={inputMessage} setInputMessage={setInputMessage} isLoading={isLoading} isCoolingDown={isCoolingDown} cooldownRemaining={cooldownRemaining} onSend={handleSendMessage} handleKeyPress={handleKeyPress} selectedImage={selectedImage} setSelectedImage={setSelectedImage} supportMode={supportMode} onOpenSubjectPicker={isEmptyChat ? () => setIsSubjectPickerOpen(true) : undefined} />;
+  const input = <ChatInput inputMessage={inputMessage} setInputMessage={setInputMessage} isLoading={isLoading} isCoolingDown={isCoolingDown} cooldownRemaining={cooldownRemaining} onSend={handleSendMessage} handleKeyPress={answerMode ? handleAnswerKeyPress : handleKeyPress} selectedImage={selectedImage} setSelectedImage={setSelectedImage} supportMode={supportMode} answerMode={answerMode} answerValue={userAnswer} setAnswerValue={setUserAnswer} onSendAnswer={handleSendAnswer} onOpenSubjectPicker={isEmptyChat ? () => setIsSubjectPickerOpen(true) : undefined} />;
 
   return <div className="chat-shell flex h-[100dvh] overflow-hidden">
+    <RewardCelebration reward={rewardCelebration} />
     <ChatRail onNewChat={handleNewChat} onOpenHistory={() => setIsHistoryOpen(true)} coinAnimationTrigger={coinAnimationTrigger} pointsAnimationTrigger={pointsAnimationTrigger} />
     {isHistoryOpen && <div className="fixed inset-0 z-50 md:left-14" role="dialog" aria-modal="true" aria-label="Lịch sử trò chuyện">
       <button type="button" aria-label="Đóng lịch sử" onClick={() => setIsHistoryOpen(false)} className="absolute inset-0 bg-slate-950/20 backdrop-blur-[1px]" />

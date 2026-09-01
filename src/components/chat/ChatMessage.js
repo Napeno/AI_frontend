@@ -160,7 +160,7 @@ function ChatMessage({ message, formatAIMessage, userAvatar, sessionId }) {
               aria-label={isCorrect ? 'correct' : 'incorrect'}
               className="text-4xl sm:text-5xl lg:text-6xl"
             >
-              <img src="/avatar.png" alt={isCorrect ? 'correct' : 'incorrect'} className="h-14 w-14 object-contain sm:h-16 sm:w-16" />
+              <img src={isCorrect ? '/happy.png' : '/sad.png'} alt={isCorrect ? 'correct' : 'incorrect'} className="h-20 w-20 object-contain sm:h-24 sm:w-24" />
             </span>
           </div>
         )}

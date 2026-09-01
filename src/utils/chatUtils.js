@@ -166,7 +166,14 @@ export const formatAIMessage = (text) => {
         return String(text);
     }
 
-    const { withoutMath, mathSegments, placeholderPrefix, placeholderSuffix } = replaceMathSegments(text);
+    // Gemini sometimes returns escaped delimiters twice after JSON transport.
+    const normalizedText = text
+      .replace(/\\{2,}\(/g, '\\(')
+      .replace(/\\{2,}\)/g, '\\)')
+      .replace(/\\{2,}\[/g, '\\[')
+      .replace(/\\{2,}\]/g, '\\]')
+      .replace(/\\{2,}(?=(?:frac|sqrt|text)\b)/g, '\\');
+    const { withoutMath, mathSegments, placeholderPrefix, placeholderSuffix } = replaceMathSegments(normalizedText);
     let formatted = escapeHtml(withoutMath);
 
     // Replace line breaks with <br> tags
