@@ -47,53 +47,23 @@ const Confetti = ({ burst }) => (
   </div>
 );
 
-const Visual = ({ visual, allowVisual = true }) => {
-  if (!allowVisual) return null;
-  if (visual?.kind === "image" && visual?.url)
-    return (
-      <img
-        src={visual.url}
-        alt={visual.alt || "Minh họa do AI tạo"}
-        className="w-full rounded-2xl border border-orange-200 object-contain"
-      />
-    );
-  if (visual?.url)
-    return (
-      <img
-        src={visual.url}
-        alt={visual.alt || "Minh họa do AI tạo"}
-        className="w-full rounded-2xl border border-orange-200 object-contain"
-      />
-    );
-  if (visual?.kind === "svg" && visual?.spec?.svg)
-    return (
-      <div
-        role="img"
-        aria-label={visual.spec.label || "Minh họa do Gemini tạo"}
-        className="flex w-full items-center justify-center overflow-hidden rounded-2xl border border-orange-200 bg-orange-50 p-4 [&>svg]:max-h-60 [&>svg]:w-full"
-        dangerouslySetInnerHTML={{ __html: visual.spec.svg }}
-      />
-    );
-  return null;
-};
-
-const StepGuidance = ({ step, animate = false }) => (
-  <>
+const StepGuidance = ({ step, animate = false }) => {
+  const hint = step.hint || "";
+  return <>
     <p className="text-base leading-7 text-slate-800 sm:text-lg">
       <TypedText text={step.explanation} animate={animate} />
     </p>
-    {(step.analysis || step.easierExample?.prompt) && (
+    {(step.analysis || hint) && (
       <details className="mt-3 rounded-xl border border-slate-200 bg-slate-50 text-sm leading-6 text-slate-700">
         <summary className="cursor-pointer px-3 py-2 font-bold text-slate-800">Gợi ý thêm</summary>
         <div className="space-y-2 border-t border-slate-200 px-3 py-3">
           {step.analysis && <p><strong>Phân tích:</strong> <TypedText text={step.analysis} animate={animate} /></p>}
-          {step.easierExample?.prompt && <p><strong>Ví dụ dễ hơn:</strong> <TypedText text={step.easierExample.prompt} animate={animate} /></p>}
-          {step.easierExample?.hint && <p className="text-slate-600">Gợi ý: {step.easierExample.hint}</p>}
+          {hint && <p className="text-slate-600">Gợi ý: {hint}</p>}
         </div>
       </details>
     )}
-  </>
-);
+  </>;
+};
 
 const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false, stepFeedback = null }) => {
   const [placements, setPlacements] = useState({});
@@ -251,6 +221,21 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false, step
   const ready =
     step.blanks.length > 0 &&
     step.blanks.every((blank) => placements[blank.id]);
+  if (!step.blanks.length && !step.tokens.length) {
+    return (
+      <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-md sm:p-7">
+        <StepGuidance step={step} animate={animateExplanation} />
+        <button
+          type="button"
+          disabled={loading}
+          onClick={() => onSubmit({}, { skip: true })}
+          className="mt-4 w-full rounded-xl bg-blue-600 px-3 py-3 text-sm font-bold text-white disabled:opacity-50"
+        >
+          Đã hiểu, sang bước tiếp
+        </button>
+      </div>
+    );
+  }
   return (
     <div className="mt-3 rounded-2xl border-0 bg-transparent p-0">
       <StepGuidance step={step} animate={animateExplanation} />
@@ -273,6 +258,7 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false, step
       <div className="mt-4 space-y-2">
         {step.blanks.map((blank, index) => (
           <div key={blank.id} className="flex items-center gap-2">
+            <span className="max-w-[18rem] text-sm font-semibold text-slate-700">{blank.label}</span>
             <button
               type="button"
               onClick={() => put(blank.id)}
@@ -288,7 +274,7 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false, step
               style={{ backgroundColor: "#fff" }}
               className={`flex h-12 min-w-20 items-center justify-center rounded-lg border-2 bg-white px-4 text-base font-bold shadow-sm transition ${placements[blank.id] ? "border-emerald-500 text-emerald-800" : "border-slate-300 text-slate-300 hover:border-orange-400"}`}
             >
-              {placements[blank.id] ? labelFor(placements[blank.id]) : ""}
+              {placements[blank.id] ? labelFor(placements[blank.id]) : "Ô trống"}
             </button>
             {index < step.blanks.length - 1 && <span className="text-lg text-slate-500">,</span>}
           </div>
@@ -609,12 +595,6 @@ const AITutorPage = () => {
                 <p className="aitutor-prompt mt-5 rounded-2xl bg-slate-50 p-5 text-lg leading-relaxed">
                   {question.prompt}
                 </p>
-                <div className="mt-5">
-                  <Visual
-                    visual={question.visual}
-                    allowVisual={question.interactionType !== "math_tokens"}
-                  />
-                </div>
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   {question.options.map((option) => {
                     const isCorrect = question.correctOptionId === option.id;

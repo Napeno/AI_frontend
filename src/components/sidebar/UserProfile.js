@@ -64,7 +64,7 @@ const UserProfile = ({ compact = false, menuPosition = 'bottom-0', menuAlign = '
         </div>
       )}
       <button type="button" onClick={() => setIsMenuOpen(value => !value)} aria-label="Mở menu tài khoản" aria-expanded={isMenuOpen} className={compact ? 'flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 text-lg hover:bg-orange-200 dark:bg-orange-950 dark:hover:bg-orange-900' : 'rounded-lg p-2'}>
-        <img src="/avatar.png" alt="Avatar người dùng" className="h-8 w-8 object-contain" />
+        <img src="/studentAI.png" alt="Avatar người dùng" className="h-8 w-8 object-contain" />
       </button>
     </div>
     <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} activeTab={activeTab} setActiveTab={setActiveTab} />

@@ -47,6 +47,7 @@ const makeLesson = ({ index = 0, stepIndex = -1, correctOptionId } = {}) => ({
 
 const guidance = {
   analysis: 'Phân tích: chọn công thức phù hợp.',
+  hint: 'Ghép đủ ba phần.',
   easierExample: { prompt: 'Ví dụ dễ hơn: (a + 1)².', answer: 'a² + 2a + 1', hint: 'Ghép đủ ba phần.' },
 };
 
@@ -214,7 +215,7 @@ test('shows praise after a correct submitted answer', async () => {
   expect(screen.getByText('Chính xác! Mở bước tiếp theo nhé.').parentElement).toHaveClass('border-emerald-200', 'bg-emerald-50', 'text-emerald-800');
 });
 
-test('shows AI analysis and an easier example in the opened guidance card', async () => {
+test('shows AI analysis and hint in the opened guidance card', async () => {
   post
     .mockResolvedValueOnce(response({ lesson: { ...makeLesson(), question: { ...makeLesson().question, tutorSteps: [{ ...step, ...guidance }, { ...step, id: 's2', title: 'Bước 2' }] } } }))
     .mockResolvedValueOnce(response({
@@ -235,7 +236,8 @@ test('shows AI analysis and an easier example in the opened guidance card', asyn
   const moreGuidance = await screen.findByText('Gợi ý thêm');
   fireEvent.click(moreGuidance);
   expect(screen.getByText('Phân tích:')).toBeInTheDocument();
-  expect(screen.getByText('Ví dụ dễ hơn:')).toBeInTheDocument();
+  expect(screen.getByText('Gợi ý: Ghép đủ ba phần.')).toBeInTheDocument();
+  expect(screen.queryByText('Câu hỏi dễ hơn:')).not.toBeInTheDocument();
   expect(screen.queryByText(/token/i)).not.toBeInTheDocument();
 });
 

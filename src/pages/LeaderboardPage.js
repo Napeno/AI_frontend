@@ -144,7 +144,7 @@ setError(t('leaderboard.loadingError'));
             <div className="flex items-center justify-between p-3 sm:p-4 bg-seablue-50 dark:bg-seablue-900/30 rounded-lg">
               <div className="flex items-center gap-3 sm:gap-4">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r from-orange-500 to-orange-700 text-white flex items-center justify-center text-xl sm:text-2xl shadow-md">
-                  <img src="/avatar.png" alt="Avatar người dùng" className="h-8 w-8 object-contain sm:h-10 sm:w-10" />
+                  <img src="/studentAI.png" alt="Avatar người dùng" className="h-8 w-8 object-contain sm:h-10 sm:w-10" />
                 </div>
                 <div>
                   <p className="font-semibold text-gray-800 dark:text-gray-200 text-sm sm:text-base">{user.name || 'You'}</p>
@@ -220,7 +220,7 @@ setError(t('leaderboard.loadingError'));
                       
                       {/* Avatar */}
                       <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-gradient-to-r from-orange-500 to-orange-700 text-white flex items-center justify-center text-xl sm:text-2xl shadow-md flex-shrink-0">
-                        <img src="/avatar.png" alt="Avatar học sinh" className="h-8 w-8 object-contain sm:h-12 sm:w-12" />
+                        <img src="/studentAI.png" alt="Avatar học sinh" className="h-8 w-8 object-contain sm:h-12 sm:w-12" />
                       </div>
                       
                       {/* User Info */}
