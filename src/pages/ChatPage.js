@@ -33,7 +33,7 @@ const ChatPage = () => {
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
   const [searchParams] = useSearchParams();
   const restoredSessionRef = useRef('');
-  const userAvatar = '/avatar.png';
+  const userAvatar = '/studentAI.png';
   const isCoolingDown = cooldownRemaining > 0;
 
   const {
