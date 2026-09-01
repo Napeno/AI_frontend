@@ -128,6 +128,14 @@
   }
 }
 
+.reward-celebration { position: fixed; inset: 0; z-index: 60; pointer-events: none; overflow: hidden; }
+.reward-celebration-message { position: fixed; left: 50%; top: 18%; transform: translateX(-50%); border: 2px solid #fbbf24; border-radius: 9999px; background: #fffbeb; color: #92400e; padding: .75rem 1.25rem; box-shadow: 0 12px 30px rgba(146,64,14,.2); animation: rewardMessagePop .55s cubic-bezier(.34,1.56,.64,1) both; white-space: nowrap; }
+.reward-confetti span { position: absolute; left: var(--confetti-x); top: -10vh; width: 9px; height: 16px; background: var(--confetti-color); animation: rewardConfettiFall 2.4s ease-in var(--confetti-delay) both; }
+.reward-chestnut { position: fixed; left: 50%; top: 55%; font-size: 1.75rem; animation: rewardChestnutBurst 1.3s cubic-bezier(.2,.8,.3,1) var(--chestnut-delay) both; }
+@keyframes rewardMessagePop { from { opacity: 0; transform: translate(-50%, -18px) scale(.75); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
+@keyframes rewardConfettiFall { 0% { opacity: 0; transform: translateY(0) rotate(0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateY(115vh) rotate(620deg); } }
+@keyframes rewardChestnutBurst { 0% { opacity: 0; transform: translate(-50%, 0) scale(.5); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(calc(-50% + var(--chestnut-x)), -170px) rotate(360deg) scale(1.1); } }
+
 @keyframes rewardNumberRise {
   0% { opacity: 0; transform: translateY(12px) scale(.8); }
   65% { opacity: 1; transform: translateY(-3px) scale(1.08); }
@@ -871,6 +879,11 @@ button,
   box-shadow: 0 5px 16px rgba(15, 23, 42, .06);
 }
 .chat-input-shell:focus-within { border-color: var(--chat-accent); box-shadow: 0 0 0 3px rgba(15, 118, 110, .14); }
+.chat-input-shell-answer { border: 1.5px dashed #22c55e; }
+.chat-input-shell-answer:focus-within { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(34, 197, 94, .16); }
+.chat-input-shell-answer .chat-icon-button { color: #16a34a; }
+.chat-send-answer { background: linear-gradient(135deg, #4ade80, #16a34a); }
+.chat-send-answer:hover { background: linear-gradient(135deg, #22c55e, #15803d); }
 .chat-input { color: var(--chat-text); }
 .chat-input::placeholder { color: var(--chat-muted); }
 .chat-send { background: linear-gradient(135deg, #58bd91, #267d60); color: white; }
