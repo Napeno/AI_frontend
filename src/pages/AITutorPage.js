@@ -49,6 +49,7 @@ const Confetti = ({ burst }) => (
 
 const StepGuidance = ({ step, animate = false }) => {
   const hint = step.hint || "";
+  const easierExample = step.easierExample;
   return <>
     <p className="text-base leading-7 text-slate-800 sm:text-lg">
       <TypedText text={step.explanation} animate={animate} />
@@ -59,6 +60,11 @@ const StepGuidance = ({ step, animate = false }) => {
         <div className="space-y-2 border-t border-slate-200 px-3 py-3">
           {step.analysis && <p><strong>Phân tích:</strong> <TypedText text={step.analysis} animate={animate} /></p>}
           {hint && <p className="text-slate-600">Gợi ý: {hint}</p>}
+          {easierExample?.prompt && <div className="rounded-lg bg-white p-3 text-slate-700">
+            <p><strong>Câu dễ hơn:</strong> {easierExample.prompt}</p>
+            {easierExample.answer && <p className="mt-1"><strong>Đáp án:</strong> {easierExample.answer}</p>}
+            {easierExample.hint && <p className="mt-1 text-slate-600">Gợi ý: {easierExample.hint}</p>}
+          </div>}
         </div>
       </details>
     )}
@@ -316,6 +322,8 @@ const AITutorPage = () => {
   const [loading, setLoading] = useState(Boolean(sessionId));
   const activeStepRef = useRef(null);
   const question = lesson?.question;
+  const generatedQuestionCount = lesson?.generatedQuestionCount || 0;
+  const generationPercent = Math.min(100, Math.round((generatedQuestionCount / (lesson?.totalQuestionCount || 5)) * 100));
   const activeStep = useMemo(
     () => question?.tutorSteps?.[lesson?.currentStepIndex] || null,
     [question, lesson?.currentStepIndex],
@@ -369,6 +377,37 @@ const AITutorPage = () => {
     };
   }, [sessionId, searchParams]);
 
+  useEffect(() => {
+    if (!lesson?.lessonId || lesson.generationStatus !== "generating") return undefined;
+    let active = true;
+    const poll = async () => {
+      try {
+        const response = await get(`/ai-tutor/lessons/${encodeURIComponent(lesson.lessonId)}`);
+        const data = await response.json();
+        if (active && response.ok && data.lesson) {
+          const nextLesson = normalizeLesson(data.lesson);
+          if (nextLesson.currentQuestionIndex !== lesson.currentQuestionIndex) {
+            setSelected("");
+            setAnswerSubmitted(false);
+            setAnswerCorrect(null);
+            setReward(null);
+            setStepFeedback(null);
+            setFeedback("");
+          }
+          setLesson(nextLesson);
+        }
+      } catch (error) {
+        if (active) setFeedback(error.message);
+      }
+    };
+    poll();
+    const intervalId = setInterval(poll, 1500);
+    return () => {
+      active = false;
+      clearInterval(intervalId);
+    };
+  }, [lesson?.lessonId, lesson?.generationStatus, lesson?.currentQuestionIndex]);
+
   const choose = (optionId) => {
     if (!lesson || answerSubmitted || loading) return;
     setSelected(optionId);
@@ -394,6 +433,7 @@ const AITutorPage = () => {
       setReward(data.correct ? {
         points: data.pointsAwarded || 0,
         chestnuts: data.chestnutsAwarded || 0,
+        badge: data.challengeBadges?.[0] || null,
       } : null);
       if (data.correct && data.totalChestnuts !== null && data.totalChestnuts !== undefined) {
         updateUserChestnuts?.(data.totalChestnuts, data.totalPoints);
@@ -434,7 +474,7 @@ const AITutorPage = () => {
       setSelected(movedToNextQuestion ? "" : selected);
       setAnswerSubmitted(!movedToNextQuestion);
       setAnswerCorrect(movedToNextQuestion ? null : answerCorrect);
-      setReward(movedToNextQuestion ? null : reward);
+      setReward(movedToNextQuestion ? null : data.challengeBadges?.[0] ? { ...(reward || { points: 0, chestnuts: 0 }), badge: data.challengeBadges[0] } : reward);
       setFeedback(
         movedToNextQuestion
           ? ""
@@ -509,14 +549,27 @@ const AITutorPage = () => {
     );
   if (loading && !lesson)
     return (
+      <main className="min-h-screen bg-orange-50 px-5 py-16 text-center text-orange-800">
+        <div className="mx-auto max-w-md rounded-3xl bg-white p-8 shadow-sm">
+          <p className="text-lg font-bold">AI đang chuẩn bị bài luyện…</p>
+          <div className="mt-5 h-3 overflow-hidden rounded-full bg-slate-200">
+            <div className="h-full rounded-full bg-gradient-to-r from-violet-500 to-blue-600 transition-all" style={{ width: "0%" }} />
+          </div>
+          <p className="mt-3 text-sm font-semibold">Đã tạo 0/5 câu · 0%</p>
+          <p className="mt-1 text-xs text-slate-500">Câu đầu tiên sẽ hiện ngay khi AI tạo xong.</p>
+        </div>
+      </main>
+    );
+  if (lesson && !question && lesson.generationStatus === "generating")
+    return (
       <main className="min-h-screen bg-orange-50 p-10 text-center text-orange-800">
-        AI đang chuẩn bị bài luyện từ cuộc trò chuyện của bạn…
+        AI đang tạo câu hỏi đầu tiên… Đã tạo {lesson.generatedQuestionCount || 0}/5 câu.
       </main>
     );
   if (!lesson || !question)
     return (
       <main className="min-h-screen bg-orange-50 p-10 text-center">
-        <p className="text-red-700">{feedback || "Chưa tải được câu hỏi luyện tập."}</p>
+        <p className="text-red-700">{feedback || lesson?.generationError || "Chưa tải được câu hỏi luyện tập."}</p>
         <Link
           to={
             sessionId
@@ -531,11 +584,11 @@ const AITutorPage = () => {
     );
 
   return (
-    <main className="aitutor-page flex h-[100dvh] min-h-0 flex-col overflow-y-auto bg-[#fff8ee] p-3 text-slate-900 sm:p-4 lg:overflow-hidden">
+    <main className="aitutor-page flex min-h-screen flex-col overflow-y-auto bg-[#fff8ee] p-3 text-slate-900 sm:p-4 lg:h-[100dvh] lg:min-h-0 lg:overflow-hidden">
       {confettiBurst > 0 && <Confetti burst={confettiBurst} />}
-      <div className="mx-auto flex min-h-0 w-full max-w-[1500px] flex-1">
-        <div className="grid min-h-0 w-full gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(420px,.8fr)]">
-          <section className="aitutor-panel flex min-h-0 flex-col overflow-y-auto rounded-3xl border-2 border-slate-200 bg-white p-4 shadow-lg sm:p-6">
+      <div className="mx-auto flex w-full max-w-[1500px] lg:min-h-0 lg:flex-1">
+        <div className="grid w-full gap-4 lg:min-h-0 lg:grid-cols-[minmax(0,1.35fr)_minmax(420px,.8fr)]">
+          <section className="aitutor-panel aitutor-main-panel flex flex-col rounded-3xl border-2 border-slate-200 bg-white p-4 shadow-lg sm:p-6 lg:min-h-0 lg:overflow-y-auto">
             <div className="aitutor-toolbar mb-4 flex shrink-0 items-center gap-3 rounded-2xl bg-white">
               <Link
                 to={`/chat?sessionId=${encodeURIComponent(sessionId)}`}
@@ -548,12 +601,22 @@ const AITutorPage = () => {
                 <div
                   className="h-full rounded-full bg-gradient-to-r from-violet-500 to-blue-600 transition-all"
                   style={{
-                    width: `${Math.max(8, ((lesson.currentQuestionIndex + (answerSubmitted ? 1 : 0)) / 5) * 100)}%`,
+                    width: `${Math.max(generationPercent, Math.max(8, ((lesson.currentQuestionIndex + (answerSubmitted ? 1 : 0)) / 5) * 100))}%`,
                   }}
                 />
               </div>
               <span className="hidden rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-500 sm:inline">Câu {(lesson.currentQuestionIndex || 0) + 1}/5</span>
             </div>
+            {lesson.generationStatus === "generating" && (
+              <p className="mb-3 rounded-xl bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-800" aria-live="polite">
+                Đã tạo {generatedQuestionCount}/5 câu · {generationPercent}%. Các câu tiếp theo đang được AI tạo nền.
+              </p>
+            )}
+            {lesson.generationStatus === "failed" && lesson.generationError && (
+              <p className="mb-3 rounded-xl bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-800" aria-live="polite">
+                Một câu chưa tạo được: {lesson.generationError}
+              </p>
+            )}
             <p className="aitutor-prompt rounded-2xl bg-slate-50 p-4 text-sm text-slate-800">
               <strong>Đề bài từ Chat:</strong> {lesson.sourceText}
             </p>
@@ -667,11 +730,11 @@ const AITutorPage = () => {
                         </button>
                         <button
                           type="button"
-                          disabled={loading}
+                          disabled={loading || lesson.waitingForQuestion}
                           onClick={() => submitStep({}, { skip: true })}
                           className="rounded-xl bg-orange-500 px-5 py-3 text-sm font-bold text-white shadow-md transition hover:bg-orange-600 disabled:opacity-50"
                         >
-                          Câu tiếp theo&nbsp; →
+                          {lesson.waitingForQuestion ? "Đang tạo câu tiếp theo…" : "Câu tiếp theo  →"}
                         </button>
                       </div>
                     )}
@@ -690,7 +753,7 @@ const AITutorPage = () => {
               </>
             )}
           </section>
-          <aside className="aitutor-panel flex min-h-0 flex-col overflow-hidden rounded-3xl border-2 border-slate-200 bg-white shadow-xl lg:h-full">
+          <aside className="aitutor-panel aitutor-guide-panel flex flex-col rounded-3xl border-2 border-slate-200 bg-white shadow-xl lg:h-full lg:min-h-0 lg:overflow-hidden">
             <div className="aitutor-toolbar shrink-0 border-b-2 border-slate-200 bg-white p-5 sm:p-6">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-2xl font-bold text-slate-950 sm:text-3xl">
@@ -701,12 +764,12 @@ const AITutorPage = () => {
                 </span>
               </div>
             </div>
-            <div className="scrollbar-thin min-h-0 flex-1 space-y-4 overflow-y-auto p-4 sm:p-5">
+            <div className="aitutor-guide-scroll scrollbar-thin space-y-4 p-4 sm:p-5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
               <div className="aitutor-help flex items-center gap-4 overflow-hidden rounded-3xl border-2 border-sky-200 bg-sky-50 p-4 text-sky-950 shadow-sm">
                 <div className="min-w-0 flex-1">
                   <p className="text-lg font-bold">Mẹo nhỏ</p>
                   <p className="mt-1 text-sm leading-6">
-                    Điền vào các ô trống. Đáp án có thể là số, biểu thức hoặc một từ.
+                    Đọc kỹ phần giải thích từng bước. Khi đã hiểu, bấm “Đã hiểu, sang bước tiếp” để mở bước tiếp theo.
                   </p>
                 </div>
                 <img

@@ -15,7 +15,7 @@ const ChatHeader = ({ currentConversationTitle, intervention, onOpenHistory, onO
       <p className="chat-kicker hidden text-xs font-semibold uppercase tracking-[0.18em] sm:block">ThinkBridge · góc học cùng sóc</p>
       <p className="truncate text-sm font-semibold sm:text-base">{currentConversationTitle || 'Chat mới'}</p>
     </div>
-    {intervention?.riskScore !== undefined && <div className="absolute left-1/2 -translate-x-1/2"><ThinkingBattery level={intervention.batteryLevel} /></div>}
+    <ThinkingBattery level={intervention?.batteryLevel ?? 100} />
     <div className="flex items-center gap-1">
       <button type="button" onClick={() => changeTheme(isDark ? 'light' : 'dark')} title={isDark ? 'Chuyển light mode' : 'Chuyển dark mode'} aria-label={isDark ? 'Chuyển light mode' : 'Chuyển dark mode'} className="chat-header-button rounded-xl p-2">
         <span aria-hidden="true">{isDark ? '☀️' : '🌙'}</span>

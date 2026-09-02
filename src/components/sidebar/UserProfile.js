@@ -12,7 +12,6 @@ const UserProfile = ({ compact = false, menuPosition = 'bottom-0', menuAlign = '
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
   const [isShopOpen, setIsShopOpen] = useState(false);
-  const [badges, setBadges] = useState([]);
   const [journal, setJournal] = useState(null);
   const menuRef = useRef(null);
 
@@ -24,11 +23,8 @@ const UserProfile = ({ compact = false, menuPosition = 'bottom-0', menuAlign = '
 
   useEffect(() => {
     if (!isMenuOpen) return;
-    Promise.all([get('/user/badges'), get('/user/journal/weekly')])
-      .then(async ([badgeResponse, journalResponse]) => {
-        if (badgeResponse.ok) setBadges((await badgeResponse.json()).badges || []);
-        if (journalResponse.ok) setJournal(await journalResponse.json());
-      })
+    get('/user/journal/weekly')
+      .then(async response => { if (response.ok) setJournal(await response.json()); })
       .catch(() => {});
   }, [isMenuOpen]);
 
@@ -53,11 +49,8 @@ const UserProfile = ({ compact = false, menuPosition = 'bottom-0', menuAlign = '
             <button type="button" onClick={openShop} className="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-800">🛍️ Cửa hàng</button>
             <button type="button" onClick={openSettings} className="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-800">⚙️ {t('userProfile.settings')}</button>
             <div className="mt-2 border-t border-slate-100 px-2 pt-3 dark:border-slate-800">
-              <Link to="/thinking" onClick={closeMenu} className="block rounded-lg py-1 text-xs font-bold uppercase tracking-wide text-orange-700 hover:bg-orange-50 dark:text-orange-300 dark:hover:bg-orange-950/40">🌰 Huy hiệu nhà tư duy</Link>
-              <div className="mt-2 space-y-1">
-                {badges.map(badge => <Link key={badge.code} to="/thinking" onClick={closeMenu} className={`block rounded-lg px-2 py-1.5 text-xs ${badge.earnedAt ? 'bg-orange-50 text-orange-900 dark:bg-orange-950/50 dark:text-orange-100' : 'bg-slate-50 text-slate-400 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700'}`}><span className="mr-1">{badge.icon}</span>{badge.title}{badge.earnedAt ? ' · Đã mở' : ' · Chưa mở'}</Link>)}
-              </div>
-              {journal && <Link to="/thinking" onClick={closeMenu} className="mt-3 block rounded-lg bg-amber-50 p-2 text-xs text-amber-950 hover:bg-amber-100 dark:bg-amber-950/40 dark:text-amber-100 dark:hover:bg-amber-950/60"><p className="font-bold">📓 Nhật ký tuần</p><p className="mt-1">{journal.message}</p><p className="mt-1 opacity-75">Tự thử trước khi hỏi: {journal.current.beforeHint}/{journal.current.activities} bài</p></Link>}
+              {journal && <Link to="/thinking" onClick={closeMenu} className="mt-3 block rounded-lg bg-amber-50 p-2 text-xs text-amber-950 hover:bg-amber-100 dark:bg-amber-950/40 dark:text-amber-100 dark:hover:bg-amber-950/60"><p className="flex items-center gap-1 font-bold"><span aria-hidden="true">🏅</span> Mục tiêu tuần tiếp theo</p><p className="mt-1 font-semibold">{journal.goal?.title}</p><p className="mt-1">{journal.goal?.description}</p><p className="mt-1 opacity-75">Tiến độ: {journal.goal?.progress}/{journal.goal?.target} {journal.goal?.unit}</p></Link>}
+              {journal?.badges?.length > 0 && <Link to="/thinking" onClick={closeMenu} className="mt-2 block rounded-lg bg-orange-50 p-2 text-xs text-orange-900 hover:bg-orange-100 dark:bg-orange-950/40 dark:text-orange-100 dark:hover:bg-orange-950/60"><p className="font-bold">🏅 Huy hiệu nhà tư duy</p><div className="mt-1 space-y-1">{journal.badges.map(badge => <p key={badge.code} className={badge.earnedAt ? '' : 'opacity-50'}>🏅 {badge.title} · {badge.earnedAt ? 'Đã mở' : 'Chưa mở'}</p>)}</div></Link>}
             </div>
           </div>
           <button type="button" onClick={logout} className="w-full rounded-lg px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30">🚪 {t('userProfile.logout')}</button>

@@ -69,6 +69,8 @@ test('keeps the tutor locked until an answer is submitted', async () => {
   renderTutor();
 
   await screen.findByText('Chọn kết quả đúng.');
+  expect(screen.getByText('Đọc kỹ phần giải thích từng bước. Khi đã hiểu, bấm “Đã hiểu, sang bước tiếp” để mở bước tiếp theo.')).toBeInTheDocument();
+  expect(screen.queryByText(/Điền vào các ô trống/)).not.toBeInTheDocument();
   expect(screen.queryByRole('button', { name: /Trả lời/ })).not.toBeInTheDocument();
   expect(screen.getAllByText('🔒')).toHaveLength(2);
 
@@ -236,8 +238,8 @@ test('shows AI analysis and hint in the opened guidance card', async () => {
   const moreGuidance = await screen.findByText('Gợi ý thêm');
   fireEvent.click(moreGuidance);
   expect(screen.getByText('Phân tích:')).toBeInTheDocument();
-  expect(screen.getByText('Gợi ý: Ghép đủ ba phần.')).toBeInTheDocument();
-  expect(screen.queryByText('Câu hỏi dễ hơn:')).not.toBeInTheDocument();
+  expect(screen.getAllByText('Gợi ý: Ghép đủ ba phần.').length).toBeGreaterThan(0);
+  expect(screen.getByText('Câu dễ hơn:')).toBeInTheDocument();
   expect(screen.queryByText(/token/i)).not.toBeInTheDocument();
 });
 
