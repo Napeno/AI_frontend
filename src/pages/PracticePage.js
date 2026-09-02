@@ -45,6 +45,10 @@ const OPTION_COLORS = [
 ];
 
 const subjectLabel = (subject) => SUBJECT_LABELS[subject] || subject || 'Chưa phân môn';
+const itemTitle = (item) => item.conversationTitle || item.title || item.sourceQuestion || BLOCKER_LABELS[item.blocker] || 'Luyện lại một bước';
+const itemProblemTitle = (item) => item.subjectArea === 'mathematics' && item.sourceQuestion
+  ? `Vấn đề: ${item.sourceQuestion}`
+  : '';
 
 const PracticePage = () => {
   const auth = useAuth();
@@ -60,6 +64,7 @@ const PracticePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [requestError, setRequestError] = useState('');
+  const [requestDetails, setRequestDetails] = useState('');
   const [reward, setReward] = useState(null);
   const messagesEndRef = useRef(null);
 
@@ -93,6 +98,7 @@ const PracticePage = () => {
         return recommendationData.recommendation || nextItems[0] || null;
       });
       setRequestError('');
+      setRequestDetails('');
     } catch (error) {
       console.error('Error loading practice items:', error);
       setRequestError('Không thể tải sổ tay ôn tập. Em thử lại nhé.');
@@ -123,6 +129,7 @@ const PracticePage = () => {
       setActiveQuestionType('');
       setAnswer('');
       setRequestError('');
+      setRequestDetails('');
       setReward(null);
     } catch (error) {
       console.error('Error opening practice item:', error);
@@ -135,6 +142,7 @@ const PracticePage = () => {
 
     setIsSubmitting(true);
     setRequestError('');
+    setRequestDetails('');
     try {
       const response = await post(`/practice/items/${activeItem.id}/generate`, {
         questionType,
@@ -143,6 +151,7 @@ const PracticePage = () => {
       const data = await response.json();
       if (!response.ok) {
         setRequestError(data.message || 'Không thể tạo bài ôn lúc này.');
+        setRequestDetails(data.details || '');
         return;
       }
       setActiveItem(data.item);
@@ -152,6 +161,7 @@ const PracticePage = () => {
     } catch (error) {
       console.error('Error generating practice question:', error);
       setRequestError('Không thể tạo bài ôn lúc này. Em thử lại nhé.');
+      setRequestDetails(error.message || '');
     } finally {
       setIsSubmitting(false);
     }
@@ -162,6 +172,7 @@ const PracticePage = () => {
 
     setIsSubmitting(true);
     setRequestError('');
+    setRequestDetails('');
     try {
       const response = await post(`/practice/items/${activeItem.id}/attempt`, {
         action,
@@ -172,6 +183,7 @@ const PracticePage = () => {
       const data = await response.json();
       if (!response.ok) {
         setRequestError(data.message || 'Không thể xử lý yêu cầu này.');
+        setRequestDetails(data.details || '');
         return;
       }
       updateItem(data.item);
@@ -181,6 +193,7 @@ const PracticePage = () => {
           setReward({
             points: data.pointsAwarded || 0,
             chestnuts: data.chestnutsAwarded || 0,
+            badge: data.challengeBadges?.[0] || null,
             id: `${activeItem.id}-${activeQuestionType}-${Date.now()}`,
           });
         }
@@ -189,6 +202,7 @@ const PracticePage = () => {
     } catch (error) {
       console.error('Error submitting practice interaction:', error);
       setRequestError('Không thể gửi phản hồi. Em thử lại nhé.');
+      setRequestDetails(error.message || '');
     } finally {
       setIsSubmitting(false);
     }
@@ -217,9 +231,9 @@ const PracticePage = () => {
   const selectedQuestionLabel = activeQuestionStyle.label;
 
   return (
-    <div className="h-[calc(100dvh-65px)] overflow-hidden bg-gradient-to-br from-orange-50 via-white to-amber-50 p-3 dark:from-gray-950 dark:via-gray-900 dark:to-orange-950 sm:p-4">
+    <div className="practice-page min-h-[calc(100dvh-65px)] overflow-y-auto bg-gradient-to-br from-orange-50 via-white to-amber-50 p-3 dark:from-gray-950 dark:via-gray-900 dark:to-orange-950 sm:p-4 lg:h-[calc(100dvh-65px)] lg:overflow-hidden">
       <RewardCelebration reward={reward} />
-      <main className="mx-auto flex h-full max-w-7xl min-h-0 flex-col">
+      <main className="mx-auto flex max-w-7xl flex-col lg:h-full lg:min-h-0">
         <header className="mb-3 flex shrink-0 items-center justify-between gap-3 rounded-2xl border border-orange-100 bg-white px-4 py-3 shadow-sm dark:border-orange-900 dark:bg-gray-900">
           <div className="min-w-0">
             <p className="text-xs font-semibold text-orange-700 dark:text-orange-300">THINKBRIDGE · ÔN TẬP</p>
@@ -238,20 +252,21 @@ const PracticePage = () => {
             <Link to="/chat" className="mt-5 rounded-lg bg-orange-600 px-4 py-2 font-semibold text-white hover:bg-orange-700">Bắt đầu học</Link>
           </div>
         ) : (
-          <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[minmax(0,1fr)_320px]">
-            <section className="min-h-0">
-              <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-orange-200 bg-white shadow-sm dark:border-orange-800 dark:bg-gray-900">
+          <div className="practice-grid grid gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <section className="practice-section min-h-0">
+              <div className="practice-workspace flex flex-col overflow-hidden rounded-2xl border border-orange-200 bg-white shadow-sm dark:border-orange-800 dark:bg-gray-900 lg:h-full lg:min-h-0">
                 {activeItem ? (
                   <>
                     <div className="flex shrink-0 items-center justify-between gap-3 border-b border-orange-100 px-4 py-3 dark:border-orange-900">
                       <div className="min-w-0">
                         <p className="text-xs font-semibold uppercase tracking-wide text-orange-700 dark:text-orange-300">Phòng ôn tập</p>
-                        <h2 className="truncate text-base font-bold text-slate-900 dark:text-white">{BLOCKER_LABELS[activeItem.blocker] || 'Luyện lại một bước nhỏ'}</h2>
+                        <h2 className="truncate text-base font-bold text-slate-900 dark:text-white">{itemTitle(activeItem)}</h2>
+                        {itemProblemTitle(activeItem) && <p className="truncate text-xs text-slate-500 dark:text-slate-400">{itemProblemTitle(activeItem)}</p>}
                       </div>
                       <span className="shrink-0 rounded-full bg-orange-50 px-2.5 py-1 text-xs font-medium text-orange-800 dark:bg-orange-950/50 dark:text-orange-200">{subjectLabel(activeItem.subjectArea)}</span>
                     </div>
 
-                    <div className="flex flex-1 min-h-0 flex-col overflow-y-auto bg-gradient-to-br from-orange-50/70 via-white to-amber-50/70 p-3 scrollbar-thin dark:from-gray-900 dark:via-gray-900 dark:to-orange-950/30 sm:p-4">
+                    <div className="practice-scroll flex flex-col bg-gradient-to-br from-orange-50/70 via-white to-amber-50/70 p-3 scrollbar-thin dark:from-gray-900 dark:via-gray-900 dark:to-orange-950/30 sm:p-4 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
                       {!activeVariant && <div className="m-auto w-full max-w-4xl rounded-2xl border border-orange-100 bg-white/80 p-4 shadow-lg dark:border-orange-900 dark:bg-gray-800/80 sm:p-6">
                         <div className="text-center">
                           <p className="font-bold uppercase tracking-wide text-orange-700 dark:text-orange-300 sm:text-lg">Chọn dạng bài ôn</p>
@@ -318,7 +333,7 @@ const PracticePage = () => {
                     </div>
 
                     <div className="shrink-0 border-t border-slate-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
-                      {requestError && <p className="mb-2 rounded-lg bg-red-50 p-2 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-200">{requestError}</p>}
+                      {requestError && <div className="mb-2 rounded-lg bg-red-50 p-2 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-200"><p>{requestError}</p>{requestDetails && <p className="mt-1 font-normal">Chi tiết: {requestDetails}</p>}</div>}
                       {activeVariant && activeQuestionType !== 'multiple_choice' && activeQuestionType !== 'true_false' && <div className="flex gap-2">
                         <textarea value={answer} onChange={(event) => setAnswer(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey && activeQuestionType === 'fill_blank') { event.preventDefault(); sendInteraction('attempt'); } }} rows={activeQuestionType === 'long_answer' ? 3 : 1} maxLength={activeQuestionType === 'long_answer' ? 1200 : 300} placeholder={activeQuestionType === 'fill_blank' ? 'Điền đáp án ngắn...' : 'Viết bước làm hoặc cách nghĩ của em...'} disabled={isSubmitting} className="min-h-11 flex-1 resize-none rounded-2xl border-2 border-orange-200 bg-white px-4 py-2 text-sm outline-none focus:border-orange-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-orange-800 dark:bg-gray-800 dark:text-white" />
                         <button type="button" onClick={() => sendInteraction('attempt')} disabled={!answer.trim() || isSubmitting} className={`rounded-2xl bg-gradient-to-r ${activeQuestionStyle.submitColor} px-4 text-sm font-semibold text-white hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60`}>Gửi</button>
@@ -358,10 +373,11 @@ const PracticePage = () => {
                 {items.map(item => (
                   <div key={item.id} className={`flex items-start gap-2 rounded-xl border p-2.5 ${activeItem?.id === item.id ? 'border-orange-500 bg-orange-50 dark:bg-orange-950/40' : 'border-slate-100 dark:border-gray-800'}`}>
                     <button type="button" onClick={() => openItem(item.id)} className="min-w-0 flex-1 text-left">
-                      <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">{BLOCKER_LABELS[item.blocker] || 'Luyện lại một bước'}</p>
+                      <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">{itemTitle(item)}</p>
+                      {itemProblemTitle(item) && <p className="mt-1 truncate text-xs text-slate-600 dark:text-slate-300">{itemProblemTitle(item)}</p>}
                       <p className="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">{subjectLabel(item.subjectArea)} · {STATUS_LABELS[item.status]} · {item.reviewCount} lần</p>
                     </button>
-                    <button type="button" onClick={() => removeItem(item.id)} className="rounded p-1 text-xs font-medium text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/30" aria-label={`Xoá ${BLOCKER_LABELS[item.blocker] || 'mục ôn'}`}>×</button>
+                    <button type="button" onClick={() => removeItem(item.id)} className="rounded p-1 text-xs font-medium text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/30" aria-label={`Xoá ${itemTitle(item)}`}>×</button>
                   </div>
                 ))}
                 {items.length === 0 && <p className="pt-3 text-sm text-slate-500 dark:text-slate-400">Chưa có mục thuộc môn này.</p>}

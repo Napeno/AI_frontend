@@ -45,6 +45,12 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
     setIntervention(nextIntervention || fallback);
   }, []);
 
+  const showBadgeAwards = (data) => {
+    const badges = [...(data.badge ? [data.badge] : []), ...(data.challengeBadges || [])]
+      .filter((badge, index, all) => all.findIndex(item => item.code === badge.code) === index);
+    if (badges.length) setMessages(prev => [...prev, ...badges.map(badge => ({ id: Date.now() + Math.random(), text: `🎉 Huy hiệu mới: ${badge.title}`, sender: 'system', type: 'badge-award', timestamp: new Date().toLocaleTimeString() }))]);
+  };
+
   const clearSupportMode = useCallback(() => {
     setSupportMode(null);
     setUserAnswer('');
@@ -368,7 +374,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       } else if (response.ok) {
         const data = await response.json();
         syncIntervention(data.intervention);
-        if (data.badge) setMessages(prev => [...prev, { id: Date.now() + Math.random(), text: `🎉 Huy hiệu mới: ${data.badge.title}`, sender: 'system', type: 'badge-award', timestamp: new Date().toLocaleTimeString() }]);
+        showBadgeAwards(data);
         const botMessage = {
           id: Date.now() + Math.random(),
           text: data.message,
@@ -441,7 +447,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       } else if (response.ok) {
         const data = await response.json();
         syncIntervention(data.intervention);
-        if (data.badge) setMessages(prev => [...prev, { id: Date.now() + Math.random(), text: `🎉 Huy hiệu mới: ${data.badge.title}`, sender: 'system', type: 'badge-award', timestamp: new Date().toLocaleTimeString() }]);
+        showBadgeAwards(data);
         const botMessage = {
           id: Date.now() + Math.random(),
           text: data.message,
@@ -532,6 +538,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       } else if (response.ok) {
         const data = await response.json();
         syncIntervention(data.intervention);
+        showBadgeAwards(data);
         const botMessage = {
           id: Date.now() + Math.random(),
           text: data.message,
@@ -665,6 +672,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       } else if (response.ok) {
         const data = await response.json();
         syncIntervention(data.intervention);
+        showBadgeAwards(data);
         const botMessage = {
           id: Date.now() + Math.random(),
           text: data.message,

@@ -10,6 +10,8 @@ jest.mock('../utils/chatUtils', () => ({ formatAIMessage: value => value }));
 
 const item = {
   id: 'item-1',
+  conversationTitle: 'Giúp em giải phương trình',
+  sourceQuestion: '2x + 3 = 9',
   blocker: 'calculation',
   subjectArea: 'mathematics',
   status: 'new',
@@ -31,6 +33,13 @@ beforeEach(() => {
       pagination: { page: url.includes('page=2') ? 2 : 1, totalPages: 2, totalItems: 7 },
     }));
   });
+});
+
+test('shows the conversation title and the original math problem in the notebook', async () => {
+  render(<MemoryRouter><PracticePage /></MemoryRouter>);
+
+  expect((await screen.findAllByText('Giúp em giải phương trình')).length).toBeGreaterThan(0);
+  expect(screen.getAllByText('Vấn đề: 2x + 3 = 9').length).toBeGreaterThan(0);
 });
 
 test('paginates saved items and sends an attempt as an interaction', async () => {
