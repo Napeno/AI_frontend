@@ -66,6 +66,7 @@ const PracticePage = () => {
   const [requestError, setRequestError] = useState('');
   const [requestDetails, setRequestDetails] = useState('');
   const [reward, setReward] = useState(null);
+  const [isSavedItemsOpen, setIsSavedItemsOpen] = useState(false);
   const messagesEndRef = useRef(null);
 
   const language = getLanguage();
@@ -114,6 +115,15 @@ const PracticePage = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'end' });
   }, [activeItem?.id, turns.length]);
+
+  useEffect(() => {
+    if (!isSavedItemsOpen) return undefined;
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setIsSavedItemsOpen(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [isSavedItemsOpen]);
 
   const updateItem = (item) => {
     setActiveItem(item);
@@ -239,7 +249,12 @@ const PracticePage = () => {
             <p className="text-xs font-semibold text-orange-700 dark:text-orange-300">THINKBRIDGE · ÔN TẬP</p>
             <h1 className="truncate text-lg font-bold text-slate-900 dark:text-white sm:text-xl">Sổ tay lỗi</h1>
           </div>
-          <Link to="/chat" className="shrink-0 rounded-lg bg-orange-600 px-3 py-2 text-xs font-semibold text-white hover:bg-orange-700 sm:text-sm">← Về chat</Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <button type="button" onClick={() => setIsSavedItemsOpen(true)} aria-label="Mở các mục đã lưu" className="practice-saved-toggle rounded-lg border border-orange-200 px-2.5 py-2 text-sm font-bold text-orange-800 hover:bg-orange-50 lg:hidden dark:border-orange-800 dark:text-orange-200 dark:hover:bg-orange-950/40">
+              <span aria-hidden="true">☰</span>
+            </button>
+            <Link to="/chat" className="rounded-lg bg-orange-600 px-3 py-2 text-xs font-semibold text-white hover:bg-orange-700 sm:text-sm">← Về chat</Link>
+          </div>
         </header>
 
         {isLoading ? (
@@ -358,7 +373,8 @@ const PracticePage = () => {
               </div>
             </section>
 
-            <aside className="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-orange-100 bg-white p-3 shadow-sm dark:border-orange-900 dark:bg-gray-900">
+            {isSavedItemsOpen && <button type="button" aria-label="Đóng các mục đã lưu" onClick={() => setIsSavedItemsOpen(false)} className="practice-saved-backdrop fixed inset-0 z-40 bg-slate-950/30 lg:hidden" />}
+            <aside className={`practice-saved-list hidden min-h-0 flex-col overflow-hidden rounded-2xl border border-orange-100 bg-white p-3 shadow-sm dark:border-orange-900 dark:bg-gray-900 ${isSavedItemsOpen ? 'is-open' : ''}`}>
               <div className="flex shrink-0 items-center justify-between gap-3">
                 <div>
                   <h2 className="font-bold text-slate-900 dark:text-white">Các mục đã lưu</h2>
@@ -372,7 +388,7 @@ const PracticePage = () => {
               <div className="mt-3 flex-1 space-y-2 overflow-y-auto pr-1 scrollbar-thin">
                 {items.map(item => (
                   <div key={item.id} className={`flex items-start gap-2 rounded-xl border p-2.5 ${activeItem?.id === item.id ? 'border-orange-500 bg-orange-50 dark:bg-orange-950/40' : 'border-slate-100 dark:border-gray-800'}`}>
-                    <button type="button" onClick={() => openItem(item.id)} className="min-w-0 flex-1 text-left">
+                      <button type="button" onClick={() => { setIsSavedItemsOpen(false); openItem(item.id); }} className="min-w-0 flex-1 text-left">
                       <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">{itemTitle(item)}</p>
                       {itemProblemTitle(item) && <p className="mt-1 truncate text-xs text-slate-600 dark:text-slate-300">{itemProblemTitle(item)}</p>}
                       <p className="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">{subjectLabel(item.subjectArea)} · {STATUS_LABELS[item.status]} · {item.reviewCount} lần</p>
@@ -387,6 +403,7 @@ const PracticePage = () => {
                 <span className="text-slate-500 dark:text-slate-400">{pagination.page}/{pagination.totalPages}</span>
                 <button type="button" onClick={() => setPage(current => Math.min(pagination.totalPages, current + 1))} disabled={pagination.page >= pagination.totalPages} className="rounded px-2 py-1 font-semibold text-orange-700 hover:bg-orange-50 disabled:cursor-not-allowed disabled:opacity-40 dark:text-orange-300 dark:hover:bg-orange-950/40">Sau →</button>
               </div>
+              <button type="button" onClick={() => setIsSavedItemsOpen(false)} className="mt-3 rounded-xl border border-orange-200 px-3 py-2 text-sm font-semibold text-orange-800 lg:hidden dark:border-orange-800 dark:text-orange-200">Đóng danh sách</button>
             </aside>
           </div>
         )}

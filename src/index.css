@@ -945,6 +945,20 @@ button,
   .practice-page aside { min-height: 20rem; }
   .practice-page header { flex-wrap: wrap; }
   .practice-page header a { margin-left: auto; }
+  .practice-saved-list.is-open {
+    display: flex;
+    position: fixed;
+    inset: .75rem .75rem .75rem auto;
+    z-index: 50;
+    width: min(88vw, 22rem);
+    max-height: calc(100dvh - 1.5rem);
+    box-shadow: 0 20px 50px rgba(15, 23, 42, .25);
+  }
+  .practice-saved-list.is-open .practice-saved-toggle { display: none; }
+}
+
+@media (min-width: 1024px) {
+  .practice-saved-list { display: flex; }
 }
 
 .check-answer-panel { background: #ecfdf5; border-color: #86efac; color: #166534; }
