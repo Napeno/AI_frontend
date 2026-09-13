@@ -49,7 +49,7 @@ const RiskBadge = ({
 }) => <span className={`rounded-full px-2 py-1 text-xs font-semibold ${level === 'high' ? 'bg-red-100 text-red-800' : level === 'watch' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>{riskLabels[level] || 'Chưa rõ'}</span>;
 const SourceBadge = ({
   source
-}) => <span className={`text-xs ${source === 'demo' ? 'text-amber-700' : source === 'real' ? 'text-seablue-700' : 'text-gray-500'}`}>{source === 'demo' ? 'Mô phỏng' : source === 'real' ? 'Dữ liệu thật' : 'Mốc mặc định'}</span>;
+}) => <span className={`text-xs ${source === 'real' ? 'text-seablue-700' : 'text-gray-500'}`}>{source === 'real' ? 'Dữ liệu thật' : 'Chưa có dữ liệu'}</span>;
 const SimpleChart = ({
   points = [],
   metric
