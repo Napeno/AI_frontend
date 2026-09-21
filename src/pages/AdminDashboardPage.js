@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import { Navigate } from "react-router-dom";
 import { apiClient, get, post } from "../utils/apiClient";
 import { useAuth } from "../context/AuthContext";
-import HeuristicLevelCharts from "../components/admin/HeuristicLevelCharts";
 const labels = {
   risk: "Điểm rủi ro",
   hints: "Số gợi ý",
@@ -383,53 +381,10 @@ const StackedRiskBars = ({ rows = [], labelsByKey }) => {
     </div>
   );
 };
-const dateInputValue = (date) =>
-  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-const periodRange = (period) => {
-  const end = new Date();
-  const start = new Date(end);
-  if (period === "week")
-    start.setDate(end.getDate() - ((end.getDay() + 6) % 7));
-  if (period === "month") start.setDate(1);
-  return { from: dateInputValue(start), to: dateInputValue(end) };
-};
-const QuickDateTabs = () => {
-  const [selected, setSelected] = useState("month");
-  const [target, setTarget] = useState(null);
-  const options = [
-    ["today", "Ngày hôm nay"],
-    ["week", "Tuần này"],
-    ["month", "Tháng này"],
-  ];
-  useEffect(() => {
-    setTarget(document.querySelector("main > div > section"));
-  }, []);
-  const select = (period) => {
-    setSelected(period);
-    window.dispatchEvent(
-      new CustomEvent("admin-date-range", { detail: periodRange(period) }),
-    );
-  };
-  if (!target) return null;
-  return createPortal(
-    <div className="col-span-full mt-1 flex w-fit rounded-xl border-2 border-emerald-300 bg-emerald-50 p-1 shadow-sm">
-      {options.map(([value, label]) => (
-        <button
-          key={value}
-          onClick={() => select(value)}
-          className={`whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold ${selected === value ? "bg-emerald-600 text-white shadow-sm" : "text-emerald-800 hover:bg-emerald-100"}`}
-        >
-          {label}
-        </button>
-      ))}
-    </div>,
-    target,
-  );
-};
 const StudentDetail = ({ detail, onClose, onAddNote }) => {
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
-  if (!detail) return <QuickDateTabs />;
+  if (!detail) return null;
   const { student } = detail;
   const submit = async (event) => {
     event.preventDefault();
@@ -602,12 +557,6 @@ const LegacyAdminDashboardPage = () => {
   useEffect(() => {
     load();
   }, [load]);
-  useEffect(() => {
-    const applyRange = (event) =>
-      setFilters((current) => ({ ...current, ...event.detail, page: 1 }));
-    window.addEventListener("admin-date-range", applyRange);
-    return () => window.removeEventListener("admin-date-range", applyRange);
-  }, []);
   if (user?.role !== "admin") return <Navigate to="/chat" replace />;
   const updateFilter = (key, value) =>
     setFilters((current) => ({
@@ -995,8 +944,8 @@ const LegacyAdminDashboardPage = () => {
 const AdminDashboardPage = () => {
   const { user } = useAuth();
   const [filters, setFilters] = useState({
-    from: periodRange("month").from,
-    to: periodRange("month").to,
+    from: "",
+    to: "",
     educationLevel: "",
     subjectArea: "",
     riskLevel: "",
@@ -1028,12 +977,6 @@ const AdminDashboardPage = () => {
   useEffect(() => {
     load();
   }, [load]);
-  useEffect(() => {
-    const applyRange = (event) =>
-      setFilters((current) => ({ ...current, ...event.detail, page: 1 }));
-    window.addEventListener("admin-date-range", applyRange);
-    return () => window.removeEventListener("admin-date-range", applyRange);
-  }, []);
   if (user?.role !== "admin") return <Navigate to="/chat" replace />;
   const update = (key, value) =>
     setFilters((current) => ({
@@ -1265,9 +1208,6 @@ const AdminDashboardPage = () => {
                   </div>
                 ))}
               </section>
-              <HeuristicLevelCharts
-                liveStudy={data.breakdowns?.heuristicClassification || null}
-              />
               <section className="mt-5 grid gap-5 lg:grid-cols-3">
                 <div className="min-w-0 rounded-xl bg-white p-5 shadow-sm lg:col-span-2">
                   <h2 className="font-semibold">
