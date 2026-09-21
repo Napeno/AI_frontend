@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { Navigate } from "react-router-dom";
 import { apiClient, get, post } from "../utils/apiClient";
 import { useAuth } from "../context/AuthContext";
+import HeuristicLevelCharts from "../components/admin/HeuristicLevelCharts";
 const labels = {
   risk: "Điểm rủi ro",
   hints: "Số gợi ý",
@@ -1264,6 +1265,9 @@ const AdminDashboardPage = () => {
                   </div>
                 ))}
               </section>
+              <HeuristicLevelCharts
+                liveStudy={data.breakdowns?.heuristicClassification || null}
+              />
               <section className="mt-5 grid gap-5 lg:grid-cols-3">
                 <div className="min-w-0 rounded-xl bg-white p-5 shadow-sm lg:col-span-2">
                   <h2 className="font-semibold">
