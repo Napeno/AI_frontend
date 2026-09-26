@@ -94,6 +94,254 @@ const SimpleChart = ({ points = [], metric }) => {
     </div>
   );
 };
+const shortDate = (label = "") => {
+  const parts = String(label).split("-");
+  if (parts.length === 3) return `${parts[2]}/${parts[1]}`;
+  if (parts.length === 2) return label;
+  return label;
+};
+
+const RiskBarScrollChart = ({ points = [] }) => {
+  const max = Math.max(1, ...points.map((point) => Number(point.value) || 0), 100);
+  if (!points.length) return null;
+  return (
+    <div className="rounded-lg border border-gray-100 bg-white p-3">
+      <h3 className="text-sm font-semibold text-gray-800">Điểm rủi ro theo ngày</h3>
+      <p className="mt-0.5 text-xs text-gray-500">
+        Cột = điểm rủi ro trung bình từng ngày · kéo ngang để xem thêm
+      </p>
+      <div className="mt-3 w-full overflow-x-auto pb-1">
+        <div
+          className="flex min-w-max items-end gap-3 px-2 pt-4"
+          style={{ minHeight: 220 }}
+        >
+          {points.map((point) => {
+            const value = Number(point.value) || 0;
+            return (
+              <div
+                key={point.label}
+                className="flex w-16 flex-col items-center gap-2 text-center"
+              >
+                <span className="text-xs font-semibold text-seablue-700">{value}</span>
+                <div className="flex h-32 w-9 items-end rounded-t bg-seablue-100">
+                  <div
+                    className="w-full rounded-t bg-seablue-600"
+                    style={{ height: `${Math.max(4, (value * 100) / max)}%` }}
+                  />
+                </div>
+                <span className="w-20 break-words text-[10px] text-gray-500">
+                  {point.label}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const DailyStatusChart = ({ points = [], riskPoints = [] }) => {
+  const [selected, setSelected] = useState(null);
+  if (!points.length)
+    return (
+      <p className="py-10 text-center text-sm text-gray-500">
+        Chưa có event trong bộ lọc này.
+      </p>
+    );
+
+  const width = Math.max(640, points.length * 28);
+  const height = 220;
+  const pad = { top: 16, right: 16, bottom: 36, left: 36 };
+  const innerW = width - pad.left - pad.right;
+  const innerH = height - pad.top - pad.bottom;
+  const maxCount = Math.max(
+    1,
+    ...points.map((point) =>
+      Math.max(point.high || 0, point.watch || 0, point.low || 0, point.total || 0),
+    ),
+  );
+  const xAt = (index) =>
+    pad.left + (points.length <= 1 ? innerW / 2 : (index * innerW) / (points.length - 1));
+  const yAt = (value) => pad.top + innerH - (value / maxCount) * innerH;
+  const series = [
+    ["high", riskColors.high, "Cao"],
+    ["watch", riskColors.watch, "Theo dõi"],
+    ["low", riskColors.low, "Thấp"],
+  ];
+  const pathFor = (key) =>
+    points
+      .map((point, index) => `${index === 0 ? "M" : "L"} ${xAt(index)} ${yAt(point[key] || 0)}`)
+      .join(" ");
+  const active = selected == null ? null : points[selected];
+  const barPoints =
+    riskPoints.length > 0
+      ? riskPoints
+      : points.map((point) => ({
+          label: point.label,
+          value: point.averageRisk ?? point.value ?? 0,
+        }));
+
+  return (
+    <div className="mt-4 space-y-4">
+      <RiskBarScrollChart points={barPoints} />
+
+      <div className="flex flex-wrap items-center gap-3 text-xs text-gray-600">
+        {series.map(([, color, label]) => (
+          <span key={label} className="flex items-center gap-1.5">
+            <i className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
+            {label}
+          </span>
+        ))}
+        <span className="text-gray-400">·</span>
+        <span>Đường = số học sinh theo trạng thái từng ngày · bấm điểm để xem chi tiết</span>
+      </div>
+
+      <div className="overflow-x-auto rounded-lg border border-gray-100 bg-slate-50/60 p-2">
+        <svg
+          viewBox={`0 0 ${width} ${height}`}
+          className="h-56 w-full min-w-[640px]"
+          role="img"
+          aria-label="Biểu đồ trạng thái học sinh theo ngày"
+        >
+          {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
+            const y = pad.top + innerH * (1 - ratio);
+            const value = Math.round(maxCount * ratio);
+            return (
+              <g key={ratio}>
+                <line
+                  x1={pad.left}
+                  x2={width - pad.right}
+                  y1={y}
+                  y2={y}
+                  stroke="#e2e8f0"
+                  strokeWidth="1"
+                />
+                <text x={pad.left - 8} y={y + 3} textAnchor="end" className="fill-slate-400 text-[10px]">
+                  {value}
+                </text>
+              </g>
+            );
+          })}
+          {series.map(([key, color]) => (
+            <path
+              key={key}
+              d={pathFor(key)}
+              fill="none"
+              stroke={color}
+              strokeWidth="2.5"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
+          ))}
+          {points.map((point, index) => (
+            <g key={point.label}>
+              <line
+                x1={xAt(index)}
+                x2={xAt(index)}
+                y1={pad.top}
+                y2={pad.top + innerH}
+                stroke={selected === index ? "#94a3b8" : "transparent"}
+                strokeWidth="1"
+              />
+              {series.map(([key, color]) => (
+                <circle
+                  key={`${point.label}-${key}`}
+                  cx={xAt(index)}
+                  cy={yAt(point[key] || 0)}
+                  r={selected === index ? 4.5 : 3}
+                  fill={color}
+                  stroke="#fff"
+                  strokeWidth="1"
+                  className="cursor-pointer"
+                  onClick={() => setSelected(index)}
+                >
+                  <title>{`${point.label} · ${key}: ${point[key] || 0}`}</title>
+                </circle>
+              ))}
+              {(index === 0 ||
+                index === points.length - 1 ||
+                index % Math.max(1, Math.ceil(points.length / 8)) === 0) && (
+                <text
+                  x={xAt(index)}
+                  y={height - 12}
+                  textAnchor="middle"
+                  className="fill-slate-500 text-[10px]"
+                >
+                  {shortDate(point.label)}
+                </text>
+              )}
+            </g>
+          ))}
+        </svg>
+      </div>
+
+      {active && (
+        <div className="grid gap-2 rounded-lg border border-seablue-100 bg-white p-3 text-sm sm:grid-cols-6">
+          <div>
+            <p className="text-xs text-gray-500">Ngày</p>
+            <p className="font-semibold">{active.label}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500">Cao</p>
+            <p className="font-semibold text-red-600">{active.high}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500">Theo dõi</p>
+            <p className="font-semibold text-amber-600">{active.watch}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500">Thấp</p>
+            <p className="font-semibold text-emerald-600">{active.low}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500">Đã cải thiện</p>
+            <p className="font-semibold text-seablue-700">↑{active.improved}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500">TB rủi ro · n</p>
+            <p className="font-semibold">
+              {active.averageRisk} · {active.total}
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div className="max-h-72 overflow-auto rounded-lg border border-gray-200">
+        <table className="min-w-full text-left text-sm">
+          <thead className="sticky top-0 z-10 bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
+            <tr>
+              <th className="px-3 py-2">Ngày</th>
+              <th className="px-3 py-2 text-red-600">Cao</th>
+              <th className="px-3 py-2 text-amber-600">Theo dõi</th>
+              <th className="px-3 py-2 text-emerald-600">Thấp</th>
+              <th className="px-3 py-2">Cải thiện</th>
+              <th className="px-3 py-2">TB rủi ro</th>
+              <th className="px-3 py-2">Tổng</th>
+            </tr>
+          </thead>
+          <tbody>
+            {points.map((point, index) => (
+              <tr
+                key={point.label}
+                onClick={() => setSelected(index)}
+                className={`cursor-pointer border-t ${selected === index ? "bg-seablue-50" : "hover:bg-gray-50"}`}
+              >
+                <td className="whitespace-nowrap px-3 py-2 font-medium">{point.label}</td>
+                <td className="px-3 py-2 font-semibold text-red-600">{point.high}</td>
+                <td className="px-3 py-2 font-semibold text-amber-600">{point.watch}</td>
+                <td className="px-3 py-2 font-semibold text-emerald-600">{point.low}</td>
+                <td className="px-3 py-2 text-seablue-700">↑{point.improved}</td>
+                <td className="px-3 py-2">{point.averageRisk}</td>
+                <td className="px-3 py-2">{point.total}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
 const DonutChart = ({ distribution }) => {
   const total =
     Object.values(distribution || {}).reduce((sum, value) => sum + value, 0) ||
@@ -1211,13 +1459,26 @@ const AdminDashboardPage = () => {
               <section className="mt-5 grid gap-5 lg:grid-cols-3">
                 <div className="min-w-0 rounded-xl bg-white p-5 shadow-sm lg:col-span-2">
                   <h2 className="font-semibold">
-                    {labels[data.chart.metric]} theo{" "}
-                    {groupLabels[filters.groupBy]}
+                    {filters.metric === "risk"
+                      ? `Trạng thái học sinh theo ${groupLabels[filters.groupBy]}`
+                      : `${labels[data.chart.metric]} theo ${groupLabels[filters.groupBy]}`}
                   </h2>
-                  <SimpleChart
-                    points={data.chart.points}
-                    metric={data.chart.metric}
-                  />
+                  <p className="mt-1 text-sm text-gray-500">
+                    {filters.metric === "risk"
+                      ? "Bar chart điểm rủi ro TB theo ngày (kéo ngang) · đường trạng thái Cao/Theo dõi/Thấp · bảng số liệu có scroll dọc."
+                      : null}
+                  </p>
+                  {filters.metric === "risk" ? (
+                    <DailyStatusChart
+                      points={data.chart.statusPoints || []}
+                      riskPoints={data.chart.points || []}
+                    />
+                  ) : (
+                    <SimpleChart
+                      points={data.chart.points}
+                      metric={data.chart.metric}
+                    />
+                  )}
                 </div>
                 <div className="min-w-0 rounded-xl bg-white p-5 shadow-sm">
                   <h2 className="font-semibold">Phân bố mức rủi ro</h2>
