@@ -39,6 +39,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
   const [intervention, setIntervention] = useState(DEFAULT_INTERVENTION);
   const [problemContext, setProblemContext] = useState(null);
   const messagesEndRef = useRef(null);
+  const isRequestInFlightRef = useRef(false);
   const chatSettings = useRef({ educationLevel: 'middle', subjectArea: 'mathematics', course: 'mathematics' });
 
   const syncIntervention = useCallback((nextIntervention, fallback = DEFAULT_INTERVENTION) => {
@@ -47,7 +48,8 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
 
   const showBadgeAwards = (data) => {
     const badges = [...(data.badge ? [data.badge] : []), ...(data.challengeBadges || [])]
-      .filter((badge, index, all) => all.findIndex(item => item.code === badge.code) === index);
+      .filter(Boolean)
+      .filter((badge, index, all) => badge.code && all.findIndex(item => item?.code === badge.code) === index);
     if (badges.length) setMessages(prev => [...prev, ...badges.map(badge => ({ id: Date.now() + Math.random(), text: `🎉 Huy hiệu mới: ${badge.title}`, sender: 'system', type: 'badge-award', timestamp: new Date().toLocaleTimeString() }))]);
   };
 
@@ -483,8 +485,9 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
   };
 
   const checkUserAnswerWithImage = async (imageFile, textAnswer = '') => {
-    if (isLoading) return;
+    if (isLoading || isRequestInFlightRef.current) return;
 
+    isRequestInFlightRef.current = true;
     setIsLoading(true);
     setSupportMode(null);
     const userSubmittedAnswer = textAnswer.trim();
@@ -598,14 +601,13 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
           }
         }
 
-        const lastMessage = messages[messages.length - 1];
-        const isDuplicate = lastMessage &&
-          lastMessage.sender === 'bot' &&
-          lastMessage.text === data.message;
-
-        if (!isDuplicate) {
-          setMessages(prev => [...prev, botMessage]);
-        }
+        setMessages(prev => {
+          const lastMessage = prev[prev.length - 1];
+          const isDuplicate = lastMessage &&
+            lastMessage.sender === 'bot' &&
+            lastMessage.text === data.message;
+          return isDuplicate ? prev : [...prev, botMessage];
+        });
       } else {
         throw new Error('Failed to check answer with image');
       }
@@ -620,13 +622,15 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
+      isRequestInFlightRef.current = false;
       setIsLoading(false);
     }
   };
 
   const checkUserAnswer = async () => {
-    if (isLoading || !userAnswer.trim()) return;
+    if (isLoading || isRequestInFlightRef.current || !userAnswer.trim()) return;
 
+    isRequestInFlightRef.current = true;
     setIsLoading(true);
     setSupportMode(null);
     const userSubmittedAnswer = userAnswer.trim();
@@ -733,17 +737,20 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
           }
         }
 
-        const lastMessage = messages[messages.length - 1];
-        const isDuplicate = lastMessage && 
-          lastMessage.sender === 'bot' && 
-          lastMessage.text === data.message;
-        
-        if (!isDuplicate) {
-          setMessages(prev => [...prev, botMessage]);
-        } else {
-        }
+        setMessages(prev => {
+          const lastMessage = prev[prev.length - 1];
+          const isDuplicate = lastMessage &&
+            lastMessage.sender === 'bot' &&
+            lastMessage.text === data.message;
+          return isDuplicate ? prev : [...prev, botMessage];
+        });
       } else {
-        throw new Error('Failed to check answer');
+        let detail = '';
+        try {
+          const errorData = await response.json();
+          detail = errorData?.error ? ` (${errorData.error})` : '';
+        } catch (_) { /* ignore non-JSON error bodies */ }
+        throw new Error(`Failed to check answer${detail}`);
       }
     } catch (error) {
       console.error('Error checking answer:', error);
@@ -756,6 +763,7 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
+      isRequestInFlightRef.current = false;
       setIsLoading(false);
     }
   };
