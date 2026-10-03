@@ -14,7 +14,10 @@ const ChatRail = ({ onNewChat, onOpenHistory, coinAnimationTrigger, pointsAnimat
       <img src="/avatar.png" alt="ThinkBridge squirrel" className="h-8 w-8 object-contain" />
     </Link>
     <RailButton label="Tạo chat mới" onClick={onNewChat}>
-      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12.5 4.5H7A2.5 2.5 0 004.5 7v10A2.5 2.5 0 007 19.5h10a2.5 2.5 0 002.5-2.5v-5.5" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.6 4.2a1.6 1.6 0 012.26 2.26L10.5 13.8 8 14.5l.7-2.5 6.9-7.8z" />
+      </svg>
     </RailButton>
     <RailButton label="Lịch sử trò chuyện" onClick={onOpenHistory}>
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>

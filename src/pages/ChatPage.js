@@ -31,6 +31,7 @@ const ChatPage = () => {
   const subjectPickerSeenRef = useRef(false);
   const [settingsSelected, setSettingsSelected] = useState(true);
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const [composerIntent, setComposerIntent] = useState('answer');
   const [searchParams] = useSearchParams();
   const restoredSessionRef = useRef('');
   const userAvatar = '/studentAI.png';
@@ -107,9 +108,15 @@ const ChatPage = () => {
     || /(?:^|\n)\s*(?:💬\s*)?need clarification\b/i.test(latestBotMessage?.text || '');
   const isFollowUpQuestion = !latestBotMessage?.evaluationStatus
     && /\?|\b(?:bao nhiêu|thế nào|đúng không|phải không|hay không)\b/i.test(latestBotMessage?.text || '');
-  const answerMode = supportMode !== 'calculation'
+  const canCheckAnswer = supportMode !== 'calculation'
     && (isClarificationMessage || isFollowUpQuestion)
     && !messages.slice(latestBotIndex + 1).some(message => message.sender === 'user');
+  const answerMode = canCheckAnswer && composerIntent === 'answer';
+
+  useEffect(() => {
+    if (canCheckAnswer) setComposerIntent('answer');
+  }, [canCheckAnswer, latestBotMessage?.id]);
+
   const handleAnswerKeyPress = event => {
     if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); handleSendAnswer(); }
   };
@@ -155,7 +162,27 @@ const ChatPage = () => {
     setIsHistoryOpen(false);
   };
   const isEmptyChat = settingsSelected && messages.length === 0;
-  const input = <ChatInput inputMessage={inputMessage} setInputMessage={setInputMessage} isLoading={isLoading} isCoolingDown={isCoolingDown} cooldownRemaining={cooldownRemaining} onSend={handleSendMessage} handleKeyPress={answerMode ? handleAnswerKeyPress : handleKeyPress} selectedImage={selectedImage} setSelectedImage={setSelectedImage} supportMode={supportMode} answerMode={answerMode} answerValue={userAnswer} setAnswerValue={setUserAnswer} onSendAnswer={handleSendAnswer} onOpenSubjectPicker={isEmptyChat ? () => setIsSubjectPickerOpen(true) : undefined} />;
+  const input = (
+    <ChatInput
+      inputMessage={inputMessage}
+      setInputMessage={setInputMessage}
+      isLoading={isLoading}
+      isCoolingDown={isCoolingDown}
+      cooldownRemaining={cooldownRemaining}
+      onSend={handleSendMessage}
+      handleKeyPress={answerMode ? handleAnswerKeyPress : handleKeyPress}
+      selectedImage={selectedImage}
+      setSelectedImage={setSelectedImage}
+      supportMode={supportMode}
+      canCheckAnswer={canCheckAnswer}
+      composerIntent={composerIntent}
+      onComposerIntentChange={setComposerIntent}
+      answerValue={userAnswer}
+      setAnswerValue={setUserAnswer}
+      onSendAnswer={handleSendAnswer}
+      onOpenSubjectPicker={isEmptyChat ? () => setIsSubjectPickerOpen(true) : undefined}
+    />
+  );
 
   return <div className="chat-shell flex h-[100dvh] overflow-hidden">
     <RewardCelebration reward={rewardCelebration} />
@@ -165,24 +192,81 @@ const ChatPage = () => {
       <div className="relative h-full"><Sidebar conversations={conversations} sessionId={sessionId} createNewChat={handleNewChat} loadConversation={loadConversation} deleteConversation={deleteConversation} onClose={() => setIsHistoryOpen(false)} /></div>
     </div>}
     <main className="chat-main flex min-w-0 flex-1 flex-col">
-      <ChatHeader currentConversationTitle={currentConversationTitle} intervention={intervention} onOpenHistory={() => setIsHistoryOpen(true)} onOpenSettings={() => setIsChatSettingsOpen(true)} />
+      <ChatHeader currentConversationTitle={currentConversationTitle} intervention={intervention} onOpenHistory={() => setIsHistoryOpen(true)} onOpenSettings={() => setIsChatSettingsOpen(true)} onNewChat={handleNewChat} />
       <section className="chat-canvas flex min-h-0 flex-1 flex-col">
         {isEmptyChat ? <Welcome>{input}</Welcome> : <>
-          <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+          <div className="flex-1 overflow-y-auto px-3 py-3 sm:px-6 sm:py-6">
             <div className="mx-auto max-w-3xl">
               {messages.map(message => <ChatMessage key={message.id} message={message} formatAIMessage={formatAIMessage} userAvatar={userAvatar} sessionId={sessionId} />)}
-              {problemContext?.questions?.length > 0 && sessionId && <div className="mb-5 flex justify-center"><Link to={`/ai-tutor/${sessionId}?questionId=${encodeURIComponent(problemContext.activeQuestionId || problemContext.suggestedQuestionId || 'main')}`} className="inline-flex items-center gap-2 rounded-2xl border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-bold text-orange-800 shadow-sm transition hover:bg-orange-100"><img src="/avatar.png" alt="" className="h-5 w-5 object-contain" />Luyện bài này với AI Tutor</Link></div>}
+              {problemContext?.questions?.length > 0 && sessionId && (
+                <div className="mb-2 flex justify-start sm:mb-5 sm:justify-center">
+                  <Link
+                    to={`/ai-tutor/${sessionId}?questionId=${encodeURIComponent(problemContext.activeQuestionId || problemContext.suggestedQuestionId || 'main')}`}
+                    className="inline-flex items-center gap-1 rounded-full border border-orange-200/80 bg-orange-50/90 px-2.5 py-1 text-[11px] font-semibold text-orange-800 transition hover:bg-orange-100 sm:gap-2 sm:rounded-2xl sm:px-4 sm:py-2 sm:text-sm sm:font-bold"
+                  >
+                    <img src="/avatar.png" alt="" className="h-3.5 w-3.5 object-contain sm:h-5 sm:w-5" />
+                    <span className="sm:hidden">AI Tutor</span>
+                    <span className="hidden sm:inline">Luyện bài này với AI Tutor</span>
+                  </Link>
+                </div>
+              )}
               {isLoading && <div className="mb-5 flex justify-start"><div className="rounded-2xl rounded-bl-md border border-slate-200 bg-white px-4 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-800"><span className="inline-flex gap-1"><i className="h-2 w-2 animate-bounce rounded-full bg-orange-500" /><i className="h-2 w-2 animate-bounce rounded-full bg-orange-500 [animation-delay:150ms]" /><i className="h-2 w-2 animate-bounce rounded-full bg-orange-500 [animation-delay:300ms]" /></span></div></div>}
               <div ref={messagesEndRef} />
             </div>
           </div>
-          {settingsSelected && <div className="chat-composer shrink-0 px-4 py-3" style={{ paddingBottom: keyboardOffset ? `${keyboardOffset + 12}px` : undefined }}>
-            <div className="mx-auto max-w-3xl">
-              {supportMode !== 'calculation' ? input : <UserAnswerInput userAnswer={userAnswer} setUserAnswer={setUserAnswer} checkUserAnswer={checkUserAnswer} checkUserAnswerWithImage={checkUserAnswerWithImage} isLoading={isLoading} handleAnswerKeyPress={event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); checkUserAnswer(); } }} messages={messages} problemContext={problemContext} setActiveQuestion={setActiveQuestion} title={t('errorCheck.title')} description={t('errorCheck.description')} placeholder={t('errorCheck.placeholder')} buttonLabel={t('errorCheck.button')} showProblemContext={false} onBack={clearSupportMode} />}
-              {supportMode !== 'calculation' && messages.some(message => message.sender === 'bot') && <InterventionGate intervention={intervention} isLoading={isLoading} onSubmit={handleGateSubmit} />}
-              {supportMode !== 'calculation' && <ChatActions hintCount={hintCount} continueChat={handleContinueChat} getFullAnswer={handleFullAnswer} isLoading={isLoading} isCoolingDown={isCoolingDown} cooldownRemaining={cooldownRemaining} intervention={intervention} showActions={messages.length > 0} showHint />}
+          {settingsSelected && (
+            <div
+              className="chat-composer shrink-0 px-3 py-2 sm:px-4 sm:py-3"
+              style={{ paddingBottom: keyboardOffset ? `${keyboardOffset + 10}px` : undefined }}
+            >
+              <div className="mx-auto max-w-3xl">
+                {supportMode !== 'calculation' ? input : (
+                  <UserAnswerInput
+                    userAnswer={userAnswer}
+                    setUserAnswer={setUserAnswer}
+                    checkUserAnswer={checkUserAnswer}
+                    checkUserAnswerWithImage={checkUserAnswerWithImage}
+                    isLoading={isLoading}
+                    handleAnswerKeyPress={event => {
+                      if (event.key === 'Enter' && !event.shiftKey) {
+                        event.preventDefault();
+                        checkUserAnswer();
+                      }
+                    }}
+                    messages={messages}
+                    problemContext={problemContext}
+                    setActiveQuestion={setActiveQuestion}
+                    title={t('errorCheck.title')}
+                    description={t('errorCheck.description')}
+                    placeholder={t('errorCheck.placeholder')}
+                    buttonLabel={t('errorCheck.button')}
+                    showProblemContext={false}
+                    onBack={clearSupportMode}
+                  />
+                )}
+                {supportMode !== 'calculation' && messages.some(message => message.sender === 'bot') && (
+                  <InterventionGate
+                    intervention={intervention}
+                    isLoading={isLoading}
+                    onSubmit={handleGateSubmit}
+                  />
+                )}
+                {supportMode !== 'calculation' && (
+                  <ChatActions
+                    hintCount={hintCount}
+                    continueChat={handleContinueChat}
+                    getFullAnswer={handleFullAnswer}
+                    isLoading={isLoading}
+                    isCoolingDown={isCoolingDown}
+                    cooldownRemaining={cooldownRemaining}
+                    intervention={intervention}
+                    showActions={messages.length > 0}
+                    showHint
+                  />
+                )}
+              </div>
             </div>
-          </div>}
+          )}
         </>}
       </section>
     </main>

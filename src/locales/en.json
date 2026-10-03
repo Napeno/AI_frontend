@@ -26,12 +26,26 @@
     },
     "input": {
       "placeholder": "Type your question here...",
+      "askPlaceholder": "Ask anything...",
       "placeholderWithImage": "Add text or leave empty to use default question",
       "workPlaceholder": "Send the working step or image you want checked...",
       "continueButton": "💡 I need more hints!",
       "fullAnswerButton": "📖 I'll give you the full answer!",
       "checkAnswerButton": "Check My Answer ✨",
-      "answerPlaceholder": "Type your answer here..."
+      "chatButton": "Ask AI",
+      "answerPlaceholder": "Type your answer here...",
+      "chatPlaceholder": "Ask a follow-up about this lesson...",
+      "modeCheck": "Check answer",
+      "modeChat": "Ask AI / Chat",
+      "modeCheckShort": "Check",
+      "modeChatShort": "Chat",
+      "modeHint": "The bot asked a follow-up — check your answer or keep chatting.",
+      "newChat": "New chat",
+      "tools": "More",
+      "addImage": "Add image",
+      "hintShort": "Hint",
+      "supportShort": "Help",
+      "fullAnswerShort": "Solution"
     },
     "image": {
       "selected": "Image selected"

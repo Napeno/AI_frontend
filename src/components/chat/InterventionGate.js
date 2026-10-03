@@ -2,7 +2,13 @@ import React, { useEffect, useState } from 'react';
 import t from '../../locales/i18n';
 import { formatAIMessage } from '../../utils/chatUtils';
 
-const InterventionGate = ({ intervention, isLoading, onSubmit }) => {
+const InterventionGate = ({
+  intervention,
+  isLoading,
+  onSubmit,
+  forceExpanded = false,
+  hideInactiveOnMobile = false,
+}) => {
   const [selectedOption, setSelectedOption] = useState('');
   const [reflection, setReflection] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
@@ -11,25 +17,25 @@ const InterventionGate = ({ intervention, isLoading, onSubmit }) => {
   const options = Array.isArray(intervention?.options) ? intervention.options : [];
 
   useEffect(() => {
-    setIsExpanded(Boolean(isActive));
-  }, [isActive, intervention?.type]);
+    setIsExpanded(Boolean(isActive) || forceExpanded);
+  }, [isActive, intervention?.type, forceExpanded]);
 
   if (!isActive) {
     if (!options.length) return null;
 
     return (
-      <div className="intervention-support rounded-2xl border p-3">
+      <div className={`intervention-support mt-1.5 rounded-xl border p-2 sm:mt-0 sm:rounded-2xl sm:p-3 ${hideInactiveOnMobile ? 'hidden sm:block' : ''}`}>
         <button
           type="button"
           onClick={() => setIsExpanded(expanded => !expanded)}
-          className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left"
+          className="flex w-full items-center justify-between gap-2 px-2 py-1.5 text-left sm:gap-3 sm:px-3 sm:py-2.5"
           aria-expanded={isExpanded}
         >
           <span>
-            <span className="block text-sm font-semibold">{t('interventionGate.supportTitle')}</span>
-            <span className="mt-0.5 block text-xs">{t('interventionGate.supportDescription')}</span>
+            <span className="block text-xs font-semibold sm:text-sm">{t('interventionGate.supportTitle')}</span>
+            <span className="mt-0.5 hidden text-xs sm:block">{t('interventionGate.supportDescription')}</span>
           </span>
-          <svg className={`h-5 w-5 flex-shrink-0 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <svg className={`h-4 w-4 flex-shrink-0 transition-transform sm:h-5 sm:w-5 ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 9-7 7-7-7" />
           </svg>
         </button>
