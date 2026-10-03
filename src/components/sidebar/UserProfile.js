@@ -6,7 +6,7 @@ import SettingsModal from '../settings/SettingsModal';
 import AvatarShop from '../shop/AvatarShop';
 import { get } from '../../utils/apiClient';
 
-const UserProfile = ({ compact = false, menuPosition = 'bottom-0', menuAlign = 'left-12' }) => {
+const UserProfile = ({ compact = false, dense = false, menuPosition = 'bottom-0', menuAlign = 'left-12' }) => {
   const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -56,8 +56,18 @@ const UserProfile = ({ compact = false, menuPosition = 'bottom-0', menuAlign = '
           <button type="button" onClick={logout} className="w-full rounded-lg px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30">🚪 {t('userProfile.logout')}</button>
         </div>
       )}
-      <button type="button" onClick={() => setIsMenuOpen(value => !value)} aria-label="Mở menu tài khoản" aria-expanded={isMenuOpen} className={compact ? 'flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 text-lg hover:bg-orange-200 dark:bg-orange-950 dark:hover:bg-orange-900' : 'rounded-lg p-2'}>
-        <img src="/studentAI.png" alt="Avatar người dùng" className="h-8 w-8 object-contain" />
+      <button
+        type="button"
+        onClick={() => setIsMenuOpen(value => !value)}
+        aria-label="Mở menu tài khoản"
+        aria-expanded={isMenuOpen}
+        className={
+          compact
+            ? `flex items-center justify-center rounded-lg bg-orange-100 hover:bg-orange-200 dark:bg-orange-950 dark:hover:bg-orange-900 ${dense ? 'h-8 w-8' : 'h-10 w-10 text-lg'}`
+            : 'rounded-lg p-2'
+        }
+      >
+        <img src="/studentAI.png" alt="Avatar người dùng" className={dense ? 'h-6 w-6 object-contain' : 'h-8 w-8 object-contain'} />
       </button>
     </div>
     <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} activeTab={activeTab} setActiveTab={setActiveTab} />
