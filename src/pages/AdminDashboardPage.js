@@ -1192,8 +1192,9 @@ const LegacyAdminDashboardPage = () => {
 const AdminDashboardPage = () => {
   const { user } = useAuth();
   const [filters, setFilters] = useState({
-    from: "",
-    to: "",
+    from: "2026-04-25",
+    to: "2026-05-25",
+    className: "",
     educationLevel: "",
     subjectArea: "",
     riskLevel: "",
@@ -1344,6 +1345,26 @@ const AdminDashboardPage = () => {
               onChange={(event) => update("to", event.target.value)}
               className="mt-1 w-full rounded border p-2"
             />
+          </label>
+          <label className="text-sm">
+            Nhóm dữ liệu
+            <select
+              value={filters.className}
+              onChange={(event) => {
+                const className = event.target.value;
+                setFilters((current) => ({
+                  ...current,
+                  className,
+                  from: className === "sim-179" ? "2026-08-28" : "2026-04-25",
+                  to: className === "sim-179" ? "2026-11-01" : "2026-05-25",
+                  page: 1,
+                }));
+              }}
+              className="mt-1 w-full rounded border p-2"
+            >
+              <option value="">Lớp 8.2 (47 HS)</option>
+              <option value="sim-179">Mô phỏng 179 HS</option>
+            </select>
           </label>
           <label className="text-sm">
             Môn
