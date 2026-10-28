@@ -1551,8 +1551,9 @@ const AdminDashboardPage = () => {
                   <DonutChart distribution={data.summary.riskDistribution} />
                 </div>
               </section>
-              {(data.chart.activityPoints?.length > 0 ||
-                data.chart.participationPoints?.length > 0) && (
+              {filters.className === "sim-179" &&
+                (data.chart.activityPoints?.length > 0 ||
+                  data.chart.participationPoints?.length > 0) && (
                 <section className="mt-5 grid gap-5 lg:grid-cols-2">
                   {data.chart.activityPoints?.length > 0 && (
                     <div className="min-w-0 rounded-xl bg-white p-5 shadow-sm">
@@ -1561,7 +1562,7 @@ const AdminDashboardPage = () => {
                       </h2>
                       <p className="mt-1 text-sm text-gray-500">
                         Sheet Hoạt động (1 = dùng ThinkBridge trong ngày) · cột
-                        “Số HS vào web”
+                        “Số HS vào web” — chỉ cohort 179 HS
                       </p>
                       <div className="mt-3">
                         <MetricBarScrollChart
