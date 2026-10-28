@@ -101,15 +101,26 @@ const shortDate = (label = "") => {
   return label;
 };
 
-const RiskBarScrollChart = ({ points = [] }) => {
-  const max = Math.max(1, ...points.map((point) => Number(point.value) || 0), 100);
+const MetricBarScrollChart = ({
+  points = [],
+  title,
+  subtitle,
+  barClassName = "bg-seablue-600",
+  trackClassName = "bg-seablue-100",
+  valueClassName = "text-seablue-700",
+  minMax = 1,
+}) => {
+  const max = Math.max(
+    minMax,
+    ...points.map((point) => Number(point.value) || 0),
+  );
   if (!points.length) return null;
   return (
     <div className="rounded-lg border border-gray-100 bg-white p-3">
-      <h3 className="text-sm font-semibold text-gray-800">Điểm rủi ro theo ngày</h3>
-      <p className="mt-0.5 text-xs text-gray-500">
-        Cột = điểm rủi ro trung bình từng ngày · kéo ngang để xem thêm
-      </p>
+      <h3 className="text-sm font-semibold text-gray-800">{title}</h3>
+      {subtitle ? (
+        <p className="mt-0.5 text-xs text-gray-500">{subtitle}</p>
+      ) : null}
       <div className="mt-3 w-full overflow-x-auto pb-1">
         <div
           className="flex min-w-max items-end gap-3 px-2 pt-4"
@@ -122,11 +133,17 @@ const RiskBarScrollChart = ({ points = [] }) => {
                 key={point.label}
                 className="flex w-16 flex-col items-center gap-2 text-center"
               >
-                <span className="text-xs font-semibold text-seablue-700">{value}</span>
-                <div className="flex h-32 w-9 items-end rounded-t bg-seablue-100">
+                <span className={`text-xs font-semibold ${valueClassName}`}>
+                  {value}
+                </span>
+                <div
+                  className={`flex h-32 w-9 items-end rounded-t ${trackClassName}`}
+                >
                   <div
-                    className="w-full rounded-t bg-seablue-600"
-                    style={{ height: `${Math.max(4, (value * 100) / max)}%` }}
+                    className={`w-full rounded-t ${barClassName}`}
+                    style={{
+                      height: `${Math.max(4, (value * 100) / max)}%`,
+                    }}
                   />
                 </div>
                 <span className="w-20 break-words text-[10px] text-gray-500">
@@ -140,6 +157,15 @@ const RiskBarScrollChart = ({ points = [] }) => {
     </div>
   );
 };
+
+const RiskBarScrollChart = ({ points = [] }) => (
+  <MetricBarScrollChart
+    points={points}
+    title="Điểm rủi ro theo ngày"
+    subtitle="Từ sheet Điểm từng HS (TB theo ngày) · kéo ngang để xem thêm"
+    minMax={100}
+  />
+);
 
 const DailyStatusChart = ({ points = [], riskPoints = [] }) => {
   const [selected, setSelected] = useState(null);
@@ -1308,6 +1334,25 @@ const AdminDashboardPage = () => {
         ["Đã cải thiện", data.summary.improvedStudents, "text-emerald-700"],
         ["TB rủi ro", data.summary.averageBehavioralRisk, "text-seablue-700"],
         ["Tổng học sinh", data.summary.totalStudents, "text-gray-800"],
+        ...(data.summary.dailyActiveStudents != null
+          ? [
+              [
+                "HS vào web (ngày cuối)",
+                data.summary.dailyActiveStudents,
+                "text-amber-700",
+              ],
+            ]
+          : []),
+        ...(data.summary.cumulativeParticipants != null &&
+        filters.className === "sim-179"
+          ? [
+              [
+                "Đã tham gia (lũy kế)",
+                data.summary.cumulativeParticipants,
+                "text-emerald-700",
+              ],
+            ]
+          : []),
       ]
     : [];
   return (
@@ -1506,6 +1551,53 @@ const AdminDashboardPage = () => {
                   <DonutChart distribution={data.summary.riskDistribution} />
                 </div>
               </section>
+              {(data.chart.activityPoints?.length > 0 ||
+                data.chart.participationPoints?.length > 0) && (
+                <section className="mt-5 grid gap-5 lg:grid-cols-2">
+                  {data.chart.activityPoints?.length > 0 && (
+                    <div className="min-w-0 rounded-xl bg-white p-5 shadow-sm">
+                      <h2 className="font-semibold">
+                        HS vào web theo ngày
+                      </h2>
+                      <p className="mt-1 text-sm text-gray-500">
+                        Sheet Hoạt động (1 = dùng ThinkBridge trong ngày) · cột
+                        “Số HS vào web”
+                      </p>
+                      <div className="mt-3">
+                        <MetricBarScrollChart
+                          points={data.chart.activityPoints}
+                          title="Lượt HS hoạt động / ngày"
+                          subtitle="Khớp cột visitors trong Tổng hợp theo ngày"
+                          barClassName="bg-amber-500"
+                          trackClassName="bg-amber-100"
+                          valueClassName="text-amber-700"
+                        />
+                      </div>
+                    </div>
+                  )}
+                  {data.chart.participationPoints?.length > 0 && (
+                    <div className="min-w-0 rounded-xl bg-white p-5 shadow-sm">
+                      <h2 className="font-semibold">
+                        HS đã tham gia (lũy kế)
+                      </h2>
+                      <p className="mt-1 text-sm text-gray-500">
+                        Từ sheet Điểm từng HS — ngày đầu tiên có điểm = bắt đầu
+                        tham gia
+                      </p>
+                      <div className="mt-3">
+                        <MetricBarScrollChart
+                          points={data.chart.participationPoints}
+                          title="Lũy kế học sinh đã có điểm"
+                          subtitle="Khớp cột cumulative trong Tổng hợp theo ngày"
+                          barClassName="bg-emerald-600"
+                          trackClassName="bg-emerald-100"
+                          valueClassName="text-emerald-700"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </section>
+              )}
               <section className="mt-5 grid gap-5 lg:grid-cols-2">
                 <div className="rounded-xl bg-white p-5 shadow-sm">
                   <h2 className="font-semibold">Hành vi cần theo dõi</h2>
