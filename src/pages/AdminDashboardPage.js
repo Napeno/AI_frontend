@@ -162,7 +162,7 @@ const RiskBarScrollChart = ({ points = [] }) => (
   <MetricBarScrollChart
     points={points}
     title="Điểm rủi ro theo ngày"
-    subtitle="Từ sheet Điểm từng HS (TB theo ngày) · kéo ngang để xem thêm"
+    subtitle="Điểm rủi ro trung bình từng ngày · kéo ngang để xem thêm"
     minMax={100}
   />
 );
@@ -1400,7 +1400,7 @@ const AdminDashboardPage = () => {
                 setFilters((current) => ({
                   ...current,
                   className,
-                  from: className === "sim-179" ? "2026-08-28" : "2026-04-25",
+                  from: className === "sim-179" ? "2026-04-01" : "2026-04-25",
                   to: className === "sim-179" ? "2026-11-01" : "2026-05-25",
                   page: 1,
                 }));
@@ -1408,7 +1408,7 @@ const AdminDashboardPage = () => {
               className="mt-1 w-full rounded border p-2"
             >
               <option value="">Lớp 8.2 (47 HS)</option>
-              <option value="sim-179">Mô phỏng 179 HS</option>
+              <option value="sim-179">Nhóm 179 HS</option>
             </select>
           </label>
           <label className="text-sm">
@@ -1551,8 +1551,9 @@ const AdminDashboardPage = () => {
                   <DonutChart distribution={data.summary.riskDistribution} />
                 </div>
               </section>
-              {(data.chart.activityPoints?.length > 0 ||
-                data.chart.participationPoints?.length > 0) && (
+              {filters.className === "sim-179" &&
+                (data.chart.activityPoints?.length > 0 ||
+                  data.chart.participationPoints?.length > 0) && (
                 <section className="mt-5 grid gap-5 lg:grid-cols-2">
                   {data.chart.activityPoints?.length > 0 && (
                     <div className="min-w-0 rounded-xl bg-white p-5 shadow-sm">
@@ -1560,14 +1561,13 @@ const AdminDashboardPage = () => {
                         HS vào web theo ngày
                       </h2>
                       <p className="mt-1 text-sm text-gray-500">
-                        Sheet Hoạt động (1 = dùng ThinkBridge trong ngày) · cột
-                        “Số HS vào web”
+                        Số học sinh có hoạt động trên ThinkBridge trong ngày
                       </p>
                       <div className="mt-3">
                         <MetricBarScrollChart
                           points={data.chart.activityPoints}
                           title="Lượt HS hoạt động / ngày"
-                          subtitle="Khớp cột visitors trong Tổng hợp theo ngày"
+                          subtitle="Kéo ngang để xem thêm ngày"
                           barClassName="bg-amber-500"
                           trackClassName="bg-amber-100"
                           valueClassName="text-amber-700"
@@ -1581,14 +1581,13 @@ const AdminDashboardPage = () => {
                         HS đã tham gia (lũy kế)
                       </h2>
                       <p className="mt-1 text-sm text-gray-500">
-                        Từ sheet Điểm từng HS — ngày đầu tiên có điểm = bắt đầu
-                        tham gia
+                        Số học sinh đã bắt đầu dùng ThinkBridge tính đến từng ngày
                       </p>
                       <div className="mt-3">
                         <MetricBarScrollChart
                           points={data.chart.participationPoints}
-                          title="Lũy kế học sinh đã có điểm"
-                          subtitle="Khớp cột cumulative trong Tổng hợp theo ngày"
+                          title="Lũy kế học sinh tham gia"
+                          subtitle="Kéo ngang để xem thêm ngày"
                           barClassName="bg-emerald-600"
                           trackClassName="bg-emerald-100"
                           valueClassName="text-emerald-700"
