@@ -1400,7 +1400,7 @@ const AdminDashboardPage = () => {
                 setFilters((current) => ({
                   ...current,
                   className,
-                  from: className === "sim-179" ? "2026-08-28" : "2026-04-25",
+                  from: className === "sim-179" ? "2026-04-01" : "2026-04-25",
                   to: className === "sim-179" ? "2026-11-01" : "2026-05-25",
                   page: 1,
                 }));
