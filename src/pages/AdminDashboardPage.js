@@ -1218,9 +1218,9 @@ const LegacyAdminDashboardPage = () => {
 const AdminDashboardPage = () => {
   const { user } = useAuth();
   const [filters, setFilters] = useState({
-    from: "2026-04-25",
-    to: "2026-05-25",
-    className: "",
+    from: "2026-04-01",
+    to: "2026-11-01",
+    className: "sim-179",
     educationLevel: "",
     subjectArea: "",
     riskLevel: "",
@@ -1343,8 +1343,7 @@ const AdminDashboardPage = () => {
               ],
             ]
           : []),
-        ...(data.summary.cumulativeParticipants != null &&
-        filters.className === "sim-179"
+        ...(data.summary.cumulativeParticipants != null
           ? [
               [
                 "Đã tham gia (lũy kế)",
@@ -1362,7 +1361,7 @@ const AdminDashboardPage = () => {
           <div>
             <h1 className="text-2xl font-bold">Dashboard giáo viên</h1>
             <p className="mt-1 text-sm text-gray-600">
-              Ưu tiên can thiệp và theo dõi tiến bộ học chủ động.
+              Ưu tiên can thiệp và theo dõi tiến bộ học chủ động · 179 HS (lớp 8.2 ⊂ nhóm nghiên cứu).
             </p>
           </div>
           <button
@@ -1390,26 +1389,6 @@ const AdminDashboardPage = () => {
               onChange={(event) => update("to", event.target.value)}
               className="mt-1 w-full rounded border p-2"
             />
-          </label>
-          <label className="text-sm">
-            Nhóm dữ liệu
-            <select
-              value={filters.className}
-              onChange={(event) => {
-                const className = event.target.value;
-                setFilters((current) => ({
-                  ...current,
-                  className,
-                  from: className === "sim-179" ? "2026-04-01" : "2026-04-25",
-                  to: className === "sim-179" ? "2026-11-01" : "2026-05-25",
-                  page: 1,
-                }));
-              }}
-              className="mt-1 w-full rounded border p-2"
-            >
-              <option value="">Lớp 8.2 (47 HS)</option>
-              <option value="sim-179">Nhóm 179 HS</option>
-            </select>
           </label>
           <label className="text-sm">
             Môn
@@ -1551,9 +1530,8 @@ const AdminDashboardPage = () => {
                   <DonutChart distribution={data.summary.riskDistribution} />
                 </div>
               </section>
-              {filters.className === "sim-179" &&
-                (data.chart.activityPoints?.length > 0 ||
-                  data.chart.participationPoints?.length > 0) && (
+              {(data.chart.activityPoints?.length > 0 ||
+                data.chart.participationPoints?.length > 0) && (
                 <section className="mt-5 grid gap-5 lg:grid-cols-2">
                   {data.chart.activityPoints?.length > 0 && (
                     <div className="min-w-0 rounded-xl bg-white p-5 shadow-sm">
