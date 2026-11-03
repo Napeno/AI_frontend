@@ -350,6 +350,32 @@ const AITutorPage = () => {
     return value.question ? value : { ...value, question: value.questions?.[index] || null };
   };
 
+  const regenerateLesson = async () => {
+    if (!sessionId || loading) return;
+    setLoading(true);
+    setFeedback("");
+    try {
+      const response = await post("/ai-tutor/lessons", {
+        sessionId,
+        questionId: searchParams.get("questionId"),
+        language: "vi",
+        regenerate: true,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Không thể tạo bài luyện.");
+      setLesson(normalizeLesson(data.lesson));
+      setAnswerSubmitted(false);
+      setAnswerCorrect(null);
+      setReward(null);
+      setStepFeedback(null);
+      setSelected("");
+    } catch (error) {
+      setFeedback(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!sessionId) return;
     let active = true;
@@ -615,6 +641,14 @@ const AITutorPage = () => {
                 />
               </div>
               <span className="hidden rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-500 sm:inline">Câu {(lesson.currentQuestionIndex || 0) + 1}/5</span>
+              <button
+                type="button"
+                onClick={regenerateLesson}
+                disabled={loading}
+                className="shrink-0 rounded-xl border-2 border-violet-300 px-3 py-2 text-xs font-bold text-violet-700 transition hover:bg-violet-50 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Tạo 5 câu khác
+              </button>
             </div>
             {lesson.generationStatus === "generating" && (
               <p className="mb-3 rounded-xl bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-800" aria-live="polite">
