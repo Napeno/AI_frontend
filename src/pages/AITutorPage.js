@@ -1,26 +1,35 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { get, post } from "../utils/apiClient";
+import { formatAIMessage } from "../utils/chatUtils";
 import { useAuth } from "../context/AuthContext";
 
+const formulaPattern = /[$\\^_]|ightarrow|[→←↔×₂²]/;
+
+const RichText = ({ text }) => (
+  <span dangerouslySetInnerHTML={{ __html: formatAIMessage(String(text || "")) }} />
+);
+
 const TypedText = ({ text, animate = false }) => {
-  const [visibleText, setVisibleText] = useState(animate ? "" : text);
+  const value = String(text || "");
+  const [visibleText, setVisibleText] = useState(animate ? "" : value);
 
   useEffect(() => {
-    if (!animate) {
-      setVisibleText(text);
+    if (!animate || formulaPattern.test(value)) {
+      setVisibleText(value);
       return undefined;
     }
     setVisibleText("");
     let index = 0;
     const intervalId = setInterval(() => {
       index += 1;
-      setVisibleText(text.slice(0, index));
-      if (index >= text.length) clearInterval(intervalId);
+      setVisibleText(value.slice(0, index));
+      if (index >= value.length) clearInterval(intervalId);
     }, 20);
     return () => clearInterval(intervalId);
-  }, [animate, text]);
+  }, [animate, value]);
 
+  if (formulaPattern.test(visibleText) || formulaPattern.test(value)) return <RichText text={value} />;
   return <span>{visibleText}</span>;
 };
 
@@ -59,11 +68,11 @@ const StepGuidance = ({ step, animate = false }) => {
         <summary className="cursor-pointer px-3 py-2 font-bold text-slate-800">Gợi ý thêm</summary>
         <div className="space-y-2 border-t border-slate-200 px-3 py-3">
           {step.analysis && <p><strong>Phân tích:</strong> <TypedText text={step.analysis} animate={animate} /></p>}
-          {hint && <p className="text-slate-600">Gợi ý: {hint}</p>}
+          {hint && <p className="text-slate-600"><RichText text={`Gợi ý: ${hint}`} /></p>}
           {easierExample?.prompt && <div className="rounded-lg bg-white p-3 text-slate-700">
-            <p><strong>Câu dễ hơn:</strong> {easierExample.prompt}</p>
-            {easierExample.answer && <p className="mt-1"><strong>Đáp án:</strong> {easierExample.answer}</p>}
-            {easierExample.hint && <p className="mt-1 text-slate-600">Gợi ý: {easierExample.hint}</p>}
+            <p><strong>Câu dễ hơn:</strong> <RichText text={easierExample.prompt} /></p>
+            {easierExample.answer && <p className="mt-1"><strong>Đáp án:</strong> <RichText text={easierExample.answer} /></p>}
+            {easierExample.hint && <p className="mt-1 text-slate-600"><RichText text={`Gợi ý: ${easierExample.hint}`} /></p>}
           </div>}
         </div>
       </details>
@@ -112,7 +121,7 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false, step
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-violet-100 font-bold text-violet-800">
                 {order.indexOf(item.id) + 1 || "–"}
               </span>
-              {item.text}
+              {item.text ? <RichText text={item.text} /> : null}
             </button>
           ))}
         </div>
@@ -139,7 +148,7 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false, step
               key={left.id}
               className="flex items-center justify-between gap-2 text-sm font-semibold"
             >
-              <span>{left.text}</span>
+              <span><RichText text={left.text} /></span>
               <select
                 value={matches[left.id] || ""}
                 onChange={(event) =>
@@ -184,7 +193,7 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false, step
               onClick={() => setChoiceId(choice.id)}
               className={`w-full rounded-lg border p-3 text-left text-sm ${choiceId === choice.id ? "border-rose-500 bg-rose-50 text-rose-900" : "border-slate-200 bg-slate-50 hover:border-rose-300"}`}
             >
-              {choice.text}
+              <RichText text={choice.text} />
             </button>
           ))}
         </div>
@@ -257,14 +266,14 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false, step
             onClick={() => setPicked(token.id)}
             className={`rounded-lg border-2 bg-white px-3 py-2 text-sm font-bold shadow-sm transition ${picked === token.id ? "border-orange-500 bg-orange-100 text-orange-900" : "border-slate-300 text-slate-800 hover:border-orange-400 hover:bg-orange-50"}`}
           >
-            {token.label}
+            <RichText text={token.label} />
           </button>
         ))}
       </div>
       <div className="mt-4 space-y-2">
         {step.blanks.map((blank, index) => (
           <div key={blank.id} className="flex items-center gap-2">
-            <span className="max-w-[18rem] text-sm font-semibold text-slate-700">{blank.label}</span>
+            <span className="max-w-[18rem] text-sm font-semibold text-slate-700"><RichText text={blank.label} /></span>
             <button
               type="button"
               onClick={() => put(blank.id)}
@@ -280,7 +289,7 @@ const SubjectStep = ({ step, onSubmit, loading, animateExplanation = false, step
               style={{ backgroundColor: "#fff" }}
               className={`flex h-12 min-w-20 items-center justify-center rounded-lg border-2 bg-white px-4 text-base font-bold shadow-sm transition ${placements[blank.id] ? "border-emerald-500 text-emerald-800" : "border-slate-300 text-slate-300 hover:border-orange-400"}`}
             >
-              {placements[blank.id] ? labelFor(placements[blank.id]) : "Ô trống"}
+              {placements[blank.id] ? <RichText text={labelFor(placements[blank.id])} /> : "Ô trống"}
             </button>
             {index < step.blanks.length - 1 && <span className="text-lg text-slate-500">,</span>}
           </div>
@@ -618,7 +627,7 @@ const AITutorPage = () => {
               </p>
             )}
             <p className="aitutor-prompt rounded-2xl bg-slate-50 p-4 text-sm text-slate-800">
-              <strong>Đề bài từ Chat:</strong> {lesson.sourceText}
+              <strong>Đề bài từ Chat:</strong> <RichText text={lesson.sourceText} />
             </p>
             {lesson.sourceImage?.url && (
               <img
@@ -652,11 +661,11 @@ const AITutorPage = () => {
                     📝
                   </div>
                   <h2 className="text-2xl font-bold text-slate-950 sm:text-3xl">
-                    {question.title}
+                    <RichText text={question.title} />
                   </h2>
                 </div>
                 <p className="aitutor-prompt mt-5 rounded-2xl bg-slate-50 p-5 text-lg leading-relaxed">
-                  {question.prompt}
+                  <RichText text={question.prompt} />
                 </p>
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   {question.options.map((option) => {
@@ -675,7 +684,7 @@ const AITutorPage = () => {
                           <span className={`mr-2 ${answerSubmitted && isCorrect ? "text-green-100" : "text-[#2f5fe5]"}`}>
                           {option.id}.
                         </span>
-                        {option.text}
+                        <RichText text={option.text} />
                       </button>
                     );
                   })}

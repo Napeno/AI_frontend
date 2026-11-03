@@ -101,8 +101,23 @@ const replaceLatexCommandWithBraces = (text, command, renderer) => {
   return result;
 };
 
+const repairStoredFormulas = (value) => String(value)
+  .replace(new RegExp(`${String.fromCharCode(13)}ightarrow`, 'g'), '→')
+  .replace(new RegExp(`${String.fromCharCode(9)}imes`, 'g'), '×')
+  .replace(new RegExp(`${String.fromCharCode(12)}rac(?=\\{)`, 'g'), '\\frac')
+  .replace(/(^|[^A-Za-z\\])ightarrow\b/g, '$1→')
+  .replace(/\\leftrightarrow/g, '↔')
+  .replace(/\\rightarrow/g, '→')
+  .replace(/\\leftarrow/g, '←')
+  .replace(/\\to\b/g, '→')
+  .replace(/\\times/g, '×');
+
 const renderLatex = (rawLatex) => {
   let latex = escapeHtml(rawLatex)
+    .replace(/\\leftrightarrow/g, '↔')
+    .replace(/\\rightarrow/g, '→')
+    .replace(/\\leftarrow/g, '←')
+    .replace(/\\to\b/g, '→')
     .replace(/\\left/g, '')
     .replace(/\\right/g, '')
     .replace(/\\cdot/g, '·')
@@ -167,12 +182,12 @@ export const formatAIMessage = (text) => {
     }
 
     // Gemini sometimes returns escaped delimiters twice after JSON transport.
-    const normalizedText = text
+    const normalizedText = repairStoredFormulas(text
       .replace(/\\{2,}\(/g, '\\(')
       .replace(/\\{2,}\)/g, '\\)')
       .replace(/\\{2,}\[/g, '\\[')
       .replace(/\\{2,}\]/g, '\\]')
-      .replace(/\\{2,}(?=(?:frac|sqrt|text)\b)/g, '\\');
+      .replace(/\\{2,}(?=(?:frac|sqrt|text|rightarrow|leftarrow|leftrightarrow|times|to)\b)/g, '\\'));
     const { withoutMath, mathSegments, placeholderPrefix, placeholderSuffix } = replaceMathSegments(normalizedText);
     let formatted = escapeHtml(withoutMath);
 
