@@ -641,14 +641,6 @@ const AITutorPage = () => {
                 />
               </div>
               <span className="hidden rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-500 sm:inline">Câu {(lesson.currentQuestionIndex || 0) + 1}/5</span>
-              <button
-                type="button"
-                onClick={regenerateLesson}
-                disabled={loading}
-                className="shrink-0 rounded-xl border-2 border-violet-300 px-3 py-2 text-xs font-bold text-violet-700 transition hover:bg-violet-50 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                Tạo 5 câu khác
-              </button>
             </div>
             {lesson.generationStatus === "generating" && (
               <p className="mb-3 rounded-xl bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-800" aria-live="polite">
@@ -681,7 +673,7 @@ const AITutorPage = () => {
                   type="button"
                   onClick={regenerateLesson}
                   disabled={loading}
-                  className="mt-6 rounded-xl bg-violet-600 px-5 py-3 font-bold text-white shadow-md transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="mt-6 rounded-2xl bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-500 px-6 py-3.5 text-base font-extrabold text-white shadow-lg shadow-orange-200 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Tạo 5 câu khác
                 </button>
@@ -791,16 +783,26 @@ const AITutorPage = () => {
                     )}
                   </div>
                 )}
-                {!reward && <div className="mt-8 flex justify-end gap-3 border-t border-slate-100 pt-5">
+                <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-5">
                   <button
                     type="button"
-                    onClick={goPrevious}
-                    disabled={loading || lesson.currentQuestionIndex === 0}
-                    className="rounded-xl border-2 border-violet-300 px-5 py-3 font-bold text-violet-700 disabled:cursor-not-allowed disabled:opacity-40"
+                    onClick={regenerateLesson}
+                    disabled={loading}
+                    className="rounded-2xl bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-500 px-6 py-3.5 text-base font-extrabold text-white shadow-lg shadow-orange-200 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
                   >
-                    ← Câu trước
+                    Tạo 5 câu khác
                   </button>
-                </div>}
+                  {!reward && (
+                    <button
+                      type="button"
+                      onClick={goPrevious}
+                      disabled={loading || lesson.currentQuestionIndex === 0}
+                      className="rounded-xl border-2 border-violet-300 px-5 py-3 font-bold text-violet-700 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      ← Câu trước
+                    </button>
+                  )}
+                </div>
               </>
             )}
           </section>
