@@ -677,6 +677,14 @@ const AITutorPage = () => {
                 <p className="mt-2 text-slate-600">
                   Bạn đã luyện xong các bước quan trọng của bài này.
                 </p>
+                <button
+                  type="button"
+                  onClick={regenerateLesson}
+                  disabled={loading}
+                  className="mt-6 rounded-xl bg-violet-600 px-5 py-3 font-bold text-white shadow-md transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Tạo 5 câu khác
+                </button>
                 {lesson.currentQuestionIndex > 0 && (
                   <button
                     type="button"
