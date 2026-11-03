@@ -26,3 +26,18 @@ test('normalizes duplicated Gemini math escaping', () => {
   expect(html).toContain('math-formula');
   expect(html).not.toContain('\\\\(');
 });
+
+test('renders a chemistry equation and a stored broken arrow', () => {
+  const html = formatAIMessage('$Al + HCl \\rightarrow AlCl_3 + H_2$');
+  const broken = formatAIMessage('$Al + HCl \rightarrow AlCl_3 + H_2$');
+  const bare = formatAIMessage('Al + HCl ightarrow AlCl_3');
+
+  expect(html).toContain('→');
+  expect(html).toContain('<sub>3</sub>');
+  expect(html).toContain('<sub>2</sub>');
+  expect(html).not.toContain('ightarrow');
+  expect(broken).toContain('→');
+  expect(broken).not.toContain('ightarrow');
+  expect(bare).toContain('→');
+  expect(bare).toContain('<sub>3</sub>');
+});
