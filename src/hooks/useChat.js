@@ -22,7 +22,7 @@ const DEFAULT_INTERVENTION = {
   hintTier: 1,
 };
 
-export const useChat = (onCoinAnimation, onPointsAnimation) => {
+export const useChat = (onCoinAnimation) => {
   const { updateUserChestnuts } = useAuth();
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -567,18 +567,6 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
             });
           }
 
-          // Trigger points animation if points were awarded
-          if (data.pointsAwarded && data.pointsAwarded > 0 && onPointsAnimation) {
-            const rankDisplayElement = document.querySelector('.rank-display') ||
-                                     document.querySelector('[data-rank-display="true"]');
-            onPointsAnimation({
-              amount: data.pointsAwarded,
-              sourceElement: sourceElement,
-              targetElement: rankDisplayElement
-            });
-          }
-
-          // Add a system message for coin award
           const coinMessage = {
             id: Date.now() + Math.random() + 2,
             text: `🎉 Bạn đã nhận được ${data.chestnutsAwarded} hạt dẻ! Tổng số hạt dẻ: ${data.totalChestnuts} 🎉`,
@@ -587,18 +575,6 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
             type: 'chestnut-award'
           };
           setMessages(prev => [...prev, coinMessage]);
-
-          // Add points message if points were awarded
-          if (data.pointsAwarded && data.pointsAwarded > 0) {
-            const pointsMessage = {
-              id: Date.now() + Math.random() + 3,
-              text: `Bạn đã nhận được ${data.pointsAwarded} điểm xếp hạng! Tổng số điểm: ${data.totalPoints}`,
-              sender: 'system',
-              timestamp: new Date().toLocaleTimeString(),
-              type: 'points-award'
-            };
-            setMessages(prev => [...prev, pointsMessage]);
-          }
         }
 
         setMessages(prev => {
@@ -703,18 +679,6 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
             });
           }
           
-          // Trigger points animation if points were awarded
-          if (data.pointsAwarded && data.pointsAwarded > 0 && onPointsAnimation) {
-            const rankDisplayElement = document.querySelector('.rank-display') || 
-                                     document.querySelector('[data-rank-display="true"]');
-            onPointsAnimation({
-              amount: data.pointsAwarded,
-              sourceElement: sourceElement,
-              targetElement: rankDisplayElement
-            });
-          }
-          
-          // Add a system message for coin award
           const coinMessage = {
             id: Date.now() + Math.random() + 2, // Ensure unique ID
             text: `🎉 Bạn đã nhận được ${data.chestnutsAwarded} hạt dẻ! Tổng số hạt dẻ: ${data.totalChestnuts} 🎉`,
@@ -723,18 +687,6 @@ export const useChat = (onCoinAnimation, onPointsAnimation) => {
             type: 'chestnut-award'
           };
           setMessages(prev => [...prev, coinMessage]);
-          
-          // Add points message if points were awarded
-          if (data.pointsAwarded && data.pointsAwarded > 0) {
-            const pointsMessage = {
-              id: Date.now() + Math.random() + 3, // Ensure unique ID  
-              text: `Bạn đã nhận được ${data.pointsAwarded} điểm xếp hạng! Tổng số điểm: ${data.totalPoints}`,
-              sender: 'system',
-              timestamp: new Date().toLocaleTimeString(),
-              type: 'points-award'
-            };
-            setMessages(prev => [...prev, pointsMessage]);
-          }
         }
 
         setMessages(prev => {

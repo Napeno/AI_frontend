@@ -83,7 +83,8 @@ test('paginates saved items and sends an attempt as an interaction', async () =>
   expect(await screen.findByRole('button', { name: /Câu tiếp theo/ })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: /Chọn loại câu hỏi khác/ })).toBeInTheDocument();
   expect(screen.getByAltText('Trả lời đúng')).toBeInTheDocument();
-  await waitFor(() => expect(document.querySelector('.reward-celebration-message')).toHaveTextContent('+25 điểm'));
+  await waitFor(() => expect(document.querySelector('.reward-celebration-message')).toHaveTextContent('+5'));
+  expect(document.querySelector('.reward-celebration-message')).not.toHaveTextContent('điểm');
 
   fireEvent.click(screen.getByRole('button', { name: 'Sau →' }));
   await waitFor(() => expect(get).toHaveBeenCalledWith(expect.stringContaining('/practice/items?page=2&limit=6')));

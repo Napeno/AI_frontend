@@ -363,7 +363,7 @@ test('normalizes repeated tutor step titles and shows one active step', async ()
   expect(screen.getAllByText('🔒')).toHaveLength(1);
 });
 
-test('awards points, updates auth state, and bursts confetti on a first correct answer', async () => {
+test('awards chestnuts, updates auth state, and bursts confetti on a first correct answer', async () => {
   const updateUserChestnuts = jest.fn();
   useAuth.mockReturnValue({ updateUserChestnuts });
   post
@@ -384,7 +384,8 @@ test('awards points, updates auth state, and bursts confetti on a first correct 
   fireEvent.click(screen.getByRole('button', { name: /A\. Bốn/ }));
   fireEvent.click(screen.getByRole('button', { name: /Trả lời/ }));
 
-  await waitFor(() => expect(screen.getByText('+25 điểm · +5 hạt dẻ')).toBeInTheDocument());
+  await waitFor(() => expect(screen.getAllByText('+5 hạt dẻ').length).toBeGreaterThan(0));
+  expect(screen.queryByText(/\d+ điểm/)).not.toBeInTheDocument();
   expect(updateUserChestnuts).toHaveBeenCalledWith(15, 125);
   expect(document.querySelectorAll('[aria-hidden="true"] span')).toHaveLength(36);
 });

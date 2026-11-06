@@ -201,7 +201,6 @@ const PracticePage = () => {
         if (data.totalChestnuts !== null && data.totalChestnuts !== undefined) updateUserChestnuts?.(data.totalChestnuts, data.totalPoints);
         if (data.isCorrect === true) {
           setReward({
-            points: data.pointsAwarded || 0,
             chestnuts: data.chestnutsAwarded || 0,
             badge: data.challengeBadges?.[0] || null,
             id: `${activeItem.id}-${activeQuestionType}-${Date.now()}`,

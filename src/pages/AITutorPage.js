@@ -466,7 +466,6 @@ const AITutorPage = () => {
       setAnswerCorrect(data.correct);
       setStepFeedback(null);
       setReward(data.correct ? {
-        points: data.pointsAwarded || 0,
         chestnuts: data.chestnutsAwarded || 0,
         badge: data.challengeBadges?.[0] || null,
       } : null);
@@ -509,7 +508,7 @@ const AITutorPage = () => {
       setSelected(movedToNextQuestion ? "" : selected);
       setAnswerSubmitted(!movedToNextQuestion);
       setAnswerCorrect(movedToNextQuestion ? null : answerCorrect);
-      setReward(movedToNextQuestion ? null : data.challengeBadges?.[0] ? { ...(reward || { points: 0, chestnuts: 0 }), badge: data.challengeBadges[0] } : reward);
+      setReward(movedToNextQuestion ? null : data.challengeBadges?.[0] ? { ...(reward || { chestnuts: 0 }), badge: data.challengeBadges[0] } : reward);
       setFeedback(
         movedToNextQuestion
           ? ""
@@ -750,14 +749,15 @@ const AITutorPage = () => {
                       <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-500 text-2xl font-bold text-white shadow-md">✓</span>
                       <div className="min-w-0">
                         <p className="text-base font-extrabold text-emerald-700">Tuyệt vời! Bạn đã trả lời đúng.</p>
-                        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-extrabold">
-                          <span className="sr-only">+{reward.points} điểm · +{reward.chestnuts} hạt dẻ</span>
-                          <span className="reward-number-rise text-2xl text-orange-600">+{reward.points} <span className="text-base">điểm</span></span>
-                          <span className="flex items-center gap-1 text-2xl text-amber-600">
-                            <span className="reward-icon-pop" aria-hidden="true">🌰</span>
-                            <span className="reward-number-rise">+{reward.chestnuts} <span className="text-base">hạt dẻ</span></span>
-                          </span>
-                        </div>
+                        {reward.chestnuts > 0 && (
+                          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-extrabold">
+                            <span className="sr-only">+{reward.chestnuts} hạt dẻ</span>
+                            <span className="flex items-center gap-1 text-2xl text-amber-600">
+                              <span className="reward-icon-pop" aria-hidden="true">🌰</span>
+                              <span className="reward-number-rise">+{reward.chestnuts} <span className="text-base">hạt dẻ</span></span>
+                            </span>
+                          </div>
+                        )}
                         <p className="mt-1 text-sm font-semibold text-slate-600">Cùng xem lời giải để hiểu sâu hơn nhé!</p>
                       </div>
                     </div>

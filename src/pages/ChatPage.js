@@ -21,7 +21,6 @@ const DEFAULT_CHAT_SETTINGS = { educationLevel: 'middle', subjectArea: 'mathemat
 const ChatPage = () => {
   const [keyboardOffset, setKeyboardOffset] = useState(0);
   const [coinAnimationTrigger, setCoinAnimationTrigger] = useState(null);
-  const [pointsAnimationTrigger, setPointsAnimationTrigger] = useState(null);
   const [rewardCelebration, setRewardCelebration] = useState(null);
   const lastRewardIdRef = useRef(null);
   const rewardInitializedRef = useRef(false);
@@ -43,7 +42,7 @@ const ChatPage = () => {
     intervention, problemContext, setActiveQuestion, messagesEndRef, createNewChat, loadConversations,
     loadConversation, deleteConversation, sendMessage, sendImageMessage, continueChat, getFullAnswer,
     checkUserAnswer, checkUserAnswerWithImage,
-  } = useChat(setCoinAnimationTrigger, setPointsAnimationTrigger);
+  } = useChat(setCoinAnimationTrigger);
 
   useEffect(() => {
     const rewardMessage = [...messages].reverse().find(message => message.type === 'chestnut-award');
@@ -54,7 +53,7 @@ const ChatPage = () => {
     }
     if (rewardMessage && rewardMessage.id !== lastRewardIdRef.current) {
       lastRewardIdRef.current = rewardMessage.id;
-      setRewardCelebration({ points: 25, chestnuts: 5, id: rewardMessage.id });
+      setRewardCelebration({ chestnuts: 5, id: rewardMessage.id });
     }
   }, [messages]);
 
@@ -186,7 +185,7 @@ const ChatPage = () => {
 
   return <div className="chat-shell flex h-[100dvh] overflow-hidden">
     <RewardCelebration reward={rewardCelebration} />
-    <ChatRail onNewChat={handleNewChat} onOpenHistory={() => setIsHistoryOpen(true)} coinAnimationTrigger={coinAnimationTrigger} pointsAnimationTrigger={pointsAnimationTrigger} />
+    <ChatRail onNewChat={handleNewChat} onOpenHistory={() => setIsHistoryOpen(true)} coinAnimationTrigger={coinAnimationTrigger} />
     {isHistoryOpen && <div className="fixed inset-0 z-50 md:left-14" role="dialog" aria-modal="true" aria-label="Lịch sử trò chuyện">
       <button type="button" aria-label="Đóng lịch sử" onClick={() => setIsHistoryOpen(false)} className="absolute inset-0 bg-slate-950/20 backdrop-blur-[1px]" />
       <div className="relative h-full"><Sidebar conversations={conversations} sessionId={sessionId} createNewChat={handleNewChat} loadConversation={loadConversation} deleteConversation={deleteConversation} onClose={() => setIsHistoryOpen(false)} /></div>
