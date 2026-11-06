@@ -14,7 +14,7 @@ const RewardCelebration = ({ reward }) => {
 
   return (
     <div className="reward-celebration" aria-live="polite">
-      <div className="reward-celebration-message">🎉 Chính xác! <strong>+{reward.points} điểm</strong> · 🌰 <strong>+{reward.chestnuts}</strong>{reward.badge && <><br /><span>🏅 Huy hiệu mới: <strong>{reward.badge.title}</strong></span></>}</div>
+      <div className="reward-celebration-message">🎉 Chính xác!{Number(reward.chestnuts) > 0 && <> 🌰 <strong>+{reward.chestnuts}</strong></>}{reward.badge && <><br /><span>🏅 Huy hiệu mới: <strong>{reward.badge.title}</strong></span></>}</div>
       <div className="reward-confetti" aria-hidden="true">
         {Array.from({ length: 42 }, (_, index) => <span key={index} style={{ '--confetti-x': `${(index * 37) % 101}vw`, '--confetti-delay': `${(index % 9) * 70}ms`, '--confetti-color': ['#f97316', '#facc15', '#10b981', '#60a5fa', '#f472b6'][index % 5] }} />)}
       </div>

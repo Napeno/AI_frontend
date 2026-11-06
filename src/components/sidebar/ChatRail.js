@@ -8,7 +8,7 @@ const RailButton = ({ label, onClick, children }) => (
   </button>
 );
 
-const ChatRail = ({ onNewChat, onOpenHistory, coinAnimationTrigger, pointsAnimationTrigger }) => (
+const ChatRail = ({ onNewChat, onOpenHistory, coinAnimationTrigger }) => (
   <aside className="chat-rail hidden h-full w-16 shrink-0 flex-col items-center py-3 md:flex">
     <Link to="/" title="ThinkBridge" aria-label="ThinkBridge" className="chat-brand mb-5 flex h-10 w-10 items-center justify-center rounded-xl">
       <img src="/avatar.png" alt="ThinkBridge squirrel" className="h-8 w-8 object-contain" />
@@ -32,7 +32,7 @@ const ChatRail = ({ onNewChat, onOpenHistory, coinAnimationTrigger, pointsAnimat
       <span aria-hidden="true">📓</span>
     </Link>
     <div className="mt-auto">
-      <UserProfile compact coinAnimationTrigger={coinAnimationTrigger} pointsAnimationTrigger={pointsAnimationTrigger} />
+      <UserProfile compact coinAnimationTrigger={coinAnimationTrigger} />
     </div>
   </aside>
 );
