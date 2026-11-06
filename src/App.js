@@ -3,12 +3,10 @@ import { BrowserRouter, Routes, Route, Navigate, Link, useLocation, useNavigate 
 import { useAuth } from './context/AuthContext';
 import { useTheme } from './context/ThemeContext';
 import { setNavigate } from './utils/apiClient';
-import t from './locales/i18n';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ChatPage from './pages/ChatPage';
-import LeaderboardPage from './pages/LeaderboardPage';
 import GameHomePage from './pages/GameHomePage';
 import QuizGamePage from './pages/QuizGamePage';
 import PracticePage from './pages/PracticePage';
@@ -75,10 +73,6 @@ const AppContent = () => {
                   <span className="text-sm">🎮</span>
                   <span className="hidden sm:inline">Game</span>
                 </Link>
-                <Link to="/leaderboard" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">
-                  <span className="text-sm">🏆</span>
-                  <span className="hidden sm:inline">{t('leaderboard.title')}</span>
-                </Link>
                 <Link to="/chat" className="text-seablue-600 hover:text-seablue-700 font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-seablue-50 transition-colors">
                   <img src="/avatar.png" alt="Chat Logo" className="h-5 w-5 object-contain" />
                   <span className="hidden sm:inline">Chat</span>
@@ -111,7 +105,7 @@ const AppContent = () => {
         <Route path="/login" element={token ? <Navigate to={isAdmin ? "/" : "/chat"} replace /> : <LoginPage />} />
         <Route path="/register" element={token ? <Navigate to={isAdmin ? "/" : "/chat"} replace /> : <RegisterPage />} />
         <Route path="/chat" element={token ? (isAdmin ? <Navigate to="/" replace /> : <ChatPage />) : <Navigate to="/login" replace />} />
-        <Route path="/leaderboard" element={token ? (isAdmin ? <Navigate to="/" replace /> : <LeaderboardPage />) : <Navigate to="/login" replace />} />
+        <Route path="/leaderboard" element={<Navigate to="/" replace />} />
         <Route path="/practice" element={token ? (isAdmin ? <Navigate to="/" replace /> : <PracticePage />) : <Navigate to="/login" replace />} />
         <Route path="/thinking" element={token ? (isAdmin ? <Navigate to="/" replace /> : <ThinkingJournalPage />) : <Navigate to="/login" replace />} />
         <Route path="/ai-tutor" element={token ? (isAdmin ? <Navigate to="/" replace /> : <AITutorPage />) : <Navigate to="/login" replace />} />
