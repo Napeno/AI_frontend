@@ -110,7 +110,10 @@ const repairStoredFormulas = (value) => String(value)
   .replace(/\\rightarrow/g, '→')
   .replace(/\\leftarrow/g, '←')
   .replace(/\\to\b/g, '→')
-  .replace(/\\times/g, '×');
+  .replace(/\\times/g, '×')
+  .replace(/\\cdot/g, '·')
+  .replace(/\\div/g, '÷')
+  .replace(/\\pm/g, '±');
 
 const renderLatex = (rawLatex) => {
   let latex = escapeHtml(rawLatex)

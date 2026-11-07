@@ -274,8 +274,8 @@ const PracticePage = () => {
                     <div className="flex shrink-0 items-center justify-between gap-3 border-b border-orange-100 px-4 py-3 dark:border-orange-900">
                       <div className="min-w-0">
                         <p className="text-xs font-semibold uppercase tracking-wide text-orange-700 dark:text-orange-300">Phòng ôn tập</p>
-                        <h2 className="truncate text-base font-bold text-slate-900 dark:text-white">{itemTitle(activeItem)}</h2>
-                        {itemProblemTitle(activeItem) && <p className="truncate text-xs text-slate-500 dark:text-slate-400">{itemProblemTitle(activeItem)}</p>}
+                        <h2 className="truncate text-base font-bold text-slate-900 dark:text-white" dangerouslySetInnerHTML={{ __html: formatAIMessage(itemTitle(activeItem)) }} />
+                        {itemProblemTitle(activeItem) && <p className="truncate text-xs text-slate-500 dark:text-slate-400" dangerouslySetInnerHTML={{ __html: formatAIMessage(itemProblemTitle(activeItem)) }} />}
                       </div>
                       <span className="shrink-0 rounded-full bg-orange-50 px-2.5 py-1 text-xs font-medium text-orange-800 dark:bg-orange-950/50 dark:text-orange-200">{subjectLabel(activeItem.subjectArea)}</span>
                     </div>
@@ -388,8 +388,8 @@ const PracticePage = () => {
                 {items.map(item => (
                   <div key={item.id} className={`flex items-start gap-2 rounded-xl border p-2.5 ${activeItem?.id === item.id ? 'border-orange-500 bg-orange-50 dark:bg-orange-950/40' : 'border-slate-100 dark:border-gray-800'}`}>
                       <button type="button" onClick={() => { setIsSavedItemsOpen(false); openItem(item.id); }} className="min-w-0 flex-1 text-left">
-                      <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">{itemTitle(item)}</p>
-                      {itemProblemTitle(item) && <p className="mt-1 truncate text-xs text-slate-600 dark:text-slate-300">{itemProblemTitle(item)}</p>}
+                      <p className="truncate text-sm font-semibold text-slate-900 dark:text-white" dangerouslySetInnerHTML={{ __html: formatAIMessage(itemTitle(item)) }} />
+                      {itemProblemTitle(item) && <p className="mt-1 truncate text-xs text-slate-600 dark:text-slate-300" dangerouslySetInnerHTML={{ __html: formatAIMessage(itemProblemTitle(item)) }} />}
                       <p className="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">{subjectLabel(item.subjectArea)} · {STATUS_LABELS[item.status]} · {item.reviewCount} lần</p>
                     </button>
                     <button type="button" onClick={() => removeItem(item.id)} className="rounded p-1 text-xs font-medium text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/30" aria-label={`Xoá ${itemTitle(item)}`}>×</button>

@@ -20,6 +20,15 @@ test('renders a bare LaTeX fraction without requiring delimiters', () => {
   expect(html).toContain('math-fraction');
 });
 
+test('renders bare cdot and frac expressions from OCR math prompts', () => {
+  const html = formatAIMessage('Thực hiện phép tính: \\frac{1}{9} - 0,3 \\cdot \\frac{5}{9} + \\frac{1}{3} + 5');
+
+  expect(html).toContain('math-fraction');
+  expect(html).toContain('·');
+  expect(html).not.toContain('\\cdot');
+  expect(html).not.toContain('\\frac');
+});
+
 test('normalizes duplicated Gemini math escaping', () => {
   const html = formatAIMessage('Chọn \\\\(x + 1\\\\)^2.');
 
