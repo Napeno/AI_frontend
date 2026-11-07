@@ -672,7 +672,7 @@ const AITutorPage = () => {
                   type="button"
                   onClick={regenerateLesson}
                   disabled={loading}
-                  className="mt-6 rounded-2xl bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-500 px-6 py-3.5 text-base font-extrabold text-white shadow-lg shadow-orange-200 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="mt-6 rounded-2xl bg-green-600 px-6 py-3.5 text-base font-extrabold text-white shadow-lg shadow-green-200 transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Tạo 5 câu khác
                 </button>
@@ -788,7 +788,7 @@ const AITutorPage = () => {
                     type="button"
                     onClick={regenerateLesson}
                     disabled={loading}
-                    className="rounded-2xl bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-500 px-6 py-3.5 text-base font-extrabold text-white shadow-lg shadow-orange-200 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="rounded-2xl bg-green-600 px-6 py-3.5 text-base font-extrabold text-white shadow-lg shadow-green-200 transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     Tạo 5 câu khác
                   </button>
