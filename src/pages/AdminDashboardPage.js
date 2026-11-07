@@ -1360,9 +1360,6 @@ const AdminDashboardPage = () => {
         <header className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h1 className="text-2xl font-bold">Dashboard giáo viên</h1>
-            <p className="mt-1 text-sm text-gray-600">
-              Ưu tiên can thiệp và theo dõi tiến bộ học chủ động · 179 HS (lớp 8.2 ⊂ nhóm nghiên cứu).
-            </p>
           </div>
           <button
             onClick={exportCsv}
